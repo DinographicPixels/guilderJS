@@ -114,7 +114,7 @@ export class Client extends TypedEmitter<ClientEvents> {
     util: Util;
     startTime: number;
     /** @param params Client's parameters, this includes bot's token & rest options. */
-    constructor(params: ClientOptions){
+    constructor(params: ClientOptions) {
         if (typeof params !== "object") throw new Error("The token isn't provided in an object.");
         if (!params?.token) throw new Error("Cannot create client without token, no token is provided.");
         super();
@@ -183,7 +183,7 @@ export class Client extends TypedEmitter<ClientEvents> {
     /** Disconnect from Guilded.
      * @param crashOnDisconnect If set, throws an error to stop the process.
      */
-    disconnect(crashOnDisconnect?: boolean): void{
+    disconnect(crashOnDisconnect?: boolean): void {
         if (this.ws.alive === false) return console.warn("There is no open connection.");
         this.ws.disconnect(false); // closing all connections.
         console.log("The connection has been terminated.");
@@ -307,7 +307,7 @@ export class Client extends TypedEmitter<ClientEvents> {
      * @param channelID ID of a "Docs" channel.
      * @param filter Object to filter the output.
      */
-    async getDocs(channelID: string, filter?: GetDocsFilter): Promise<Array<Doc>>{
+    async getDocs(channelID: string, filter?: GetDocsFilter): Promise<Array<Doc>> {
         return this.rest.channels.getDocs(channelID, filter);
     }
 
@@ -317,7 +317,7 @@ export class Client extends TypedEmitter<ClientEvents> {
      * @param channelID ID of the Docs channel.
      * @param docID ID of the channel doc.
      */
-    async getDoc(channelID: string, docID: number): Promise<Doc>{
+    async getDoc(channelID: string, docID: number): Promise<Doc> {
         return this.rest.channels.getDoc(channelID, docID);
     }
 
@@ -346,7 +346,7 @@ export class Client extends TypedEmitter<ClientEvents> {
      * @param channelID ID of a "Forum" channel.
      * @param filter Object to filter the output.
      */
-    async getForumThreads(channelID: string, filter?: GetForumThreadsFilter): Promise<Array<ForumThread<ForumChannel>>>{
+    async getForumThreads(channelID: string, filter?: GetForumThreadsFilter): Promise<Array<ForumThread<ForumChannel>>> {
         return this.rest.channels.getForumThreads(channelID, filter);
     }
 
@@ -356,7 +356,7 @@ export class Client extends TypedEmitter<ClientEvents> {
      * @param channelID ID of a speific Forum channel.
      * @param threadID ID of the specific Forum Thread.
      */
-    async getForumThread(channelID: string, threadID: number): Promise<ForumThread<ForumChannel>>{
+    async getForumThread(channelID: string, threadID: number): Promise<ForumThread<ForumChannel>> {
         return this.rest.channels.getForumThread(channelID, threadID);
     }
 
@@ -364,7 +364,7 @@ export class Client extends TypedEmitter<ClientEvents> {
      * @param channelID ID of a "Forums" channel.
      * @param threadID ID of a Forum Thread.
      */
-    async getForumComments(channelID: string, threadID: number): Promise<Array<ForumThreadComment>>{
+    async getForumComments(channelID: string, threadID: number): Promise<Array<ForumThreadComment>> {
         return this.rest.channels.getForumComments(channelID, threadID);
     }
 
@@ -373,7 +373,7 @@ export class Client extends TypedEmitter<ClientEvents> {
      * @param threadID ID of a Forum thread.
      * @param commentID ID of a Forum thread comment.
      */
-    async getForumComment(channelID: string, threadID: number, commentID: number): Promise<ForumThreadComment>{
+    async getForumComment(channelID: string, threadID: number, commentID: number): Promise<ForumThreadComment> {
         return this.rest.channels.getForumComment(channelID, threadID, commentID);
     }
 
@@ -392,7 +392,7 @@ export class Client extends TypedEmitter<ClientEvents> {
      * @param channelID ID of a Calendar channel.
      * @param eventID ID of a Calendar event.
      */
-    async getCalendarEvent(channelID: string, eventID: number): Promise<CalendarEvent>  {
+    async getCalendarEvent(channelID: string, eventID: number): Promise<CalendarEvent> {
         return this.rest.channels.getCalendarEvent(channelID, eventID);
     }
 
@@ -430,7 +430,7 @@ export class Client extends TypedEmitter<ClientEvents> {
      * @param channelID ID of a "Calendar" channel.
      * @param eventID ID of a calendar event.
      */
-    async getCalendarRsvps(channelID: string, eventID: number): Promise<Array<CalendarEventRSVP>>{
+    async getCalendarRsvps(channelID: string, eventID: number): Promise<Array<CalendarEventRSVP>> {
         return this.rest.channels.getCalendarRsvps(channelID, eventID);
     }
 
@@ -439,14 +439,14 @@ export class Client extends TypedEmitter<ClientEvents> {
      * @param channelID ID of a "List" channel.
      * @param itemID ID of a list item.
      */
-    async getListItem(channelID: string, itemID: string): Promise<ListItem>{
+    async getListItem(channelID: string, itemID: string): Promise<ListItem> {
         return this.rest.channels.getListItem(channelID, itemID);
     }
 
     /** This method is used to get a list of ListItem.
      * @param channelID ID of a "List" channel.
      */
-    async getListItems(channelID: string): Promise<Array<ListItem>>{
+    async getListItems(channelID: string): Promise<Array<ListItem>> {
         return this.rest.channels.getListItems(channelID);
     }
 
@@ -454,7 +454,7 @@ export class Client extends TypedEmitter<ClientEvents> {
      * @param guildID ID of a guild.
      * @param webhookID ID of a webhook.
      */
-    async getWebhook(guildID: string, webhookID: string): Promise<Webhook>{
+    async getWebhook(guildID: string, webhookID: string): Promise<Webhook> {
         return this.rest.guilds.getWebhook(guildID, webhookID);
     }
 
@@ -462,7 +462,7 @@ export class Client extends TypedEmitter<ClientEvents> {
      * @param guildID ID of a guild.
      * @param channelID ID of a channel.
      */
-    async getWebhooks(guildID: string, channelID: string): Promise<Array<Webhook>>{
+    async getWebhooks(guildID: string, channelID: string): Promise<Array<Webhook>> {
         return this.rest.guilds.getWebhooks(guildID, channelID);
     }
 
@@ -515,7 +515,7 @@ export class Client extends TypedEmitter<ClientEvents> {
      * @param channelID ID of the channel containing the message.
      * @param messageID ID of the message you'd like to delete.
      */
-    async deleteMessage(channelID: string, messageID: string): Promise<void>{
+    async deleteMessage(channelID: string, messageID: string): Promise<void> {
         return this.rest.channels.deleteMessage(channelID, messageID);
     }
 
@@ -535,7 +535,7 @@ export class Client extends TypedEmitter<ClientEvents> {
      * @param targetID ID of the target you'd like to add the reaction from. (e.g: a message id)
      * @param reaction ID of the reaction.
      */
-    async deleteReaction(channelID: string, channelType: ChannelReactionTypes, targetID: string | number, reaction: number): Promise<void>{
+    async deleteReaction(channelID: string, channelType: ChannelReactionTypes, targetID: string | number, reaction: number): Promise<void> {
         return this.rest.channels.deleteReaction(channelID, channelType, targetID, reaction);
     }
 
@@ -586,7 +586,7 @@ export class Client extends TypedEmitter<ClientEvents> {
      * @param threadID ID of a forum thread.
      * @param options Edit options.
      */
-    async editForumThread<T extends ForumChannel = ForumChannel>(channelID: string, threadID: number, options: EditForumThreadOptions): Promise<ForumThread<T>>{
+    async editForumThread<T extends ForumChannel = ForumChannel>(channelID: string, threadID: number, options: EditForumThreadOptions): Promise<ForumThread<T>> {
         return this.rest.channels.editForumThread<T>(channelID, threadID, options);
     }
 
@@ -594,7 +594,7 @@ export class Client extends TypedEmitter<ClientEvents> {
      * @param channelID ID of a "Forums" channel.
      * @param threadID ID of a forum thread.
      */
-    async deleteForumThread(channelID: string, threadID: number): Promise<void>{
+    async deleteForumThread(channelID: string, threadID: number): Promise<void> {
         return this.rest.channels.deleteForumThread(channelID, threadID);
     }
 
@@ -602,7 +602,7 @@ export class Client extends TypedEmitter<ClientEvents> {
      * @param channelID ID of a "Forums" channel.
      * @param threadID ID of a forum thread.
      */
-    async pinForumThread(channelID: string, threadID: number): Promise<void>{
+    async pinForumThread(channelID: string, threadID: number): Promise<void> {
         return this.rest.channels.pinForumThread(channelID, threadID);
     }
 
@@ -610,7 +610,7 @@ export class Client extends TypedEmitter<ClientEvents> {
      * @param channelID ID of a "Forums" channel.
      * @param threadID ID of a forum thread.
      */
-    async unpinForumThread(channelID: string, threadID: number): Promise<void>{
+    async unpinForumThread(channelID: string, threadID: number): Promise<void> {
         return this.rest.channels.unpinForumThread(channelID, threadID);
     }
 
@@ -618,7 +618,7 @@ export class Client extends TypedEmitter<ClientEvents> {
      * @param channelID ID of a "Forums" channel.
      * @param threadID ID of a forum thread.
      */
-    async lockForumThread(channelID: string, threadID: number): Promise<void>{
+    async lockForumThread(channelID: string, threadID: number): Promise<void> {
         return this.rest.channels.lockForumThread(channelID, threadID);
     }
 
@@ -626,7 +626,7 @@ export class Client extends TypedEmitter<ClientEvents> {
      * @param channelID ID of a "Forums" channel.
      * @param threadID ID of a forum thread.
      */
-    async unlockForumThread(channelID: string, threadID: number): Promise<void>{
+    async unlockForumThread(channelID: string, threadID: number): Promise<void> {
         return this.rest.channels.unlockForumThread(channelID, threadID);
     }
 
@@ -635,7 +635,7 @@ export class Client extends TypedEmitter<ClientEvents> {
      * @param threadID ID of a forum thread.
      * @param options Comment's options.
      */
-    async createForumComment(channelID: string, threadID: number, options: CreateForumCommentOptions): Promise<ForumThreadComment>{
+    async createForumComment(channelID: string, threadID: number, options: CreateForumCommentOptions): Promise<ForumThreadComment> {
         return this.rest.channels.createForumComment(channelID, threadID, options);
     }
 
@@ -645,7 +645,7 @@ export class Client extends TypedEmitter<ClientEvents> {
      * @param commentID ID of a thread comment.
      * @param options Edit options.
      */
-    async editForumComment(channelID: string, threadID: number, commentID: number, options?: EditForumCommentOptions): Promise<ForumThreadComment>{
+    async editForumComment(channelID: string, threadID: number, commentID: number, options?: EditForumCommentOptions): Promise<ForumThreadComment> {
         return this.rest.channels.editForumComment(channelID, threadID, commentID, options);
     }
 
@@ -654,7 +654,7 @@ export class Client extends TypedEmitter<ClientEvents> {
      * @param threadID ID of a forum thread.
      * @param commentID ID of a forum thread comment.
      */
-    async deleteForumComment(channelID: string, threadID: number, commentID: number): Promise<void>{
+    async deleteForumComment(channelID: string, threadID: number, commentID: number): Promise<void> {
         return this.rest.channels.deleteForumComment(channelID, threadID, commentID);
     }
 
@@ -663,7 +663,7 @@ export class Client extends TypedEmitter<ClientEvents> {
      * @param channelID ID pf a "Docs" channel.
      * @param options Doc's options.
      */
-    async createDoc(channelID: string, options: CreateDocOptions): Promise<Doc>{
+    async createDoc(channelID: string, options: CreateDocOptions): Promise<Doc> {
         return this.rest.channels.createDoc(channelID, options);
     }
 
@@ -672,7 +672,7 @@ export class Client extends TypedEmitter<ClientEvents> {
      * @param docID ID of a doc.
      * @param options Edit options.
      */
-    async editDoc(channelID: string, docID: number, options: EditDocOptions): Promise<Doc>{
+    async editDoc(channelID: string, docID: number, options: EditDocOptions): Promise<Doc> {
         return this.rest.channels.editDoc(channelID, docID, options);
     }
 
@@ -721,7 +721,7 @@ export class Client extends TypedEmitter<ClientEvents> {
      * @param options Event options.
      * @param createSeries (optional) Create a series. (event's repetition)
      */
-    async createCalendarEvent(channelID: string, options: CreateCalendarEventOptions, createSeries?: POSTCalendarEventBody["repeatInfo"]): Promise<CalendarEvent>{
+    async createCalendarEvent(channelID: string, options: CreateCalendarEventOptions, createSeries?: POSTCalendarEventBody["repeatInfo"]): Promise<CalendarEvent> {
         return this.rest.channels.createCalendarEvent(channelID, options, createSeries);
     }
 
@@ -730,7 +730,7 @@ export class Client extends TypedEmitter<ClientEvents> {
      * @param eventID ID of a calendar event.
      * @param options Edit options.
      */
-    async editCalendarEvent(channelID: string, eventID: number, options: EditCalendarEventOptions): Promise<CalendarEvent>{
+    async editCalendarEvent(channelID: string, eventID: number, options: EditCalendarEventOptions): Promise<CalendarEvent> {
         return this.rest.channels.editCalendarEvent(channelID, eventID, options);
     }
 
@@ -738,7 +738,7 @@ export class Client extends TypedEmitter<ClientEvents> {
      * @param channelID ID of a "Calendar" channel.
      * @param eventID ID of a calendar event.
      */
-    async deleteCalendarEvent(channelID: string, eventID: number): Promise<void>{
+    async deleteCalendarEvent(channelID: string, eventID: number): Promise<void> {
         return this.rest.channels.deleteCalendarEvent(channelID, eventID);
     }
 
@@ -806,7 +806,7 @@ export class Client extends TypedEmitter<ClientEvents> {
      * @param memberID ID of a member.
      * @param options Edit options.
      */
-    async editCalendarRsvp(channelID: string, eventID: number, memberID: string, options: EditCalendarRSVPOptions): Promise<CalendarEventRSVP>{
+    async editCalendarRsvp(channelID: string, eventID: number, memberID: string, options: EditCalendarRSVPOptions): Promise<CalendarEventRSVP> {
         return this.rest.channels.editCalendarRsvp(channelID, eventID, memberID, options);
     }
 
@@ -815,7 +815,7 @@ export class Client extends TypedEmitter<ClientEvents> {
      * @param eventID ID of a calendar event.
      * @param memberID ID of a member.
      */
-    async deleteCalendarRsvp(channelID: string, eventID: number, memberID: string): Promise<void>{
+    async deleteCalendarRsvp(channelID: string, eventID: number, memberID: string): Promise<void> {
         return this.rest.channels.deleteCalendarRsvp(channelID, eventID, memberID);
     }
 
@@ -933,7 +933,7 @@ export class Client extends TypedEmitter<ClientEvents> {
      * @param content String content of the new item.
      * @param note Add a note to the new item.
      */
-    async createListItem(channelID: string, content: POSTListItemBody["message"], note?: POSTListItemBody["note"]): Promise<ListItem>{
+    async createListItem(channelID: string, content: POSTListItemBody["message"], note?: POSTListItemBody["note"]): Promise<ListItem> {
         return this.rest.channels.createListItem(channelID, content, note);
     }
 
@@ -950,7 +950,7 @@ export class Client extends TypedEmitter<ClientEvents> {
      * @param channelID ID of a "Lists" channel.
      * @param itemID ID of a list item.
      */
-    async deleteListItem(channelID: string, itemID: string): Promise<void>{
+    async deleteListItem(channelID: string, itemID: string): Promise<void> {
         return this.rest.channels.deleteListItem(channelID, itemID);
     }
 
@@ -958,7 +958,7 @@ export class Client extends TypedEmitter<ClientEvents> {
      * @param channelID ID of a "Lists" channel.
      * @param itemID ID of a list item.
      */
-    async completeListItem(channelID: string, itemID: string): Promise<void>{
+    async completeListItem(channelID: string, itemID: string): Promise<void> {
         return this.rest.channels.completeListItem(channelID, itemID);
     }
 
@@ -966,7 +966,7 @@ export class Client extends TypedEmitter<ClientEvents> {
      * @param channelID ID of a "Lists" channel.
      * @param itemID ID of a list item.
      */
-    async uncompleteListItem(channelID: string, itemID: string): Promise<void>{
+    async uncompleteListItem(channelID: string, itemID: string): Promise<void> {
         return this.rest.channels.uncompleteListItem(channelID, itemID);
     }
 
@@ -975,7 +975,7 @@ export class Client extends TypedEmitter<ClientEvents> {
      * @param groupID ID of a guild group.
      * @param memberID ID of a member.
      */
-    async memberAddGroup(groupID: string, memberID: string): Promise<void>{
+    async memberAddGroup(groupID: string, memberID: string): Promise<void> {
         return this.rest.guilds.memberAddGroup(groupID, memberID);
     }
 
@@ -983,7 +983,7 @@ export class Client extends TypedEmitter<ClientEvents> {
      * @param groupID ID of a guild group.
      * @param memberID ID of a member.
      */
-    async memberRemoveGroup(groupID: string, memberID: string): Promise<void>{
+    async memberRemoveGroup(groupID: string, memberID: string): Promise<void> {
         return this.rest.guilds.memberRemoveGroup(groupID, memberID);
     }
 
@@ -993,7 +993,7 @@ export class Client extends TypedEmitter<ClientEvents> {
      * @param memberID ID of a member.
      * @param roleID ID of a role.
      */
-    async memberAddRole(guildID: string, memberID: string, roleID: number): Promise<void>{
+    async memberAddRole(guildID: string, memberID: string, roleID: number): Promise<void> {
         return this.rest.guilds.memberAddRole(guildID, memberID, roleID);
     }
 
@@ -1002,7 +1002,7 @@ export class Client extends TypedEmitter<ClientEvents> {
      * @param memberID ID of a member.
      * @param roleID ID of a role.
      */
-    async memberRemoveRole(guildID: string, memberID: string, roleID: number): Promise<void>{
+    async memberRemoveRole(guildID: string, memberID: string, roleID: number): Promise<void> {
         return this.rest.guilds.memberRemoveRole(guildID, memberID, roleID);
     }
 
@@ -1054,7 +1054,7 @@ export class Client extends TypedEmitter<ClientEvents> {
      * @param webhookID ID of an existent webhook.
      * @param options Edit options.
      */
-    async editWebhook(guildID: string, webhookID: string, options: PUTGuildWebhookBody): Promise<Webhook>{
+    async editWebhook(guildID: string, webhookID: string, options: PUTGuildWebhookBody): Promise<Webhook> {
         return this.rest.guilds.editWebhook(guildID, webhookID, options);
     }
 
@@ -1062,7 +1062,7 @@ export class Client extends TypedEmitter<ClientEvents> {
      * @param guildID ID of a guild.
      * @param webhookID ID of an existent webhook.
      */
-    async deleteWebhook(guildID: string, webhookID: string): Promise<void>{
+    async deleteWebhook(guildID: string, webhookID: string): Promise<void> {
         return this.rest.guilds.deleteWebhook(guildID, webhookID);
     }
 
@@ -1073,7 +1073,7 @@ export class Client extends TypedEmitter<ClientEvents> {
      * @param memberID ID of a member.
      * @param amount Amount of experience.
      */
-    async awardMember(guildID: string, memberID: string, amount: number): Promise<number>{
+    async awardMember(guildID: string, memberID: string, amount: number): Promise<number> {
         return this.rest.guilds.awardMember(guildID, memberID, amount);
     }
 
@@ -1082,7 +1082,7 @@ export class Client extends TypedEmitter<ClientEvents> {
      * @param memberID ID of a member.
      * @param amount Total amount of experience.
      */
-    async setMemberXP(guildID: string, memberID: string, amount: number): Promise<number>{
+    async setMemberXP(guildID: string, memberID: string, amount: number): Promise<number> {
         return this.rest.guilds.setMemberXP(guildID, memberID, amount);
     }
 
@@ -1091,7 +1091,7 @@ export class Client extends TypedEmitter<ClientEvents> {
      * @param roleID ID of a role.
      * @param amount Amount of experience.
      */
-    async awardRole(guildID: string, roleID: number, amount: number): Promise<void>{
+    async awardRole(guildID: string, roleID: number, amount: number): Promise<void> {
         return this.rest.guilds.awardRole(guildID, roleID, amount);
     }
 
