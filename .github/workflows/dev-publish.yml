@@ -15,16 +15,16 @@ jobs:
     needs: [lint]
     steps:
       - uses: actions/checkout@v3
-      - uses: pnpm/action-setup@v2
+      - uses: actions/checkout@v3
         with:
           version: latest
       - name: Install Dependencies
-        run: pnpm i --frozen-lockfile --ignore-scripts
+        run: npm i
       - name: Set Version
         run: |
           git config user.email "<>"
           git config user.name "GitHub Actions"
-          pnpm version --no-git-tag-version patch
+          npm --no-git-tag-version version patch
           hash=$(git rev-parse --short dev)
           version=$(jq -r .version package.json)
           v="$version-dev.$hash"
