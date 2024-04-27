@@ -38,6 +38,14 @@ export interface ClientOptions {
      */
     waitForCaching?: boolean;
 
+    /**
+     * Fixes & improves Guilded API markdown and makes it Commonmark compliant.
+     *
+     * Enabled by default, can be disabled to use old version of the Guilded markdown. (if facing issues for example)
+     */
+    isOfficialMarkdownEnabled?: boolean;
+
+    /** Set your own limit to how much messages, threads, comments, events.. will be stored in cache before deletion. */
     collectionLimits?: {
         messages?: number;
         threads?: number;

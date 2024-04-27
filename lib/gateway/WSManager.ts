@@ -65,6 +65,7 @@ export class WSManager extends TypedEmitter<WebsocketEvents> {
     #connectTimeout: NodeJS.Timeout | null;
     compression: boolean;
     #sharedZLib!: Pako.Inflate | Inflate;
+    isOfficialMarkdownEnabled: boolean;
     constructor(client: Client, params: WSManagerParams) {
         super();
         Object.defineProperties(this, {
@@ -108,6 +109,7 @@ export class WSManager extends TypedEmitter<WebsocketEvents> {
         this.#connectTimeout = null;
 
         this.compression = params.compression ?? false; // not enabled, guilded doesn't support compression for now.
+        this.isOfficialMarkdownEnabled = client.params.isOfficialMarkdownEnabled ?? params.isOfficialMarkdownEnabled ?? true;
     }
 
     // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
@@ -146,6 +148,7 @@ export class WSManager extends TypedEmitter<WebsocketEvents> {
         }
 
         const wsoptions = { headers: { Authorization: `Bearer ${this.params.token}` }, protocol: "HTTPS" };
+        Object.assign(wsoptions.headers, { "x-guilded-bot-api-use-official-markdown": this.isOfficialMarkdownEnabled }); // temporary header
         if (this.replayEventsCondition) Object.assign(wsoptions.headers, { "guilded-last-message-id": this.lastMessageID });
         this.ws = new WebSocket(this.proxyURL, wsoptions);
 
@@ -431,4 +434,6 @@ export interface WSManagerParams {
     client: Client;
     /** Compression */
     compression?: boolean;
+    /** Enable official Guilded markdown header to opt-in. */
+    isOfficialMarkdownEnabled?: boolean;
 }

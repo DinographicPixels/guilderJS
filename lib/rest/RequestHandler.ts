@@ -74,6 +74,7 @@ export class RequestHandler {
                     const controller = new AbortController();
 
                     headers["User-Agent"] = `TouchGuild ${pkgconfig.branch} (${pkgconfig.version}) Node.JS ${pkgconfig.NodeJSVersion}`;
+                    headers["x-guilded-bot-api-use-official-markdown"] = String(this.#manager.client.params.isOfficialMarkdownEnabled ?? true); // temporary header
 
                     if (typeof options.auth === "string"){
                         const tokenArgs = options.auth.split(" ");
