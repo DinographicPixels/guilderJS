@@ -326,7 +326,7 @@ export class Guilds {
     async setMemberXP(guildID: string, memberID: string, amount: PUTGuildMemberXPBody["total"]): Promise<number>{
         if (typeof amount !== "number") throw new TypeError("amount must be an integer/number.");
         return this.#manager.authRequest<PUTGuildMemberXPResponse>({
-            method: "POST",
+            method: "PUT",
             path:   endpoints.GUILD_MEMBER_XP(guildID, memberID),
             json:   { total: amount }
         }).then(data => Number(data.total));
