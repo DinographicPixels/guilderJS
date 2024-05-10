@@ -63,7 +63,7 @@
     "typescript": "^4.9.4"
   },
   "dependencies": {
-    "guildedapi-types.ts": "0.3.44",
+    "guildedapi-types.ts": "0.3.45",
     "undici": "^5.14.0",
     "ws": "^8.11.0"
   },
