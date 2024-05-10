@@ -104,3 +104,5 @@ export const GUILD_WEBHOOK = (guildID: string, webhookID: string)=> `/servers/${
 
 export const GUILD_CATEGORY_CREATE = (guildID: string) => `/servers/${guildID}/categories`;
 export const GUILD_CATEGORY = (guildID: string, categoryID: number) => `/servers/${guildID}/categories/${categoryID}`;
+
+export const URL_SIGNATURES = () => `/url-signatures`;

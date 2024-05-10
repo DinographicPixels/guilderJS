@@ -5,6 +5,7 @@ import { GETGuildMemberSocialsResponse, GETUserResponse, GETUserServersResponse,
 import { User } from "../structures/User";
 import { SocialLink } from "../structures/SocialLink";
 import { Guild } from "../structures/Guild";
+import { POSTURLSignatureBody, POSTURLSignatureResponse } from "guildedapi-types.ts/typings/REST/v1/URLSignature";
 
 /** Miscellaneous routes. */
 export class Miscellaneous {
@@ -74,6 +75,28 @@ export class Miscellaneous {
         return this.#manager.authRequest<void>({
             method: "DELETE",
             path:   endpoints.USER_STATUS(userID)
+        });
+    }
+
+    /**
+     * Create a URL Signature from a Guilded CDN URL. (RAW API RESPONSE)
+     *
+     * Due to restrictions imposed by the Guilded API CDN,
+     * you are required to sign the file's CDN URL in order to access its content,
+     * and have to store it (within 5 minutes as the signed URL will expire)
+     * appropriately as you can only create a new signed URL of the same file
+     * each day.
+     *
+     * More information about it on the Guilded API Documentation.
+     *
+     * Note that TouchGuild doesn't provide a built-in handler for CDN assets.
+     * @param options Signature options
+     */
+    async signURL(options: POSTURLSignatureBody): Promise<POSTURLSignatureResponse> {
+        return this.#manager.authRequest<POSTURLSignatureResponse>({
+            method: "POST",
+            path:   endpoints.URL_SIGNATURES(),
+            json:   options
         });
     }
 }
