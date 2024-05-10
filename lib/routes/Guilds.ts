@@ -768,4 +768,28 @@ export class Guilds {
             path:   endpoints.GUILD_CATEGORY_ROLE_PERMISSION(guildID, categoryID, targetID)
         });
     }
+
+    /** Award a member using the built-in EXP system.
+     * @param memberID ID of the member to award.
+     * @param amount Amount of experience to give.
+     */
+    async awardMember(memberID: string, amount: number): Promise<number>{
+        return this.client.rest.guilds.awardMember(this.id as string, memberID, amount);
+    }
+
+    /** Set member's experience using the built-in EXP system.
+     * @param memberID ID of the member to award.
+     * @param amount Amount of experience to set.
+     */
+    async setMemberXP(memberID: string, amount: number): Promise<number>{
+        return this.client.rest.guilds.setMemberXP(this.id as string, memberID, amount);
+    }
+
+    /** Award every members of a guild having a role using the built-in EXP system.
+     * @param roleID ID of a role.
+     * @param amount Amount of experience.
+     */
+    async awardRole(roleID: number, amount: number): Promise<void> {
+        return this.client.rest.guilds.awardRole(this.id as string, roleID, amount);
+    }
 }
