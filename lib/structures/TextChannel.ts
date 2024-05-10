@@ -3,16 +3,14 @@ import { Client } from "./Client";
 
 import { Message } from "./Message";
 import { GuildChannel } from "./GuildChannel";
-import { ChannelUserPermission } from "./ChannelUserPermission";
-import { ChannelRolePermission } from "./ChannelRolePermission";
+import { Permission } from "./Permission";
 import { AnyTextableChannel, EditMessageOptions } from "../types/channel";
 import type {
     APIChatMessage,
     APIGuildChannel,
     APIMessageOptions,
     PATCHChannelRolePermissionBody,
-    POSTChannelRolePermissionBody,
-    POSTChannelUserPermissionBody
+    POSTChannelRolePermissionBody
 } from "../Constants";
 import TypedCollection from "../util/TypedCollection";
 import { JSONTextChannel } from "../types/json";
@@ -53,75 +51,34 @@ export class TextChannel extends GuildChannel {
     }
 
     /** Create Channel Role Permissions
-     * @param roleID Role ID.
-     * @param options Channel Role Permissions options.
+     * @param targetID ID of the target object (role or user) to assign the permission to.
+     * @param options Create options.
+     *
+     * Warning: targetID must have the correct type (number=role, string=user).
      */
-    async createRolePermissions(roleID: number, options: POSTChannelRolePermissionBody): Promise<ChannelRolePermission> {
-        return this.client.rest.channels.createChannelRolePermission(this.guildID, this.id, roleID, options);
+    async createPermission(targetID: string | number, options: POSTChannelRolePermissionBody): Promise<Permission> {
+        return this.client.rest.channels.createPermission(this.guildID, this.id, targetID, options);
     }
 
-    /** Get Channel Role Permissions
-     * @param roleID Role ID.
+    /**
+     * Edit a channel permission.
+     * @param targetID ID of the target object (role or user) the permission is assigned to.
+     * @param options Edit options
+     *
+     * Warning: targetID must have the correct type (number=role, string=user).
      */
-    async getRolePermissions(roleID: number): Promise<ChannelRolePermission> {
-        return this.client.rest.channels.getChannelRolePermission(this.guildID, this.id, roleID);
+    async editPermission(targetID: string | number, options: PATCHChannelRolePermissionBody): Promise<Permission> {
+        return this.client.rest.channels.editPermission(this.guildID, this.id, targetID, options);
     }
 
-    /** Get Channel Role Permissions
+    /**
+     * Delete an existing permission set on this channel.
+     * @param targetID ID of the target object (role or user) the permission is assigned to.
+     *
+     * Warning: targetID must have the correct type (number=role, string=user).
      */
-    async getRolesPermissions(): Promise<Array<ChannelRolePermission>> {
-        return this.client.rest.channels.getChannelRolesPermission(this.guildID, this.id);
-    }
-
-    /** Create Channel Role Permissions
-     * @param roleID Role ID.
-     * @param options Channel Role Permissions options.
-     */
-    async editRolePermissions(roleID: number, options: PATCHChannelRolePermissionBody): Promise<ChannelRolePermission> {
-        return this.client.rest.channels.editChannelRolePermission(this.guildID, this.id, roleID, options);
-    }
-
-    /** Delete Channel Role Permissions
-     * @param roleID Role ID.
-     */
-    async deleteRolePermissions(roleID: number): Promise<void> {
-        return this.client.rest.channels.deleteChannelRolePermission(this.guildID, this.id, roleID);
-    }
-
-    /** Create Channel User Permissions
-     * @param userID Member ID.
-     * @param options Channel Role Permissions options.
-     */
-    async createUserPermissions(userID: string, options: POSTChannelUserPermissionBody): Promise<ChannelUserPermission> {
-        return this.client.rest.channels.createChannelUserPermission(this.guildID, this.id, userID, options);
-    }
-
-    /** Get Channel User Permissions
-     * @param userID user ID.
-     */
-    async getUserPermissions(userID: string): Promise<ChannelUserPermission> {
-        return this.client.rest.channels.getChannelUserPermission(this.guildID, this.id, userID);
-    }
-
-    /** Get Channel Users Permissions
-     */
-    async getUsersPermissions(): Promise<Array<ChannelUserPermission>> {
-        return this.client.rest.channels.getChannelUsersPermission(this.guildID, this.id);
-    }
-
-    /** Edit Channel User Permissions
-     * @param userID user ID.
-     * @param options Channel Role Permissions options.
-     */
-    async editUserPermissions(userID: string, options: PATCHChannelRolePermissionBody): Promise<ChannelUserPermission> {
-        return this.client.rest.channels.editChannelUserPermission(this.guildID, this.id, userID, options);
-    }
-
-    /** Delete Channel Role Permissions
-     * @param roleID Role ID.
-     */
-    async deleteUserPermissions(userID: string): Promise<void> {
-        return this.client.rest.channels.deleteChannelUserPermission(this.guildID, this.id, userID);
+    async deletePermission(targetID: string | number): Promise<void> {
+        return this.client.rest.channels.deletePermission(this.guildID, this.id, targetID);
     }
 
     override toJSON(): JSONTextChannel {

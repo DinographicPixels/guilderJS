@@ -75,19 +75,7 @@ import {
     POSTChannelUserPermissionResponse,
     GETChannelUserPermissionResponse,
     GETChannelUserManyPermissionResponse,
-    PATCHChannelUserPermissionResponse,
-    POSTChannelCategoryRolePermissionBody,
-    POSTChannelCategoryRolePermissionResponse,
-    GETChannelCategoryRolePermissionResponse,
-    GETChannelCategoryRoleManyPermissionResponse,
-    PATCHChannelCategoryRolePermissionBody,
-    PATCHChannelCategoryRolePermissionResponse,
-    POSTChannelCategoryUserPermissionBody,
-    POSTChannelCategoryUserPermissionResponse,
-    GETChannelCategoryUserPermissionResponse,
-    GETChannelCategoryUserManyPermissionResponse,
-    PATCHChannelCategoryUserPermissionBody,
-    PATCHChannelCategoryUserPermissionResponse
+    PATCHChannelUserPermissionResponse
 } from "../Constants";
 import {
     AnyChannel,
@@ -116,10 +104,7 @@ import { CreateDocCommentOptions, EditDocCommentOptions } from "../types/docComm
 import { DocComment } from "../structures/DocComment";
 import { Announcement } from "../structures/Announcement";
 import { AnnouncementComment } from "../structures/AnnouncementComment";
-import { ChannelUserPermission } from "../structures/ChannelUserPermission";
-import { ChannelRolePermission } from "../structures/ChannelRolePermission";
-import { ChannelCategoryRolePermission } from "../structures/ChannelCategoryRolePermission";
-import { ChannelCategoryUserPermission } from "../structures/ChannelCategoryUserPermission";
+import { Permission } from "../structures/Permission";
 
 export class Channels {
     #manager: RESTManager;
@@ -1143,267 +1128,115 @@ export class Channels {
     }
 
     /**
-     * Create a channel role permission.
-     * @param serverID ID of the server where the channel is in
+     * Add a new user permission to a channel.
+     * @param guildID ID of the guild the channel is in
      * @param channelID ID of the channel
-     * @param roleID ID of the role to create the permission for
-     * @param options Permission options
+     * @param targetID ID of the user or role to assign the permission to
+     * @param options Create options
+     *
+     * Warning: targetID must have the correct type (number=role, string=user).
      */
-    async createChannelRolePermission(serverID: string, channelID: string, roleID: number, options: POSTChannelRolePermissionBody): Promise<ChannelRolePermission> {
-        if (typeof options !== "object") throw new Error("doc options should be an object.");
-        return this.#manager.authRequest<POSTChannelRolePermissionResponse>({
+    async createPermission(guildID: string, channelID: string, targetID: string | number, options: POSTChannelUserPermissionBody | POSTChannelRolePermissionBody): Promise<Permission> {
+        return typeof targetID === "string" ? this.#manager.authRequest<POSTChannelUserPermissionResponse>({
             method: "POST",
-            path:   endpoints.CHANNEL_ROLE_PERMISSION(serverID, channelID, roleID),
+            path:   endpoints.GUILD_CHANNEL_USER_PERMISSION(guildID, channelID, targetID),
             json:   options
-        }).then(data => new ChannelRolePermission(data.channelRolePermission, this.#manager.client));
+        }).then(data => new Permission(data.channelUserPermission)) : this.#manager.authRequest<POSTChannelRolePermissionResponse>({
+            method: "POST",
+            path:   endpoints.GUILD_CHANNEL_ROLE_PERMISSION(guildID, channelID, targetID),
+            json:   options
+        }).then(data => new Permission(data.channelRolePermission));
     }
 
     /**
-     * Get channel role permission.
-     * @param serverID ID of the server where the channel is in
+     * Update a channel permission.
+     * @param guildID ID of the guild the channel is in
      * @param channelID ID of the channel
-     * @param roleID ID of the role to get the permission for
+     * @param targetID ID of the target user (string) or role (number)
+     * @param options Edit options
+     *
+     * Warning: targetID must have the correct type (number=role, string=user).
      */
-    async getChannelRolePermission(serverID: string, channelID: string, roleID: number): Promise<ChannelRolePermission> {
-        return this.#manager.authRequest<GETChannelRolePermissionResponse>({
-            method: "GET",
-            path:   endpoints.CHANNEL_ROLE_PERMISSION(serverID, channelID, roleID)
-        }).then(data => new ChannelRolePermission(data.channelRolePermission, this.#manager.client));
-    }
-
-    /**
-     * Get channel role permission.
-     * @param serverID ID of the server where the channel is in
-     * @param channelID ID of the channel
-     */
-    async getChannelRolesPermission(serverID: string, channelID: string): Promise<Array<ChannelRolePermission>> {
-        return this.#manager.authRequest<GETChannelRoleManyPermissionResponse>({
-            method: "GET",
-            path:   endpoints.CHANNEL_ROLE_MANY_PERMISSION(serverID, channelID)
-        }).then(data => data.channelRolePermissions.map(d => new ChannelRolePermission(d, this.#manager.client)));
-    }
-
-    /**
-     * Update a channel role permission.
-     * @param serverID ID of the server where the channel is in
-     * @param channelID ID of the channel
-     */
-    async editChannelRolePermission(serverID: string, channelID: string, roleID: number, options: PATCHChannelRolePermissionBody): Promise<ChannelRolePermission> {
-        return this.#manager.authRequest<PATCHChannelRolePermissionResponse>({
+    async editPermission(guildID: string, channelID: string, targetID: string | number, options: PATCHChannelRolePermissionBody): Promise<Permission> {
+        return typeof targetID === "string" ? this.#manager.authRequest<PATCHChannelUserPermissionResponse>({
             method: "PATCH",
-            path:   endpoints.CHANNEL_ROLE_PERMISSION(serverID, channelID, roleID),
+            path:   endpoints.GUILD_CHANNEL_USER_PERMISSION(guildID, channelID, targetID),
             json:   options
-        }).then(data => new ChannelRolePermission(data.channelRolePermission, this.#manager.client));
+        }).then(data => new Permission(data.channelUserPermission)) : this.#manager.authRequest<PATCHChannelRolePermissionResponse>({
+            method: "PATCH",
+            path:   endpoints.GUILD_CHANNEL_ROLE_PERMISSION(guildID, channelID, targetID),
+            json:   options
+        }).then(data => new Permission(data.channelRolePermission));
     }
 
     /**
-     * Delete a channel role permission.
-     * @param serverID ID of the server where the channel is in
+     * Delete a channel permission.
+     * @param guildID ID of the guild where the channel is in
      * @param channelID ID of the channel
+     * @param targetID ID of the target user (string) or role (number)
+     *
+     * Warning: targetID must have the correct type (number=role, string=user).
      */
-    async deleteChannelRolePermission(serverID: string, channelID: string, roleID: number): Promise<void> {
-        return this.#manager.authRequest<void>({
+    async deletePermission(guildID: string, channelID: string, targetID: string | number): Promise<void> {
+        return typeof targetID === "string" ? this.#manager.authRequest<void>({
             method: "DELETE",
-            path:   endpoints.CHANNEL_ROLE_PERMISSION(serverID, channelID, roleID)
+            path:   endpoints.GUILD_CHANNEL_USER_PERMISSION(guildID, channelID, targetID)
+        }) : this.#manager.authRequest<void>({
+            method: "DELETE",
+            path:   endpoints.GUILD_CHANNEL_ROLE_PERMISSION(guildID, channelID, targetID)
         });
     }
 
     /**
-     * Create a channel role permission.
-     * @param serverID ID of the server where the channel is in
+     * Get the permissions of a user or role for a specified channel.
+     * @param guildID ID of the guild the channel is in
      * @param channelID ID of the channel
-     * @param userID ID of the user to create the permission for
-     * @param options Permission options
+     * @param targetID ID of the user or role to get the permission
+     *
+     * Warning: targetID must have the correct type (number=role, string=user).
      */
-    async createChannelUserPermission(serverID: string, channelID: string, userID: string, options: POSTChannelUserPermissionBody): Promise<ChannelUserPermission> {
-        if (typeof options !== "object") throw new Error("doc options should be an object.");
-        return this.#manager.authRequest<POSTChannelUserPermissionResponse>({
-            method: "POST",
-            path:   endpoints.CHANNEL_USER_PERMISSION(serverID, channelID, userID),
-            json:   options
-        }).then(data => new ChannelUserPermission(data.channelUserPermission, this.#manager.client));
-    }
-
-    /**
-     * Get channel role permission.
-     * @param serverID ID of the server where the channel is in
-     * @param channelID ID of the channel
-     * @param userID ID of the user to get the permission
-     */
-    async getChannelUserPermission(serverID: string, channelID: string, userID: string): Promise<ChannelUserPermission> {
-        return this.#manager.authRequest<GETChannelUserPermissionResponse>({
+    async getPermission(guildID: string, channelID: string, targetID: string | number): Promise<Permission> {
+        return typeof targetID === "string" ? this.#manager.authRequest<GETChannelUserPermissionResponse>({
             method: "GET",
-            path:   endpoints.CHANNEL_USER_PERMISSION(serverID, channelID, userID)
-        }).then(data => new ChannelUserPermission(data.channelUserPermission, this.#manager.client));
+            path:   endpoints.GUILD_CHANNEL_USER_PERMISSION(guildID, channelID, targetID)
+        }).then(data => new Permission(data.channelUserPermission)) :
+            this.#manager.authRequest<GETChannelRolePermissionResponse>({
+                method: "GET",
+                path:   endpoints.GUILD_CHANNEL_ROLE_PERMISSION(guildID, channelID, targetID)
+            }).then(data => new Permission(data.channelRolePermission));
+    }
+
+    async getPermissions(guildID: string, channelID: string): Promise<Array<Permission>> {
+        const userPromise = this.getUserPermissions(guildID, channelID);
+        const rolePromise = this.getRolePermissions(guildID, channelID);
+        return Promise.all([userPromise, rolePromise])
+            .then(([userPermissions, rolePermissions]) => userPermissions.concat(rolePermissions))
+            .catch(err => {
+                throw err;
+            });
     }
 
     /**
-     * Get channel role permission.
-     * @param serverID ID of the server where the channel is in
+     * Get the permissions of every users in the guild for a specified channel.
+     * @param guildID ID of the guild where the channel is in
      * @param channelID ID of the channel
-     * @param userID ID of the user to get the permission
      */
-    async getChannelUsersPermission(serverID: string, channelID: string): Promise<Array<ChannelUserPermission>> {
+    async getUserPermissions(guildID: string, channelID: string): Promise<Array<Permission>> {
         return this.#manager.authRequest<GETChannelUserManyPermissionResponse>({
             method: "GET",
-            path:   endpoints.CHANNEL_USER_MANY_PERMISSION(serverID, channelID)
-        }).then(data => data.channelUserPermissions.map(d => new ChannelUserPermission(d, this.#manager.client)));
+            path:   endpoints.GUILD_CHANNEL_USER_PERMISSIONS(guildID, channelID)
+        }).then(data => data.channelUserPermissions.map(d => new Permission(d)));
     }
 
     /**
-     * Update a channel user permission.
-     * @param userID ID of the user
+     * Get existing channel permissions for a specified role.
+     * @param guildID ID of the guild where the channel is in
      * @param channelID ID of the channel
      */
-    async editChannelUserPermission(serverID: string, channelID: string, userID: string, options: PATCHChannelRolePermissionBody): Promise<ChannelUserPermission> {
-        return this.#manager.authRequest<PATCHChannelUserPermissionResponse>({
-            method: "PATCH",
-            path:   endpoints.CHANNEL_USER_PERMISSION(serverID, channelID, userID),
-            json:   options
-        }).then(data => new ChannelUserPermission(data.channelUserPermission, this.#manager.client));
-    }
-
-    /**
-     * Delete a channel role permission.
-     * @param serverID ID of the server where the channel is in
-     * @param channelID ID of the channel
-     */
-    async deleteChannelUserPermission(serverID: string, channelID: string, userID: string): Promise<void> {
-        return this.#manager.authRequest<void>({
-            method: "DELETE",
-            path:   endpoints.CHANNEL_USER_PERMISSION(serverID, channelID, userID)
-        });
-    }
-
-    /**
-     * Create a channel category role permission.
-     * @param serverID ID of the server where the channel is in
-     * @param channelID ID of the channel
-     * @param roleID ID of the role to create the permission for
-     * @param options Permission options
-     */
-    async createChannelCategoryRolePermission(serverID: string, categoryID: number, roleID: number, options: POSTChannelCategoryRolePermissionBody): Promise<ChannelCategoryRolePermission> {
-        if (typeof options !== "object") throw new Error("doc options should be an object.");
-        return this.#manager.authRequest<POSTChannelCategoryRolePermissionResponse>({
-            method: "POST",
-            path:   endpoints.CHANNEL_CATEGORY_ROLE_PERMISSION(serverID, categoryID, roleID),
-            json:   options
-        }).then(data => new ChannelCategoryRolePermission(data.channelCategoryRolePermission, this.#manager.client));
-    }
-
-    /**
-     * Get category role permission.
-     * @param serverID ID of the server where the channel is in
-     * @param categoryID ID of the channel
-     * @param roleID ID of the role to get the permission for
-     */
-    async getChannelCategoryRolePermission(serverID: string, categoryID: number, roleID: number): Promise<ChannelCategoryRolePermission> {
-        return this.#manager.authRequest<GETChannelCategoryRolePermissionResponse>({
+    async getRolePermissions(guildID: string, channelID: string): Promise<Array<Permission>> {
+        return this.#manager.authRequest<GETChannelRoleManyPermissionResponse>({
             method: "GET",
-            path:   endpoints.CHANNEL_CATEGORY_ROLE_PERMISSION(serverID, categoryID, roleID)
-        }).then(data => new ChannelCategoryRolePermission(data.channelCategoryRolePermission, this.#manager.client));
-    }
-
-    /**
-     * Get category roles permission.
-     * @param serverID ID of the server where the channel is in
-     * @param categoryID ID of the channel
-     */
-    async getChannelCategoryRolesPermission(serverID: string, categoryID: number): Promise<Array<ChannelCategoryRolePermission>> {
-        return this.#manager.authRequest<GETChannelCategoryRoleManyPermissionResponse>({
-            method: "GET",
-            path:   endpoints.CHANNEL_CATEGORY_ROLE_MANY_PERMISSION(serverID, categoryID)
-        }).then(data => data.channelCategoryRolePermissions.map(d => new ChannelCategoryRolePermission(d, this.#manager.client)));
-    }
-
-    /**
-     * Update a category role permission.
-     * @param userID ID of the user
-     * @param categoryID ID of the category
-     */
-    async editChannelCategoryRolePermission(serverID: string, categoryID: number, roleID: number, options: PATCHChannelCategoryRolePermissionBody): Promise<ChannelCategoryRolePermission> {
-        return this.#manager.authRequest<PATCHChannelCategoryRolePermissionResponse>({
-            method: "PATCH",
-            path:   endpoints.CHANNEL_CATEGORY_ROLE_PERMISSION(serverID, categoryID, roleID),
-            json:   options
-        }).then(data => new ChannelCategoryRolePermission(data.channelCategoryRolePermission, this.#manager.client));
-    }
-
-    /**
-     * Delete a channel role permission.
-     * @param serverID ID of the server where the channel is in
-     * @param categoryID ID of the category
-     */
-    async deleteChannelCategoryRolePermission(serverID: string, categoryID: number, roleID: number): Promise<void> {
-        return this.#manager.authRequest<void>({
-            method: "DELETE",
-            path:   endpoints.CHANNEL_CATEGORY_ROLE_PERMISSION(serverID, categoryID, roleID)
-        });
-    }
-
-    /**
-     * Create a channel category user permission.
-     * @param serverID ID of the server where the channel is in
-     * @param channelID ID of the channel
-     * @param userID ID of the user to create the permission for
-     * @param options Permission options
-     */
-    async createChannelCategoryUserPermission(serverID: string, categoryID: number, userID: string, options: POSTChannelCategoryUserPermissionBody): Promise<ChannelCategoryUserPermission> {
-        if (typeof options !== "object") throw new Error("doc options should be an object.");
-        return this.#manager.authRequest<POSTChannelCategoryUserPermissionResponse>({
-            method: "POST",
-            path:   endpoints.CHANNEL_CATEGORY_USER_PERMISSION(serverID, categoryID, userID),
-            json:   options
-        }).then(data => new ChannelCategoryUserPermission(data.channelCategoryUserPermission, this.#manager.client));
-    }
-
-    /**
-     * Get category user permission.
-     * @param serverID ID of the server where the channel is in
-     * @param categoryID ID of the channel
-     * @param roleID ID of the role to get the permission for
-     */
-    async getChannelCategoryUserPermission(serverID: string, categoryID: number, userID: string): Promise<ChannelCategoryUserPermission> {
-        return this.#manager.authRequest<GETChannelCategoryUserPermissionResponse>({
-            method: "GET",
-            path:   endpoints.CHANNEL_CATEGORY_USER_PERMISSION(serverID, categoryID, userID)
-        }).then(data => new ChannelCategoryUserPermission(data.channelCategoryUserPermission, this.#manager.client));
-    }
-
-    /**
-     * Get category users permission.
-     * @param serverID ID of the server where the channel is in
-     * @param categoryID ID of the channel
-     */
-    async getChannelCategoryUsersPermission(serverID: string, categoryID: number): Promise<Array<ChannelCategoryUserPermission>> {
-        return this.#manager.authRequest<GETChannelCategoryUserManyPermissionResponse>({
-            method: "GET",
-            path:   endpoints.CHANNEL_CATEGORY_USER_MANY_PERMISSION(serverID, categoryID)
-        }).then(data => data.channelCategoryUserPermissions.map(d => new ChannelCategoryUserPermission(d, this.#manager.client)));
-    }
-
-    /**
-     * Update a category user permission.
-     * @param userID ID of the user
-     * @param categoryID ID of the category
-     */
-    async editChannelCategoryUserPermission(serverID: string, categoryID: number, userID: string, options: PATCHChannelCategoryUserPermissionBody): Promise<ChannelCategoryUserPermission> {
-        return this.#manager.authRequest<PATCHChannelCategoryUserPermissionResponse>({
-            method: "PATCH",
-            path:   endpoints.CHANNEL_CATEGORY_USER_PERMISSION(serverID, categoryID, userID),
-            json:   options
-        }).then(data => new ChannelCategoryUserPermission(data.channelCategoryUserPermission, this.#manager.client));
-    }
-
-    /**
-     * Delete a channel role permission.
-     * @param serverID ID of the server where the channel is in
-     * @param categoryID ID of the category
-     */
-    async deleteChannelCategoryUserPermission(serverID: string, categoryID: number, userID: string): Promise<void> {
-        return this.#manager.authRequest<void>({
-            method: "DELETE",
-            path:   endpoints.CHANNEL_CATEGORY_USER_PERMISSION(serverID, categoryID, userID)
-        });
+            path:   endpoints.GUILD_CHANNEL_ROLE_PERMISSIONS(guildID, channelID)
+        }).then(data => data.channelRolePermissions.map(d => new Permission(d)));
     }
 }

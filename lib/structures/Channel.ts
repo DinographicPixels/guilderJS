@@ -30,7 +30,7 @@ export class Channel extends Base<string> {
 
     static from<T extends AnyChannel = AnyChannel>(data: APIGuildChannel, client: Client): T {
         switch (data.type) {
-            case "announcement": {
+            case "announcements": {
                 return new AnnouncementChannel(data, client) as T;
             }
             case "calendar": {

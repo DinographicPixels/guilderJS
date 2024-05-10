@@ -196,7 +196,7 @@ export class Guild extends Base<string> {
         return this.client.rest.guilds.bulkAwardXP(this.id as string, options);
     }
 
-    /** Bulk SEt XP Members
+    /** Bulk set XP Members
      * @param options Members to set XP and amount of XP to set.
      */
     async bulkSetXPMembers(options: POSTBulkAwardXPBody): Promise<POSTBulkAwardXPResponse> {
@@ -204,7 +204,7 @@ export class Guild extends Base<string> {
     }
 
     /**
-     * Create a guild category
+     * Create a category
      * @param guildID ID of the guild.
      * @param options Create options.
      */
@@ -217,20 +217,20 @@ export class Guild extends Base<string> {
      * @param categoryID ID of the category you want to read.
      */
     async getCategory(categoryID: number): Promise<GuildCategory> {
-        return this.client.rest.guilds.readCategory(this.id as string, categoryID);
+        return this.client.rest.guilds.getCategory(this.id as string, categoryID);
     }
     /**
-     * Update a guild category.
+     * Edit a category.
      * @param guildID ID of the guild to create a category in.
      * @param categoryID ID of the category you want to read.
      * @param options Options to update a category.
      */
-    async updateCategory(categoryID: number, options: PATCHUpdateCategoryBody): Promise<GuildCategory> {
-        return this.client.rest.guilds.updateCategory(this.id as string, categoryID, options);
+    async editCategory(categoryID: number, options: PATCHUpdateCategoryBody): Promise<GuildCategory> {
+        return this.client.rest.guilds.editCategory(this.id as string, categoryID, options);
     }
 
     /**
-     * Delete a guild category.
+     * Delete a category.
      * @param guildID ID of the guild to create a category in.
      * @param categoryID ID of the category you want to read.
      */

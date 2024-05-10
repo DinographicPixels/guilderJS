@@ -3,7 +3,7 @@
 import { Base } from "./Base";
 import { Client } from "./Client";
 import { JSONGuildRole } from "../types/json";
-import { APIGuildRole, PATCHGuildRoleBody, Permissions } from "guildedapi-types.ts/v1";
+import { APIGuildRole, PATCHGuildRoleUpdateBody, Permissions } from "guildedapi-types.ts/v1";
 
 /** Class representing a guild role. */
 export class GuildRole extends Base<number> {
@@ -45,7 +45,7 @@ export class GuildRole extends Base<number> {
         this.permissions = data.permissions;
         this.colors = data.colors ?? null;
         this.iconURL = data.icon ?? null;
-        this.position = data.position;
+        this.position = data.priority;
         this.isBase = data.isBase ?? false;
         this.botUserID = data.botUserId ?? null;
         this.update(data);
@@ -101,8 +101,8 @@ export class GuildRole extends Base<number> {
         if (data.icon !== undefined) {
             this.iconURL = data.icon;
         }
-        if (data.position !== undefined) {
-            this.position = data.position;
+        if (data.priority !== undefined) {
+            this.position = data.priority;
         }
         if (data.isBase !== undefined) {
             this.isBase = data.isBase;
@@ -110,7 +110,7 @@ export class GuildRole extends Base<number> {
     }
 
     /** Edit the role permission */
-    async editPermission(options: PATCHGuildRoleBody): Promise<GuildRole>{
-        return this.client.rest.guilds.updateRolePermission(this.guildID as string, this.id as number, options);
+    async editPermission(options: PATCHGuildRoleUpdateBody): Promise<GuildRole>{
+        return this.client.rest.guilds.editRolePermission(this.guildID as string, this.id as number, options);
     }
 }

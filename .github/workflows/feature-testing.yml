@@ -6,15 +6,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
+      with:
+          node-version: '20.x'
     - name: Installing dependencies.
       run: npm i
     - name: Installing TS-Node
       run: npm install -g ts-node
-    - name: Simple bot
-      run: ts-node ./scripts/tests/simpleBot.ts
+    - name: Channel Features
+      run: ts-node ./scripts/tests/channel.ts
       env: 
         TOKEN: ${{ secrets.TEST_BOT_TOKEN }}
-    - name: Message test
+    - name: Message Features
       run: ts-node ./scripts/tests/message.ts
       env:
         TOKEN: ${{ secrets.TEST_BOT_TOKEN }}

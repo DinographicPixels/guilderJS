@@ -141,7 +141,7 @@ export interface ClientEvents {
     /** @event Emitted when guild member got unbanned. */
     guildBanRemove: [BannedMember: BannedMember];
     /** @event Emitted when a member joined the server. */
-    guildMemberAdd: [Member: Member];
+    guildMemberAdd: [Member: Member, guildMemberCount: number];
     /** @event Emitted when a member left the server. */
     guildMemberRemove: [MemberRemoveInfo: MemberRemoveInfo];
     /** @event Emitted when a member updated their guild profile.

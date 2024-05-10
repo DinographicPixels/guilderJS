@@ -50,7 +50,18 @@ import {
     GETReadCategoryResponse,
     PATCHUpdateCategoryBody,
     PATCHUpdateCategoryResponse,
-    DELETEDeleteCategoryResponse
+    DELETEDeleteCategoryResponse,
+    PATCHGuildRoleUpdateBody,
+    POSTChannelCategoryUserPermissionBody,
+    GETChannelCategoryUserPermissionResponse,
+    POSTChannelCategoryUserPermissionResponse,
+    GETChannelCategoryUserManyPermissionResponse,
+    PATCHChannelCategoryUserPermissionBody,
+    PATCHChannelCategoryUserPermissionResponse,
+    POSTChannelCategoryRolePermissionResponse,
+    GETChannelCategoryRolePermissionResponse,
+    PATCHChannelCategoryRolePermissionResponse,
+    GETChannelCategoryRoleManyPermissionResponse
 } from "../Constants";
 import { AnyChannel, CreateChannelOptions, EditChannelOptions } from "../types/channel";
 import { EditWebhookOptions } from "../types/webhooks";
@@ -60,6 +71,7 @@ import { GuildRole } from "../structures/GuildRole";
 import { GuildGroup } from "../structures/GuildGroup";
 import { GuildSubscription } from "../structures/GuildSubscription";
 import { GuildCategory } from "../structures/GuildCategory";
+import { Permission } from "../structures/Permission";
 
 export class Guilds {
     #manager: RESTManager;
@@ -549,12 +561,12 @@ export class Guilds {
     }
 
     /**
-     * Edit Role Permission.
+     * Edit role permission.
      * @param guildID ID of the guild.
      * @param roleID ID of the role.
-     * @param options Permissions to edit.
+     * @param options Permission to edit.
      */
-    async updateRolePermission(guildID: string, roleID: number, options: PATCHGuildRoleBody): Promise<GuildRole> {
+    async editRolePermission(guildID: string, roleID: number, options: PATCHGuildRoleUpdateBody): Promise<GuildRole> {
         return this.#manager.authRequest<PATCHGuildRoleUpdateResponse>({
             method: "PATCH",
             path:   endpoints.GUILD_ROLE_UPDATE_PERMISSION(guildID, roleID),
@@ -576,7 +588,7 @@ export class Guilds {
     }
 
     /**
-     * Bulk Set XP Members
+     * Bulk set XP Members
      * @param guildID ID of the guild
      * @param options Members to set XP
      */
@@ -600,12 +612,13 @@ export class Guilds {
             json:   options
         }).then(data => this.#manager.client.util.updateGuildCategory(data.category));
     }
+
     /**
      * Read a guild category.
      * @param guildID ID of the guild to create a category in.
      * @param categoryID ID of the category you want to read.
      */
-    async readCategory(guildID: string, categoryID: number): Promise<GuildCategory> {
+    async getCategory(guildID: string, categoryID: number): Promise<GuildCategory> {
         return this.#manager.authRequest<GETReadCategoryResponse>({
             method: "GET",
             path:   endpoints.GUILD_CATEGORY(guildID, categoryID)
@@ -613,12 +626,12 @@ export class Guilds {
     }
 
     /**
-     * Update a guild category.
+     * Edit a guild category.
      * @param guildID ID of the guild to create a category in.
      * @param categoryID ID of the category you want to read.
      * @param options Options to update a category.
      */
-    async updateCategory(guildID: string, categoryID: number, options: PATCHUpdateCategoryBody): Promise<GuildCategory> {
+    async editCategory(guildID: string, categoryID: number, options: PATCHUpdateCategoryBody): Promise<GuildCategory> {
         return this.#manager.authRequest<PATCHUpdateCategoryResponse>({
             method: "PATCH",
             path:   endpoints.GUILD_CATEGORY(guildID, categoryID),
@@ -636,5 +649,123 @@ export class Guilds {
             method: "DELETE",
             path:   endpoints.GUILD_CATEGORY(guildID, categoryID)
         }).then(data => this.#manager.client.util.updateGuildCategory(data.category));
+    }
+
+    /**
+     * Create a channel category permission assigned to a user or role.
+     * @param guildID ID of the guild where the channel is in
+     * @param categoryID ID of the category
+     * @param targetID ID of the user (string) or role (number) to assign the permission to
+     * @param options Permission options
+     *
+     * Warning: targetID must have the correct type (number=role, string=user).
+     */
+    async createCategoryPermission(guildID: string, categoryID: number, targetID: string | number, options: POSTChannelCategoryUserPermissionBody): Promise<Permission> {
+        return typeof targetID === "string" ? this.#manager.authRequest<POSTChannelCategoryUserPermissionResponse>({
+            method: "POST",
+            path:   endpoints.GUILD_CATEGORY_USER_PERMISSION(guildID, categoryID, targetID),
+            json:   options
+        }).then(data => new Permission(data.channelCategoryUserPermission)) :
+            this.#manager.authRequest<POSTChannelCategoryRolePermissionResponse>({
+                method: "POST",
+                path:   endpoints.GUILD_CATEGORY_ROLE_PERMISSION(guildID, categoryID, targetID),
+                json:   options
+            }).then(data => new Permission(data.channelCategoryRolePermission));
+    }
+
+    /**
+     * Update a category permission.
+     * @param guildID ID of the server the category is in
+     * @param categoryID ID of the category
+     * @param targetID ID of the user (string) or role (number) to assign the permission to.
+     * @param options Edit options
+     *
+     * Warning: targetID must have the correct type (number=role, string=user).
+     */
+    async editCategoryPermission(guildID: string, categoryID: number, targetID: string | number, options: PATCHChannelCategoryUserPermissionBody): Promise<Permission> {
+        return typeof targetID === "string" ? this.#manager.authRequest<PATCHChannelCategoryUserPermissionResponse>({
+            method: "PATCH",
+            path:   endpoints.GUILD_CATEGORY_USER_PERMISSION(guildID, categoryID, targetID),
+            json:   options
+        }).then(data => new Permission(data.channelCategoryUserPermission)) :
+            this.#manager.authRequest<PATCHChannelCategoryRolePermissionResponse>({
+                method: "PATCH",
+                path:   endpoints.GUILD_CATEGORY_ROLE_PERMISSION(guildID, categoryID, targetID),
+                json:   options
+            }).then(data => new Permission(data.channelCategoryRolePermission));
+    }
+
+    /**
+     * Get permission coming from a category.
+     * @param guildID ID of the guild where the channel is in
+     * @param categoryID ID of the category the permission is in
+     * @param targetID ID of the user (string) or role (number) to get the permission for
+     *
+     * Warning: targetID must have the correct type (number=role, string=user).
+     */
+    async getCategoryPermission(guildID: string, categoryID: number, targetID: string | number): Promise<Permission> {
+        return typeof targetID === "string" ? this.#manager.authRequest<GETChannelCategoryUserPermissionResponse>({
+            method: "GET",
+            path:   endpoints.GUILD_CATEGORY_USER_PERMISSION(guildID, categoryID, targetID)
+        }).then(data => new Permission(data.channelCategoryUserPermission)) :
+            this.#manager.authRequest<GETChannelCategoryRolePermissionResponse>({
+                method: "GET",
+                path:   endpoints.GUILD_CATEGORY_ROLE_PERMISSION(guildID, categoryID, targetID)
+            }).then(data => new Permission(data.channelCategoryRolePermission));
+    }
+
+    /**
+     * Get permissions of a category.
+     * @param guildID ID of the server the category is in.
+     * @param categoryID ID of the category the permissions are in
+     */
+    async getCategoryPermissions(guildID: string, categoryID: number): Promise<Array<Permission>> {
+        const userPromise = this.getCategoryUserPermissions(guildID, categoryID);
+        const rolePromise = this.getCategoryRolePermissions(guildID, categoryID);
+        return Promise.all([userPromise, rolePromise])
+            .then(([userPermissions, rolePermissions]) => userPermissions.concat(rolePermissions))
+            .catch(err => {
+                throw err;
+            });
+    }
+
+    /**
+     * Get user permissions from a specified category.
+     * @param guildID ID of the guild where the channel is in
+     * @param categoryID ID of the category the permissions are in
+     */
+    async getCategoryUserPermissions(guildID: string, categoryID: number): Promise<Array<Permission>> {
+        return this.#manager.authRequest<GETChannelCategoryUserManyPermissionResponse>({
+            method: "GET",
+            path:   endpoints.GUILD_CATEGORY_USER_PERMISSIONS(guildID, categoryID)
+        }).then(data => data.channelCategoryUserPermissions.map(d => new Permission(d)));
+    }
+
+    /**
+     * Get role permissions from a specified category.
+     * @param guildID ID of the guild where the channel is in
+     * @param categoryID ID of the category the permissions are in
+     */
+    async getCategoryRolePermissions(guildID: string, categoryID: number): Promise<Array<Permission>> {
+        return this.#manager.authRequest<GETChannelCategoryRoleManyPermissionResponse>({
+            method: "GET",
+            path:   endpoints.GUILD_CATEGORY_ROLE_PERMISSIONS(guildID, categoryID)
+        }).then(data => data.channelCategoryRolePermissions.map(d => new Permission(d)));
+    }
+
+    /**
+     * Delete a category permission.
+     * @param guildID ID of the guild where the channel is in
+     * @param categoryID ID of the category
+     * @param targetID ID of the user or role to delete the permission from
+     */
+    async deleteCategoryPermission(guildID: string, categoryID: number, targetID: string | number): Promise<void> {
+        return typeof targetID === "string" ? this.#manager.authRequest<void>({
+            method: "DELETE",
+            path:   endpoints.GUILD_CATEGORY_USER_PERMISSION(guildID, categoryID, targetID)
+        }) : this.#manager.authRequest<void>({
+            method: "DELETE",
+            path:   endpoints.GUILD_CATEGORY_ROLE_PERMISSION(guildID, categoryID, targetID)
+        });
     }
 }

@@ -43,7 +43,7 @@ export class GuildHandler extends GatewayEventHandler {
 
     guildMemberAdd(data: GatewayEvent_ServerMemberJoined): void{
         const MemberComponent = new Member(data.member, this.client, data.serverId);
-        this.client.emit("guildMemberAdd", MemberComponent);
+        this.client.emit("guildMemberAdd", MemberComponent, data.serverMemberCount);
     }
 
     guildMemberRemove(data: GatewayEvent_ServerMemberRemoved): void{
