@@ -1,5 +1,5 @@
 <p align="center">
-<a href="https://touchguild.com/"><img width=80% src="https://github.com/DinographicPixels/TouchGuild/raw/dev/images/touchguild-banner-2023.png"></a>
+<a href="https://touchguild.com/"><img width=80% src="https://github.com/DinographicPixels/TouchGuild/raw/dev/images/touchguild-banner-2024.png"></a>
   <br>
   <a href="https://npmjs.com/package/touchguild"><img src="https://img.shields.io/npm/v/touchguild.svg?style=rounded&color=informational"></a>
    <a href="https://github.com/DinographicPixels/TouchGuild/stargazers"><img src="https://img.shields.io/github/stars/DinographicPixels/TouchGuild?color=yellow&style=rounded"></a>
