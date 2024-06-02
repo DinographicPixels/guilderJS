@@ -112,6 +112,7 @@ export class Client extends TypedEmitter<ClientEvents> {
     users: TypedCollection<string, APIUser, User>;
     /** Utils */
     util: Util;
+    /** Time at which the connection started in ms. */
     startTime: number;
     /** @param params Client's parameters, this includes bot's token & rest options. */
     constructor(params: ClientOptions) {
@@ -119,12 +120,13 @@ export class Client extends TypedEmitter<ClientEvents> {
         if (!params?.token) throw new Error("Cannot create client without token, no token is provided.");
         super();
         this.params = {
-            token:             params.token,
-            ForceDisableREST:  params.ForceDisableREST ?? false,
-            RESTOptions:       params.RESTOptions,
-            connectionMessage: params.connectionMessage ?? true,
-            waitForCaching:    params.waitForCaching ?? true,
-            collectionLimits:  {
+            token:                     params.token,
+            ForceDisableREST:          params.ForceDisableREST ?? false,
+            RESTOptions:               params.RESTOptions,
+            connectionMessage:         params.connectionMessage ?? true,
+            waitForCaching:            params.waitForCaching ?? true,
+            isOfficialMarkdownEnabled: params.isOfficialMarkdownEnabled ?? true,
+            collectionLimits:          {
                 messages:             params.collectionLimits?.messages             ?? 100,
                 threads:              params.collectionLimits?.threads              ?? 100,
                 threadComments:       params.collectionLimits?.threadComments       ?? 100,
