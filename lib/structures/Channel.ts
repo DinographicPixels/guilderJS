@@ -55,10 +55,10 @@ export class Channel extends Base<string> {
                 return new GuildChannel(data, client) as T;
             }
             case "stream": {
-                return new GuildChannel(data, client) as T;
+                return new TextChannel(data, client) as T;
             }
             case "voice": {
-                return new GuildChannel(data, client) as T;
+                return new TextChannel(data, client) as T;
             }
             default: {
                 return new Channel(data, client) as T;

@@ -15,7 +15,7 @@ import type {
 import TypedCollection from "../util/TypedCollection";
 import { JSONTextChannel } from "../types/json";
 
-/** Represents a guild channel. */
+/** Represents a guild channel where you can chat with others. */
 export class TextChannel extends GuildChannel {
     /** Cached messages. */
     messages: TypedCollection<string, APIChatMessage, Message<AnyTextableChannel>>;
@@ -37,6 +37,7 @@ export class TextChannel extends GuildChannel {
     }
 
     /** Edit a message from this channel.
+     * @param messageID ID of the message to edit.
      * @param options Message options.
      */
     async editMessage(messageID: string, options: EditMessageOptions): Promise<Message<TextChannel>>{
@@ -44,7 +45,7 @@ export class TextChannel extends GuildChannel {
     }
 
     /** Delete a message from this channel.
-     * @param options Message options.
+     * @param messageID ID of the message to delete.
      */
     async deleteMessage(messageID: string): Promise<void> {
         return this.client.rest.channels.deleteMessage(this.id, messageID);
