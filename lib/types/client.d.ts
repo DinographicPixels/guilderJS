@@ -29,6 +29,12 @@ export interface ClientOptions {
     connectionMessage?: boolean;
 
     /**
+     * This boolean is used to enable or disable the update warning you receive when your version of TouchGuild
+     * is no longer the latest anymore.
+     */
+    updateWarning?: boolean;
+
+    /**
      * If true, will wait for caching before emitting the event.
      *
      * This will increase the event emit latency, but ensure that you receive the cached items in time.

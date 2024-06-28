@@ -126,6 +126,7 @@ export class Client extends TypedEmitter<ClientEvents> {
             ForceDisableREST:          params.ForceDisableREST ?? false,
             RESTOptions:               params.RESTOptions,
             connectionMessage:         params.connectionMessage ?? true,
+            updateWarning:             params.updateWarning ?? true,
             waitForCaching:            params.waitForCaching ?? true,
             isOfficialMarkdownEnabled: params.isOfficialMarkdownEnabled ?? true,
             collectionLimits:          {
@@ -200,6 +201,7 @@ export class Client extends TypedEmitter<ClientEvents> {
             version: string;
         }
         if (config.branch.toLowerCase().includes("stable")) {
+            if (!this.params.updateWarning) return;
             const res = await fetch("https://registry.npmjs.org/touchguild/latest");
             const json = await res.json() as jsonRes;
 
@@ -213,6 +215,7 @@ export class Client extends TypedEmitter<ClientEvents> {
 
         if (config.branch.toLowerCase().includes("development")) {
             console.log("TouchGuild Development Build (v" + config.version + ")");
+            if (!this.params.updateWarning) return;
             const res = await fetch("https://registry.npmjs.org/touchguild");
             const json = await res.json() as { time: Record<string, string>; };
             if (Object.keys(json.time)[Object.keys(json.time).length - 1] !== config.version)
