@@ -93,6 +93,8 @@ import {
 import { EditMemberOptions } from "../types/guilds";
 import { Util } from "../util/Util";
 import { CreateDocCommentOptions, EditDocCommentOptions } from "../types/docComment";
+import { config } from "../../pkgconfig";
+import { fetch } from "undici";
 
 /** Represents the bot's client. */
 export class Client extends TypedEmitter<ClientEvents> {
@@ -159,6 +161,7 @@ export class Client extends TypedEmitter<ClientEvents> {
 
     /** Connect to Guilded. */
     connect(): void {
+        void this.checkForUpdate();
         this.ws.connect();
         this.ws.on("GATEWAY_WELCOME", data => {
             this.user = new UserClient(data, this);
@@ -190,6 +193,37 @@ export class Client extends TypedEmitter<ClientEvents> {
         this.ws.disconnect(false); // closing all connections.
         console.log("The connection has been terminated.");
         if (crashOnDisconnect) throw new Error("Connection closed.");
+    }
+
+    private async checkForUpdate(): Promise<void> {
+        interface jsonRes {
+            version: string;
+        }
+        if (config.branch.toLowerCase().includes("stable")) {
+            const res = await fetch("https://registry.npmjs.org/touchguild/latest");
+            const json = await res.json() as jsonRes;
+
+            if (config.version !== json.version)
+                console.log("█ TouchGuild WARN: " +
+                  "You are no longer running the latest version. " +
+                  "\n█ Update to the latest version to benefit from new, " +
+                  "improved features, bug fixes, security patches, and more.");
+            return;
+        }
+
+        if (config.branch.toLowerCase().includes("development")) {
+            console.log("TouchGuild Development Build (v" + config.version + ")");
+            const res = await fetch("https://registry.npmjs.org/touchguild");
+            const json = await res.json() as { time: Record<string, string>; };
+            if (Object.keys(json.time)[Object.keys(json.time).length - 1] !== config.version)
+                console.log("█ TouchGuild WARN: You are no longer running the latest development build.\n" +
+                  "█ It is highly recommended to update to the latest development build as they can include major bug fixes," +
+                  " brand new and improved features, and more.\n" +
+                  "Note: If you need a more stable environment, " +
+                  "we recommend switching back to the Stable build once the features you used and need are available in it");
+            return;
+        }
+        return;
     }
 
 
