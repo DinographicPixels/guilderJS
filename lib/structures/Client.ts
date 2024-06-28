@@ -216,7 +216,7 @@ export class Client extends TypedEmitter<ClientEvents> {
         if (config.branch.toLowerCase().includes("development")) {
             console.log("TouchGuild Development Build (v" + config.version + ")");
             if (!this.params.updateWarning) return;
-            if (config.version !== "dev") {
+            if (!config.version.includes("dev")) {
                 console.log("█ This is a fork or copy of the TouchGuild library, " +
                   "make sure to respect the license associated to the it.\n" +
                   "█ If this fork was made to contribute, we thank you for your commitment!");
