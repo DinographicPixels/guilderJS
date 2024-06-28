@@ -218,7 +218,7 @@ export class Client extends TypedEmitter<ClientEvents> {
             if (!this.params.updateWarning) return;
             if (config.version !== "dev") {
                 console.log("█ This is a fork or copy of the TouchGuild library, " +
-                  "make sure to respect the license associated to the library.\n" +
+                  "make sure to respect the license associated to the it.\n" +
                   "█ If this fork was made to contribute, we thank you for your commitment!");
                 return;
             }
