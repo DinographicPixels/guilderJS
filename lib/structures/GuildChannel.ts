@@ -63,7 +63,7 @@ export class GuildChannel extends Base<string> {
         this.archivedBy = data.archivedBy ?? null;
         this.archivedAt = data.archivedAt ? new Date(data.archivedAt) : null;
         this.visibility = data.visibility ?? "public";
-        this.isPublic = this.visibility === "public" ? true : false;
+        this.isPublic = this.visibility === "public";
         // this.messages = new TypedCollection(Message, client, client.params.collectionLimits?.messages);
         // this.threads = new TypedCollection(ForumThread, client, client.params.collectionLimits?.threads);
         // this.docs = new TypedCollection(Doc, client, client.params.collectionLimits?.docs);
@@ -154,7 +154,7 @@ export class GuildChannel extends Base<string> {
         return this.client.rest.channels.archiveChannel(this.id as string);
     }
 
-    /** Unarchive the channel */
+    /** Restore the archived channel */
     async restore(): Promise<void>{
         return this.client.rest.channels.restoreChannel(this.id as string);
     }
