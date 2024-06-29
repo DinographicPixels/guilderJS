@@ -11,6 +11,11 @@ export * from "./structures/ForumChannel";
 export * from "./structures/CalendarChannel";
 export * from "./structures/Guild";
 export * from "./structures/UserClient";
+export * from "./structures/Announcement";
+export * from "./structures/AnnouncementChannel";
+export * from "./structures/AnnouncementComment";
+export * from "./structures/AnnouncementReactionInfo";
+
 
 export * from "./structures/BannedMember";
 export * from "./structures/CalendarEvent";
@@ -34,6 +39,9 @@ export * from "./structures/MemberUpdateInfo";
 export * from "./structures/CalendarReactionInfo";
 export * from "./structures/GuildRole";
 export * from "./structures/GuildGroup";
+export * from "./structures/GuildCategory";
+export * from "./structures/GuildSubscription";
+export * from "./structures/Permission";
 
 export * from "./util/Collection";
 export * from "./util/TypedCollection";
