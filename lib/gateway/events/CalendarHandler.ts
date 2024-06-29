@@ -135,10 +135,6 @@ export class CalendarHandler extends GatewayEventHandler {
         this.client.emit("calendarEventRsvpDelete", CalendarERSVPComponent);
     }
 
-    async calendarRsvpManyUpdated(): Promise<void> {
-        return; // TouchGuild doesn't support many updated.
-    }
-
     private async addGuildChannel(guildID: string, channelID: string, eventID?: number): Promise<void> {
         const guild = this.client.guilds.get(guildID);
         if (this.client.getChannel(guildID, channelID) === undefined) {

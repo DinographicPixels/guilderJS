@@ -109,6 +109,7 @@ import type {
     GatewayEvent_ChannelCategoryUserPermissionCreated,
     GatewayEvent_ChannelCategoryRolePermissionCreated
 } from "../Constants";
+import { GatewayEvent_CalendarEventRsvpManyUpdated } from "guildedapi-types.ts/typings/payloads/v1/Events";
 
 /** Gateway handler filters every ws events. */
 export class GatewayHandler {
@@ -213,7 +214,7 @@ export class GatewayHandler {
         CalendarEventCommentReactionCreated:  data => this.calendarHandler.calendarCommentReactionAdd(data as GatewayEvent_CalendarEventCommentReactionCreated),
         CalendarEventCommentReactionDeleted:  data => this.calendarHandler.calendarCommentReactionRemove(data as GatewayEvent_CalendarEventCommentReactionDeleted),
         CalendarEventRsvpUpdated:             data => this.calendarHandler.calendarRsvpUpdate(data as GatewayEvent_CalendarEventRsvpUpdated),
-        CalendarEventRsvpManyUpdated:         () => this.calendarHandler.calendarRsvpManyUpdated(),
+        CalendarEventRsvpManyUpdated:         data => this.calendarHandler.calendarRsvpBulkUpdate(data as GatewayEvent_CalendarEventRsvpManyUpdated),
         CalendarEventRsvpDeleted:             data => this.calendarHandler.calendarRsvpDelete(data as GatewayEvent_CalendarEventRsvpDeleted),
         // Lists
         ListItemCreated:                      data => this.listItemHandler.listItemCreate(data as GatewayEvent_ListItemCreated),
