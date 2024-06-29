@@ -91,7 +91,7 @@ export class CalendarEventComment extends Base<number> {
      * If the request fails, it'll return undefined or throw an error that you can catch.
      */
     get member(): Member | Promise<Member> | undefined {
-        if (this.guildID === null) throw new Error("Couldn't get member because API didn't return guildID.");
+        if (this.guildID === null) throw new Error("Couldn't get member, API did not return guildID.");
         return this.client.getGuild(this.guildID as string)?.members.get(this.memberID)
         ?? this.guildID
             ? this.client.rest.guilds.getMember(this.guildID as string, this.memberID) : undefined;
