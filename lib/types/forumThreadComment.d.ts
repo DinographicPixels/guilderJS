@@ -1,3 +1,9 @@
+
+//
+// Created by Wade (@pakkographic)
+// Copyright (c) 2024 DinographicPixels. All rights reserved.
+//
+
 export interface ConstructorForumThreadOptions {
     /** ID of the forum channel's parent guild. */
     guildID?: string | null;

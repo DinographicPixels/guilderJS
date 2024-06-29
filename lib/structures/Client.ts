@@ -1,6 +1,11 @@
 /** @module Client */
 /* eslint-disable @typescript-eslint/method-signature-style */
 
+//
+// Created by Wade (@pakkographic)
+// Copyright (c) 2024 DinographicPixels. All rights reserved.
+//
+
 import { Message } from "./Message";
 
 import { Member } from "./Member";

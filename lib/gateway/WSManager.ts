@@ -1,4 +1,10 @@
 /** @module WSManager */
+
+//
+// Created by Wade (@pakkographic)
+// Copyright (c) 2024 DinographicPixels. All rights reserved.
+//
+
 import GatewayError from "./GatewayError";
 import { Client } from "../structures/Client";
 import { APIBotUser, GatewayOPCodes } from "../Constants";

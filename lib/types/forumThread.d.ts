@@ -1,3 +1,9 @@
+
+//
+// Created by Wade (@pakkographic)
+// Copyright (c) 2024 DinographicPixels. All rights reserved.
+//
+
 export interface CreateForumThreadOptions {
     /** Forum thread's title. */
     title: string;

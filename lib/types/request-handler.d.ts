@@ -1,3 +1,9 @@
+
+//
+// Created by Wade (@pakkographic)
+// Copyright (c) 2024 DinographicPixels. All rights reserved.
+//
+
 /** @module Types/RequestHandler */
 import type { RESTMethod } from "../Constants";
 import type { FormData } from "undici";

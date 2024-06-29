@@ -1,5 +1,10 @@
 /** @module Permission */
 
+//
+// Created by Wade (@pakkographic)
+// Copyright (c) 2024 DinographicPixels. All rights reserved.
+//
+
 import { JSONPermission } from "../types/json";
 import {
     APIGuildCategoryRolePermission,

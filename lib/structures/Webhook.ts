@@ -1,4 +1,10 @@
 /** @module Webhook */
+
+//
+// Created by Wade (@pakkographic)
+// Copyright (c) 2024 DinographicPixels. All rights reserved.
+//
+
 import { Client } from "./Client";
 import { Base } from "./Base";
 import { APIWebhook } from "../Constants";

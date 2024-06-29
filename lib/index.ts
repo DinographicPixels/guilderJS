@@ -1,3 +1,25 @@
+
+//
+// TouchGuild Library
+// Made to be simple, convenient, and powerful.
+//
+// Built from the ground up by Wade (@pakkographic)
+// First release: 2022
+//
+// Contributors:
+// https://github.com/DinographicPixels/TouchGuild/graphs/contributors
+//
+// Website: https://touchguild.com/
+// Documentation: https://docs.touchguild.com/
+//
+// Contact: wade@dinographicpixels.com
+//
+//
+// Copyright (c) – DinographicPixels. All rights reserved.
+//
+
+// EXPORT LIST:
+
 export * from "./structures/Message";
 
 export * from "./structures/Client";

@@ -1,4 +1,10 @@
 /** @module AnnouncementHandler */
+
+//
+// Created by Wade (@pakkographic)
+// Copyright (c) 2024 DinographicPixels. All rights reserved.
+//
+
 import { GatewayEventHandler } from "./GatewayEventHandler";
 import { Announcement } from "../../structures/Announcement";
 import { AnnouncementChannel } from "../../structures/AnnouncementChannel";

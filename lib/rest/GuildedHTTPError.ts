@@ -1,4 +1,10 @@
 /** @module GuildedHTTPError */
+
+//
+// Created by Wade (@pakkographic)
+// Copyright (c) 2024 DinographicPixels. All rights reserved.
+//
+
 import type { RESTMethod } from "../Constants";
 import type { Headers, Response } from "undici";
 

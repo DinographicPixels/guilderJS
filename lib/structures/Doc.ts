@@ -9,6 +9,11 @@ import { EditDocOptions } from "../types/doc";
 import { JSONDoc } from "../types/json";
 import TypedCollection from "../util/TypedCollection";
 
+//
+// Created by Wade (@pakkographic)
+// Copyright (c) 2024 DinographicPixels. All rights reserved.
+//
+
 /** Doc represents an item of a "Docs" channel. */
 export class Doc extends Base<number> {
     /** Guild/server id */

@@ -1,4 +1,10 @@
 /** @module TypedCollection */
+
+//
+// Created by Wade (@pakkographic)
+// Copyright (c) 2024 DinographicPixels. All rights reserved.
+//
+
 import Collection from "./Collection";
 import type { Client } from "../structures/Client";
 import { Base } from "../structures/Base";

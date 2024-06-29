@@ -1,3 +1,9 @@
+
+//
+// Created by Wade (@pakkographic)
+// Copyright (c) 2024 DinographicPixels. All rights reserved.
+//
+
 import { GatewayOPCodes, APIBotUser } from "../Constants";
 
 export type AnyPacket = RawPacket | WelcomePacket;

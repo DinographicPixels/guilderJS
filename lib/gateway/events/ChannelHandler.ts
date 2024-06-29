@@ -1,4 +1,10 @@
 /** @module ChannelHandler */
+
+//
+// Created by Wade (@pakkographic)
+// Copyright (c) 2024 DinographicPixels. All rights reserved.
+//
+
 import { GatewayEventHandler } from "./GatewayEventHandler";
 import {
     GatewayEvent_ChannelArchived,

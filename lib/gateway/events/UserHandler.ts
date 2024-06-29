@@ -1,5 +1,10 @@
 /** @module UserHandler */
 
+//
+// Created by Wade (@pakkographic)
+// Copyright (c) 2024 DinographicPixels. All rights reserved.
+//
+
 import { GatewayEventHandler } from "./GatewayEventHandler";
 import { UserStatus, UserStatusCreate, UserStatusDelete } from "../../types/types";
 import { GatewayEvent_UserStatusCreated, GatewayEvent_UserStatusDeleted } from "guildedapi-types.ts/v1";

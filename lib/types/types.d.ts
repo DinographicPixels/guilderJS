@@ -1,4 +1,10 @@
 /** @module Types */
+
+//
+// Created by Wade (@pakkographic)
+// Copyright (c) 2024 DinographicPixels. All rights reserved.
+//
+
 import { ForumThread } from "../structures/ForumThread";
 import { Guild } from "../structures/Guild";
 import { Member } from "../structures/Member";

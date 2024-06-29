@@ -8,6 +8,11 @@ import TypedCollection from "../util/TypedCollection";
 import { JSONDocChannel } from "../types/json";
 import { CreateDocOptions, EditDocOptions } from "../types/doc";
 
+//
+// Created by Wade (@pakkographic)
+// Copyright (c) 2024 DinographicPixels. All rights reserved.
+//
+
 /** Represents a "docs" channel. */
 export class DocChannel extends GuildChannel {
     /** Cached docs. */

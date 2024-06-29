@@ -1,4 +1,10 @@
 /** @module MemberInfo */
+
+//
+// Created by Wade (@pakkographic)
+// Copyright (c) 2024 DinographicPixels. All rights reserved.
+//
+
 import type { Client } from "./Client";
 import type { Guild } from "./Guild";
 import type { Member } from "./Member";

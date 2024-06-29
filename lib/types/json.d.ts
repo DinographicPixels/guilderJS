@@ -1,3 +1,9 @@
+
+//
+// Created by Wade (@pakkographic)
+// Copyright (c) 2024 DinographicPixels. All rights reserved.
+//
+
 import { Member } from "../structures/Member";
 import { User } from "../structures/User";
 import { Guild } from "../structures/Guild";

@@ -1,4 +1,10 @@
 /** @module DocReactionInfo */
+
+//
+// Created by Wade (@pakkographic)
+// Copyright (c) 2024 DinographicPixels. All rights reserved.
+//
+
 import { ReactionInfo } from "./ReactionInfo";
 import { Client } from "./Client";
 import { DocChannel } from "./DocChannel";

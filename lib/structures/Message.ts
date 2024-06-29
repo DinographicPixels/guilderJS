@@ -1,4 +1,10 @@
 /** @module Message */
+
+//
+// Created by Wade (@pakkographic)
+// Copyright (c) 2024 DinographicPixels. All rights reserved.
+//
+
 import { Client } from "./Client";
 import { Member } from "./Member";
 import { Guild } from "./Guild";

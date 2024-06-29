@@ -1,5 +1,10 @@
 /** @module Util */
 
+//
+// Created by Wade (@pakkographic)
+// Copyright (c) 2024 DinographicPixels. All rights reserved.
+//
+
 import { Client } from "../structures/Client";
 import { Member } from "../structures/Member";
 import { AnyChannel } from "../types/channel";

@@ -1,4 +1,10 @@
 /** @module GatewayHandler */
+
+//
+// Created by Wade (@pakkographic)
+// Copyright (c) 2024 DinographicPixels. All rights reserved.
+//
+
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { ChannelHandler } from "./events/ChannelHandler";
 import { ForumThreadHandler } from "./events/ForumThreadHandler";

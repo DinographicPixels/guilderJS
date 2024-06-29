@@ -1,4 +1,10 @@
 /** @module MessageHandler */
+
+//
+// Created by Wade (@pakkographic)
+// Copyright (c) 2024 DinographicPixels. All rights reserved.
+//
+
 import { GatewayEventHandler } from "./GatewayEventHandler";
 import { Message } from "../../structures/Message";
 import { MessageReactionInfo } from "../../structures/MessageReactionInfo";

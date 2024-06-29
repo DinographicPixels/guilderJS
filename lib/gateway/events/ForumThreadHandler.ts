@@ -1,4 +1,10 @@
 /** @module ForumThreadHandler */
+
+//
+// Created by Wade (@pakkographic)
+// Copyright (c) 2024 DinographicPixels. All rights reserved.
+//
+
 import { GatewayEventHandler } from "./GatewayEventHandler";
 import { ForumThread } from "../../structures/ForumThread";
 import { ForumThreadComment } from "../../structures/ForumThreadComment";

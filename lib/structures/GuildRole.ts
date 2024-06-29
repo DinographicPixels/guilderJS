@@ -1,5 +1,10 @@
 /** @module GuildRole */
 
+//
+// Created by Wade (@pakkographic)
+// Copyright (c) 2024 DinographicPixels. All rights reserved.
+//
+
 import { Base } from "./Base";
 import { Client } from "./Client";
 import { JSONGuildRole } from "../types/json";

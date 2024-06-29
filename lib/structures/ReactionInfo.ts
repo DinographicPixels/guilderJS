@@ -1,4 +1,10 @@
 /** @module ReactionInfo */
+
+//
+// Created by Wade (@pakkographic)
+// Copyright (c) 2024 DinographicPixels. All rights reserved.
+//
+
 import { Member } from "./Member";
 import { Client } from "./Client";
 import {

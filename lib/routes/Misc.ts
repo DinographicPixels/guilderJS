@@ -1,4 +1,10 @@
 /** @module Routes/Guilds */
+
+//
+// Created by Wade (@pakkographic)
+// Copyright (c) 2024 DinographicPixels. All rights reserved.
+//
+
 import type { RESTManager } from "../rest/RESTManager";
 import * as endpoints from "../rest/endpoints";
 import { GETGuildMemberSocialsResponse, GETUserResponse, GETUserServersResponse, PUTUserStatusBody } from "../Constants";

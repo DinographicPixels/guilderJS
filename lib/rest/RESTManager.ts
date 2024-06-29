@@ -1,4 +1,10 @@
 /** @module RESTManager */
+
+//
+// Created by Wade (@pakkographic)
+// Copyright (c) 2024 DinographicPixels. All rights reserved.
+//
+
 import { RequestHandler } from "./RequestHandler";
 import type { Client } from "../structures/Client";
 import type { RequestOptions } from "../types/request-handler";

@@ -1,3 +1,9 @@
+
+//
+// Created by Wade (@pakkographic)
+// Copyright (c) 2024 DinographicPixels. All rights reserved.
+//
+
 import type { Message } from "../structures/Message";
 import { GuildChannel } from "../structures/GuildChannel";
 import { TextChannel } from "../structures/TextChannel";

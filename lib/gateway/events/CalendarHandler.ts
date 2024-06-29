@@ -1,4 +1,10 @@
 /** @module CalendarHandler */
+
+//
+// Created by Wade (@pakkographic)
+// Copyright (c) 2024 DinographicPixels. All rights reserved.
+//
+
 import { GatewayEventHandler } from "./GatewayEventHandler";
 import { CalendarEvent } from "../../structures/CalendarEvent";
 import { CalendarEventRSVP } from "../../structures/CalendarRSVP";

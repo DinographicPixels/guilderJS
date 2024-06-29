@@ -1,4 +1,10 @@
 /** @module RequestHandler */
+
+//
+// Created by Wade (@pakkographic)
+// Copyright (c) 2024 DinographicPixels. All rights reserved.
+//
+
 import type { RESTManager } from "./RESTManager";
 import GuildedHTTPError from "./GuildedHTTPError";
 import GuildedRESTError from "./GuildedRESTError";

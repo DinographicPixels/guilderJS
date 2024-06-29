@@ -1,4 +1,10 @@
 /** REST/Endpoints */
+
+//
+// Created by Wade (@pakkographic)
+// Copyright (c) 2024 DinographicPixels. All rights reserved.
+//
+
 /* eslint-disable @typescript-eslint/quotes */
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 /* eslint no-use-before-define: 0 */
