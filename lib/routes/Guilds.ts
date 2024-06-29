@@ -115,7 +115,10 @@ export class Guilds {
             method: "GET",
             path:   endpoints.GUILD_WEBHOOKS(guildID),
             query
-        }).then(data => data.webhooks.map(d => new Webhook(d, this.#manager.client)) as never);
+        }).then(data =>
+            data.webhooks.map(d =>
+                new Webhook(d, this.#manager.client)) as never
+        );
     }
 
     /** This method is used to get a specific guild member.
@@ -126,7 +129,9 @@ export class Guilds {
         return this.#manager.authRequest<GETGuildMemberResponse>({
             method: "GET",
             path:   endpoints.GUILD_MEMBER(guildID, memberID)
-        }).then(data => this.#manager.client.util.updateMember(guildID, memberID, data.member));
+        }).then(data =>
+            this.#manager.client.util.updateMember(guildID, memberID, data.member)
+        );
     }
 
     /** This method is used to get a list of guild member.
@@ -136,7 +141,11 @@ export class Guilds {
         return this.#manager.authRequest<GETGuildMembersResponse>({
             method: "GET",
             path:   endpoints.GUILD_MEMBERS(guildID)
-        }).then(data => data.members.map(d => this.#manager.client.util.updateMember(guildID, d.user.id, d as APIGuildMember)));
+        }).then(data =>
+            data.members.map(d =>
+                this.#manager.client.util.updateMember(guildID, d.user.id, d as APIGuildMember)
+            )
+        );
     }
 
     /** Get a ban.
@@ -147,7 +156,9 @@ export class Guilds {
         return this.#manager.authRequest<GETGuildBanResponse>({
             method: "GET",
             path:   endpoints.GUILD_BAN(guildID, memberID)
-        }).then(data => new BannedMember(guildID, data.serverMemberBan, this.#manager.client));
+        }).then(data =>
+            new BannedMember(guildID, data.serverMemberBan, this.#manager.client)
+        );
     }
 
     /** This method is used to get a list of guild ban.
@@ -157,7 +168,11 @@ export class Guilds {
         return this.#manager.authRequest<GETGuildBansResponse>({
             method: "GET",
             path:   endpoints.GUILD_BANS(guildID)
-        }).then(data => data.serverMemberBans.map(d => new BannedMember(guildID, d, this.#manager.client)));
+        }).then(data =>
+            data.serverMemberBans.map(d =>
+                new BannedMember(guildID, d, this.#manager.client)
+            )
+        );
     }
 
     /** Add a member to a group
@@ -249,7 +264,9 @@ export class Guilds {
             method: "POST",
             path:   endpoints.GUILD_BAN(guildID, memberID),
             json:   { reason }
-        }).then(data => new BannedMember(guildID, data.serverMemberBan, this.#manager.client));
+        }).then(data =>
+            new BannedMember(guildID, data.serverMemberBan, this.#manager.client)
+        );
     }
 
     /** Unban a guild member.
@@ -352,11 +369,20 @@ export class Guilds {
      * @param type Type of the new channel. (e.g: chat)
      * @param options New channel's additional options.
      */
-    async createChannel<T extends AnyChannel = AnyChannel>(guildID: string, name: string, type: APIChannelCategories, options?: CreateChannelOptions): Promise<T> {
+    async createChannel<T extends AnyChannel = AnyChannel>(
+        guildID: string,
+        name: string,
+        type: APIChannelCategories,
+        options?: CreateChannelOptions
+    ): Promise<T> {
         if (!guildID) throw new Error("guildID is a required parameter.");
         if (!name) throw new Error("name parameter is a required parameter.");
         if (!type) type = "chat";
-        if (options?.categoryID && options?.groupID) throw new Error("Only one channel location is needed, two are defined at the same time. [categoryID, groupID]");
+        if (options?.categoryID && options?.groupID)
+            throw new Error(
+                "Only one channel location is needed," +
+              " two are defined at the same time. [categoryID, groupID]"
+            );
         return this.#manager.authRequest<POSTChannelResponse>({
             method: "POST",
             path:   endpoints.CHANNELS(),
@@ -408,7 +434,11 @@ export class Guilds {
         return this.#manager.authRequest<GETGuildRolesResponse>({
             method: "GET",
             path:   endpoints.GUILD_ROLES(guildID)
-        }).then(data => data.roles.map(role => this.#manager.client.util.updateRole(role)));
+        }).then(data =>
+            data.roles.map(role =>
+                this.#manager.client.util.updateRole(role)
+            )
+        );
     }
 
     /**
@@ -470,7 +500,11 @@ export class Guilds {
         return this.#manager.authRequest<GETGuildGroupsResponse>({
             method: "GET",
             path:   endpoints.GUILD_GROUPS(guildID)
-        }).then(data => data.groups.map(group => this.#manager.client.util.updateGuildGroup(group)));
+        }).then(data =>
+            data.groups.map(group =>
+                this.#manager.client.util.updateGuildGroup(group)
+            )
+        );
     }
 
     /**
@@ -533,7 +567,11 @@ export class Guilds {
         return this.#manager.authRequest<GETGuildSubscriptionsResponse>({
             method: "GET",
             path:   endpoints.GUILD_SUBSCRIPTIONS(guildID)
-        }).then(data => data.serverSubscriptionTiers.map(tiers => this.#manager.client.util.updateGuildSubscription(tiers)));
+        }).then(data =>
+            data.serverSubscriptionTiers.map(tiers =>
+                this.#manager.client.util.updateGuildSubscription(tiers)
+            )
+        );
     }
 
     /**
@@ -545,7 +583,9 @@ export class Guilds {
         return this.#manager.authRequest<GETGuildSubscriptionResponse>({
             method: "GET",
             path:   endpoints.GUILD_SUBSCRIPTION(guildID, subscriptionID)
-        }).then(data => this.#manager.client.util.updateGuildSubscription(data.serverSubscriptionTier));
+        }).then(data =>
+            this.#manager.client.util.updateGuildSubscription(data.serverSubscriptionTier)
+        );
     }
 
     /**
@@ -660,13 +700,19 @@ export class Guilds {
      *
      * Warning: targetID must have the correct type (number=role, string=user).
      */
-    async createCategoryPermission(guildID: string, categoryID: number, targetID: string | number, options: POSTChannelCategoryUserPermissionBody): Promise<Permission> {
-        return typeof targetID === "string" ? this.#manager.authRequest<POSTChannelCategoryUserPermissionResponse>({
-            method: "POST",
-            path:   endpoints.GUILD_CATEGORY_USER_PERMISSION(guildID, categoryID, targetID),
-            json:   options
-        }).then(data => new Permission(data.channelCategoryUserPermission)) :
-            this.#manager.authRequest<POSTChannelCategoryRolePermissionResponse>({
+    async createCategoryPermission(
+        guildID: string,
+        categoryID: number,
+        targetID: string | number,
+        options: POSTChannelCategoryUserPermissionBody
+    ): Promise<Permission> {
+        return typeof targetID === "string"
+            ? this.#manager.authRequest<POSTChannelCategoryUserPermissionResponse>({
+                method: "POST",
+                path:   endpoints.GUILD_CATEGORY_USER_PERMISSION(guildID, categoryID, targetID),
+                json:   options
+            }).then(data => new Permission(data.channelCategoryUserPermission))
+            : this.#manager.authRequest<POSTChannelCategoryRolePermissionResponse>({
                 method: "POST",
                 path:   endpoints.GUILD_CATEGORY_ROLE_PERMISSION(guildID, categoryID, targetID),
                 json:   options
@@ -682,13 +728,19 @@ export class Guilds {
      *
      * Warning: targetID must have the correct type (number=role, string=user).
      */
-    async editCategoryPermission(guildID: string, categoryID: number, targetID: string | number, options: PATCHChannelCategoryUserPermissionBody): Promise<Permission> {
-        return typeof targetID === "string" ? this.#manager.authRequest<PATCHChannelCategoryUserPermissionResponse>({
-            method: "PATCH",
-            path:   endpoints.GUILD_CATEGORY_USER_PERMISSION(guildID, categoryID, targetID),
-            json:   options
-        }).then(data => new Permission(data.channelCategoryUserPermission)) :
-            this.#manager.authRequest<PATCHChannelCategoryRolePermissionResponse>({
+    async editCategoryPermission(
+        guildID: string,
+        categoryID: number,
+        targetID: string | number,
+        options: PATCHChannelCategoryUserPermissionBody
+    ): Promise<Permission> {
+        return typeof targetID === "string"
+            ? this.#manager.authRequest<PATCHChannelCategoryUserPermissionResponse>({
+                method: "PATCH",
+                path:   endpoints.GUILD_CATEGORY_USER_PERMISSION(guildID, categoryID, targetID),
+                json:   options
+            }).then(data => new Permission(data.channelCategoryUserPermission))
+            : this.#manager.authRequest<PATCHChannelCategoryRolePermissionResponse>({
                 method: "PATCH",
                 path:   endpoints.GUILD_CATEGORY_ROLE_PERMISSION(guildID, categoryID, targetID),
                 json:   options
@@ -704,11 +756,12 @@ export class Guilds {
      * Warning: targetID must have the correct type (number=role, string=user).
      */
     async getCategoryPermission(guildID: string, categoryID: number, targetID: string | number): Promise<Permission> {
-        return typeof targetID === "string" ? this.#manager.authRequest<GETChannelCategoryUserPermissionResponse>({
-            method: "GET",
-            path:   endpoints.GUILD_CATEGORY_USER_PERMISSION(guildID, categoryID, targetID)
-        }).then(data => new Permission(data.channelCategoryUserPermission)) :
-            this.#manager.authRequest<GETChannelCategoryRolePermissionResponse>({
+        return typeof targetID === "string"
+            ? this.#manager.authRequest<GETChannelCategoryUserPermissionResponse>({
+                method: "GET",
+                path:   endpoints.GUILD_CATEGORY_USER_PERMISSION(guildID, categoryID, targetID)
+            }).then(data => new Permission(data.channelCategoryUserPermission))
+            : this.#manager.authRequest<GETChannelCategoryRolePermissionResponse>({
                 method: "GET",
                 path:   endpoints.GUILD_CATEGORY_ROLE_PERMISSION(guildID, categoryID, targetID)
             }).then(data => new Permission(data.channelCategoryRolePermission));
@@ -723,7 +776,8 @@ export class Guilds {
         const userPromise = this.getCategoryUserPermissions(guildID, categoryID);
         const rolePromise = this.getCategoryRolePermissions(guildID, categoryID);
         return Promise.all([userPromise, rolePromise])
-            .then(([userPermissions, rolePermissions]) => userPermissions.concat(rolePermissions))
+            .then(([userPermissions, rolePermissions]) =>
+                userPermissions.concat(rolePermissions))
             .catch(err => {
                 throw err;
             });
@@ -738,7 +792,11 @@ export class Guilds {
         return this.#manager.authRequest<GETChannelCategoryUserManyPermissionResponse>({
             method: "GET",
             path:   endpoints.GUILD_CATEGORY_USER_PERMISSIONS(guildID, categoryID)
-        }).then(data => data.channelCategoryUserPermissions.map(d => new Permission(d)));
+        }).then(data =>
+            data.channelCategoryUserPermissions.map(d =>
+                new Permission(d)
+            )
+        );
     }
 
     /**
@@ -750,7 +808,11 @@ export class Guilds {
         return this.#manager.authRequest<GETChannelCategoryRoleManyPermissionResponse>({
             method: "GET",
             path:   endpoints.GUILD_CATEGORY_ROLE_PERMISSIONS(guildID, categoryID)
-        }).then(data => data.channelCategoryRolePermissions.map(d => new Permission(d)));
+        }).then(data =>
+            data.channelCategoryRolePermissions.map(d =>
+                new Permission(d)
+            )
+        );
     }
 
     /**
@@ -759,13 +821,19 @@ export class Guilds {
      * @param categoryID ID of the category
      * @param targetID ID of the user or role to delete the permission from
      */
-    async deleteCategoryPermission(guildID: string, categoryID: number, targetID: string | number): Promise<void> {
-        return typeof targetID === "string" ? this.#manager.authRequest<void>({
-            method: "DELETE",
-            path:   endpoints.GUILD_CATEGORY_USER_PERMISSION(guildID, categoryID, targetID)
-        }) : this.#manager.authRequest<void>({
-            method: "DELETE",
-            path:   endpoints.GUILD_CATEGORY_ROLE_PERMISSION(guildID, categoryID, targetID)
-        });
+    async deleteCategoryPermission(
+        guildID: string,
+        categoryID: number,
+        targetID: string | number
+    ): Promise<void> {
+        return typeof targetID === "string"
+            ? this.#manager.authRequest<void>({
+                method: "DELETE",
+                path:   endpoints.GUILD_CATEGORY_USER_PERMISSION(guildID, categoryID, targetID)
+            })
+            : this.#manager.authRequest<void>({
+                method: "DELETE",
+                path:   endpoints.GUILD_CATEGORY_ROLE_PERMISSION(guildID, categoryID, targetID)
+            });
     }
 }

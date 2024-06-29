@@ -18,7 +18,11 @@ export class CalendarChannel extends GuildChannel {
      */
     constructor(data: APIGuildChannel, client: Client){
         super(data, client);
-        this.scheduledEvents = new TypedCollection(CalendarEvent, client, client.params.collectionLimits?.scheduledEvents);
+        this.scheduledEvents = new TypedCollection(
+            CalendarEvent,
+            client,
+            client.params.collectionLimits?.scheduledEvents
+        );
         this.update(data);
     }
 
@@ -26,7 +30,10 @@ export class CalendarChannel extends GuildChannel {
      * @param options Event options.
      * @param createSeries (optional) Create a series. (event's repetition)
      */
-    async createEvent(options: CreateCalendarEventOptions, createSeries?: POSTCalendarEventBody["repeatInfo"]): Promise<CalendarEvent> {
+    async createEvent(
+        options: CreateCalendarEventOptions,
+        createSeries?: POSTCalendarEventBody["repeatInfo"]
+    ): Promise<CalendarEvent> {
         return this.client.rest.channels.createCalendarEvent(this.id, options, createSeries);
     }
 
@@ -45,8 +52,17 @@ export class CalendarChannel extends GuildChannel {
      * @param seriesID ID of the series.
      * @param options Edit repetition options.
      */
-    async editSeries(eventID: number, seriesID: string, options: POSTCalendarEventBody["repeatInfo"]): Promise<void> {
-        return this.client.rest.channels.editCalendarEventSeries(this.id, eventID, seriesID, options);
+    async editSeries(
+        eventID: number,
+        seriesID: string,
+        options: POSTCalendarEventBody["repeatInfo"]
+    ): Promise<void> {
+        return this.client.rest.channels.editCalendarEventSeries(
+            this.id,
+            eventID,
+            seriesID,
+            options
+        );
     }
 
     /**

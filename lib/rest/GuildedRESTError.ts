@@ -17,7 +17,9 @@ export default class GuildedRESTError extends Error {
         this.response = res;
         this.resBody = resBody as GuildedRESTError["resBody"];
 
-        let message = "message" in resBody ? `${(resBody as {message: string; }).message} on ${this.method} ${this.path}` : `Unknown Error on ${this.method} ${this.path}`;
+        let message = "message" in resBody
+            ? `${(resBody as {message: string; }).message} on ${this.method} ${this.path}`
+            : `Unknown Error on ${this.method} ${this.path}`;
         if ("errors" in resBody) {
             message += `\n ${GuildedRESTError.flattenErrors((resBody as { errors: Record<string, unknown>;}).errors).join("\n ")}`;
         } else {

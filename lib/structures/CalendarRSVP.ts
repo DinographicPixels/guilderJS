@@ -91,11 +91,20 @@ export class CalendarEventRSVP extends Base<number> {
 
     /** Edit this RSVP. */
     async edit(options: PUTCalendarEventRSVPBody): Promise<CalendarEventRSVP>{
-        return this.client.rest.channels.editCalendarRsvp(this.channelID, this.id as number, this.entityID, options);
+        return this.client.rest.channels.editCalendarRsvp(
+            this.channelID,
+            this.id as number,
+            this.entityID,
+            options
+        );
     }
 
     /** Delete this RSVP. */
     async delete(): Promise<void>{
-        return this.client.rest.channels.deleteCalendarRsvp(this.channelID, this.id as number, this.entityID);
+        return this.client.rest.channels.deleteCalendarRsvp(
+            this.channelID,
+            this.id as number,
+            this.entityID
+        );
     }
 }

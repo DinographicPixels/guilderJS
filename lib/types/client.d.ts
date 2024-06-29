@@ -11,7 +11,8 @@ export interface ClientOptions {
      * REST methods are used to communicate with the Guilded by sending requests.
      * This feature was included in previous TouchGuild versions but we've changed how we manage REST requests.
      *
-     * Forcing disabling REST methods may crash the library when receiving events, reorganizing cache hierarchy, which means that they are used internally,
+     * Forcing disabling REST methods may crash the library when receiving events, reorganizing cache hierarchy,
+     * which means that they are used internally,
      * you can still disable those methods by setting this boolean to `true`, be aware that **it isn't recommended**.
      * @defaultValue false
      */

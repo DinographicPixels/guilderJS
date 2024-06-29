@@ -51,7 +51,11 @@ export class Miscellaneous {
         return this.#manager.authRequest<GETUserServersResponse>({
             method: "GET",
             path:   endpoints.USER_SERVERS(userID)
-        }).then(data => data.servers.map(d => new Guild(d, this.#manager.client)));
+        }).then(data =>
+            data.servers.map(d =>
+                new Guild(d, this.#manager.client)
+            )
+        );
     }
 
     /**

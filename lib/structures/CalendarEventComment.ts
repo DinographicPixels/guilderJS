@@ -12,7 +12,8 @@ import { ConstructorCalendarEventCommentOptions } from "../types/calendarEventCo
 export class CalendarEventComment extends Base<number> {
     /** Raw data */
     data: APICalendarEventComment;
-    /** This property isn't always provided by the Guilded API, the value can be null, which disable the ability to get member through this class. */
+    /** This property isn't always provided by the Guilded API, the value can be null,
+     * which disable the ability to get member through this class. */
     guildID: string | null;
     /** The content of the comment. */
     content: string;
@@ -29,8 +30,13 @@ export class CalendarEventComment extends Base<number> {
     /**
      * @param data raw data.
      * @param client client.
+     * @param options Additional properties that can be added.
      */
-    constructor(data: APICalendarEventComment, client: Client, options?: ConstructorCalendarEventCommentOptions) {
+    constructor(
+        data: APICalendarEventComment,
+        client: Client,
+        options?: ConstructorCalendarEventCommentOptions
+    ) {
         super(data.id, client);
         this.data = data;
         this.guildID = options?.guildID ?? null;
@@ -86,37 +92,64 @@ export class CalendarEventComment extends Base<number> {
      */
     get member(): Member | Promise<Member> | undefined {
         if (this.guildID === null) throw new Error("Couldn't get member because API didn't return guildID.");
-        return this.client.getGuild(this.guildID as string)?.members.get(this.memberID) ?? this.guildID ? this.client.rest.guilds.getMember(this.guildID as string, this.memberID) : undefined;
+        return this.client.getGuild(this.guildID as string)?.members.get(this.memberID)
+        ?? this.guildID
+            ? this.client.rest.guilds.getMember(this.guildID as string, this.memberID) : undefined;
     }
 
     /** Create a comment in the same event as this one.
      * @param options Create options.
      */
     async createCalendarComment(options: CreateCalendarCommentOptions): Promise<CalendarEventComment> {
-        return this.client.rest.channels.createCalendarComment(this.channelID, this.eventID, options);
+        return this.client.rest.channels.createCalendarComment(
+            this.channelID,
+            this.eventID,
+            options
+        );
     }
 
     /** Add a reaction to this comment.
      * @param reaction ID of the reaction to add.
      */
     async createReaction(reaction: number): Promise<void> {
-        return this.client.rest.channels.createReactionToSubcategory(this.channelID, "CalendarEventComment", this.eventID, this.id, reaction);
+        return this.client.rest.channels.createReactionToSubcategory(
+            this.channelID,
+            "CalendarEventComment",
+            this.eventID,
+            this.id,
+            reaction
+        );
     }
 
     /** Remove a reaction from this comment.
      * @param reaction ID of the reaction to remove.
      */
     async deleteReaction(reaction: number): Promise<void> {
-        return this.client.rest.channels.deleteReactionFromSubcategory(this.channelID, "CalendarEventComment", this.eventID, this.id, reaction);
+        return this.client.rest.channels.deleteReactionFromSubcategory(
+            this.channelID,
+            "CalendarEventComment",
+            this.eventID,
+            this.id,
+            reaction
+        );
     }
 
     /** Edit this comment */
     async edit(options: EditCalendarCommentOptions): Promise<CalendarEventComment>{
-        return this.client.rest.channels.editCalendarComment(this.channelID, this.eventID, this.id, options);
+        return this.client.rest.channels.editCalendarComment(
+            this.channelID,
+            this.eventID,
+            this.id,
+            options
+        );
     }
 
     /** Delete this comment */
     async delete(): Promise<void>{
-        return this.client.rest.channels.deleteCalendarComment(this.channelID, this.eventID, this.id);
+        return this.client.rest.channels.deleteCalendarComment(
+            this.channelID,
+            this.eventID,
+            this.id
+        );
     }
 }

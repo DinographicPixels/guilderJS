@@ -13,7 +13,8 @@ export interface CreateCalendarEventOptions {
     url?: string;
     /** Event card's color. */
     color?: number;
-    /** Does the event last all day? If passed with duration, duration will only be applied if it is an interval of minutes represented in days (e.g., duration: 2880) */
+    /** Does the event last all day? If passed with duration,
+     * duration will only be applied if it is an interval of minutes represented in days (e.g., duration: 2880) */
     isAllDay?: boolean;
     /** Limit of member joining this event. */
     rsvpLimit?: number;
@@ -40,7 +41,8 @@ export interface EditCalendarEventOptions {
     url?: string;
     /** Event card's color. */
     color?: number;
-    /** Does the event last all day? If passed with duration, duration will only be applied if it is an interval of minutes represented in days (e.g., duration: 2880) */
+    /** Does the event last all day? If passed with duration, duration will only be applied if it is an interval of
+     * minutes represented in days (e.g., duration: 2880) */
     isAllDay?: boolean;
     /** Limit of member joining this event. */
     rsvpLimit?: number;

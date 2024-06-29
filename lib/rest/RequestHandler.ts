@@ -33,7 +33,7 @@ export class RequestHandler {
             latency:             this.options.ratelimiterOffset ?? 0,
             raw:                 Array.from({ length: 10 }).fill(this.options.ratelimiterOffset) as Array<number>,
             timeOffsets:         Array.from({ length: 10 }).fill(0) as Array<number>,
-            timeoffset:          0
+            timeOffset:          0
         };
     }
 
@@ -73,15 +73,18 @@ export class RequestHandler {
                     // let latency = Date.now();
                     const controller = new AbortController();
 
-                    headers["User-Agent"] = `TouchGuild ${pkgconfig.branch} (${pkgconfig.version}) Node.JS ${pkgconfig.NodeJSVersion}`;
-                    headers["x-guilded-bot-api-use-official-markdown"] = String(this.#manager.client.params.isOfficialMarkdownEnabled ?? true); // temporary header
+                    headers["User-Agent"] =
+                      `TouchGuild ${pkgconfig.branch} (${pkgconfig.version}) Node.JS ${pkgconfig.NodeJSVersion}`;
+                    headers["x-guilded-bot-api-use-official-markdown"] =
+                      String(this.#manager.client.params.isOfficialMarkdownEnabled ?? true); // temporary header
 
                     if (typeof options.auth === "string"){
                         const tokenArgs = options.auth.split(" ");
                         headers.Authorization = tokenArgs[0] === "Bearer" ? options.auth : `Bearer ${options.auth}`;
                     } else if (options.auth && this.#manager.token) {
                         const tokenArgs = this.#manager.token.split(" ");
-                        headers.Authorization = tokenArgs[0] === "Bearer" ? this.#manager.token : `Bearer ${this.#manager.token}`;
+                        headers.Authorization =
+                          tokenArgs[0] === "Bearer" ? this.#manager.token : `Bearer ${this.#manager.token}`;
                     }
 
                     options.method = options.method.toUpperCase() as RESTMethod;
@@ -90,7 +93,10 @@ export class RequestHandler {
                     if (options.method !== "GET") {
                         let stringBody: string | undefined;
                         if (options.json) {
-                            stringBody = JSON.stringify(options.json, (k, v: unknown) => typeof v === "bigint" ? v.toString() : v);
+                            stringBody = JSON.stringify(
+                                options.json,
+                                (k, v: unknown) => typeof v === "bigint" ? v.toString() : v
+                            );
                         }
                         if (options.form || (options.files && options.files.length !== 0)) {
                             const data = options.form ?? new FormData();
@@ -98,7 +104,10 @@ export class RequestHandler {
                                 if (!file.contents) {
                                     continue;
                                 }
-                                data.set(`files[${index}]`, new File([file.contents], file.name));
+                                data.set(
+                                    `files[${index}]`,
+                                    new File([file.contents], file.name)
+                                );
                             }
                             if (stringBody) {
                                 data.set("payload_json", stringBody);
@@ -114,7 +123,8 @@ export class RequestHandler {
                         headers.Host = this.options.host;
                     }
 
-                    const url = `${options.editBaseURL ?? this.options.baseURL}${options.path}${options.query && Array.from(options.query.keys()).length !== 0 ? `?${options.query.toString()}` : ""}`;
+                    const url =
+                      `${options.editBaseURL ?? this.options.baseURL}${options.path}${options.query && Array.from(options.query.keys()).length !== 0 ? `?${options.query.toString()}` : ""}`;
                     let latency = Date.now();
 
                     let timeout: NodeJS.Timeout | undefined;
@@ -160,24 +170,27 @@ export class RequestHandler {
                     const now = Date.now();
                     if (this.latencyRef.lastTimeOffsetCheck < (Date.now() - 5000)) {
                         const timeOffset = headerNow + 500 - (this.latencyRef.lastTimeOffsetCheck = Date.now());
-                        if (this.latencyRef.timeoffset - this.latencyRef.latency >= this.options.latencyThreshold && timeOffset - this.latencyRef.latency >= this.options.latencyThreshold) {
-                            this.#manager.client.emit("warn", `Your clock is ${this.latencyRef.timeoffset}ms behind Guilded's server clock. Please check your connection and system time.`);
+                        if (this.latencyRef.timeOffset - this.latencyRef.latency >= this.options.latencyThreshold && timeOffset - this.latencyRef.latency >= this.options.latencyThreshold) {
+                            this.#manager.client.emit("warn", `Your clock is ${this.latencyRef.timeOffset}ms behind Guilded's server clock. Please check your connection and system time.`);
                         }
 
-                        this.latencyRef.timeoffset = this.latencyRef.timeoffset - Math.trunc(this.latencyRef.timeOffsets.shift()! / 10) + Math.trunc(timeOffset / 10);
+                        this.latencyRef.timeOffset = this.latencyRef.timeOffset - Math.trunc(this.latencyRef.timeOffsets.shift()! / 10) + Math.trunc(timeOffset / 10);
                         this.latencyRef.timeOffsets.push(timeOffset);
                     }
                     if (res.headers.has("x-ratelimit-limit")) {
                         this.ratelimits[route].limit = Number(res.headers.get("x-ratelimit-limit"));
                     }
-                    if (options.method !== "GET" && (!res.headers.has("x-ratelimit-remaining") || !res.headers.has("x-ratelimit-limit")) && this.ratelimits[route].limit !== 1) {
-                        this.#manager.client.emit("debug", [`Missing ratelimit headers for SequentialBucket(${this.ratelimits[route].remaining}/${this.ratelimits[route].limit}) with non-default limit\n`,
-                            `${res.status} ${res.headers.get("content-type") ?? "null"}: ${options.method} ${route} | ${res.headers.get("cf-ray") ?? "null"}\n`,
-                            `content-type = ${res.headers.get("content-type") ?? "null"}\n`,
-                            `x-ratelimit-remaining = ${res.headers.get("x-ratelimit-remaining") ?? "null"}\n`,
-                            `x-ratelimit-limit = ${res.headers.get("x-ratelimit-limit") ?? "null"}\n`,
-                            `x-ratelimit-reset = ${res.headers.get("x-ratelimit-reset") ?? "null"}\n`,
-                            `x-ratelimit-global = ${res.headers.get("x-ratelimit-global") ?? "null"}`].join("\n"));
+                    if (options.method !== "GET" && (!res.headers.has("x-ratelimit-remaining")
+                      || !res.headers.has("x-ratelimit-limit")) && this.ratelimits[route].limit !== 1) {
+                        this.#manager.client.emit(
+                            "debug",
+                            [`Missing ratelimit headers for SequentialBucket(${this.ratelimits[route].remaining}/${this.ratelimits[route].limit}) with non-default limit\n`,
+                                `${res.status} ${res.headers.get("content-type") ?? "null"}: ${options.method} ${route} | ${res.headers.get("cf-ray") ?? "null"}\n`,
+                                `content-type = ${res.headers.get("content-type") ?? "null"}\n`,
+                                `x-ratelimit-remaining = ${res.headers.get("x-ratelimit-remaining") ?? "null"}\n`,
+                                `x-ratelimit-limit = ${res.headers.get("x-ratelimit-limit") ?? "null"}\n`,
+                                `x-ratelimit-reset = ${res.headers.get("x-ratelimit-reset") ?? "null"}\n`,
+                                `x-ratelimit-global = ${res.headers.get("x-ratelimit-global") ?? "null"}`].join("\n"));
                     }
                     this.ratelimits[route].remaining = !res.headers.has("x-ratelimit-remaining") ? 1 : Number(res.headers.get("x-ratelimit-remaining")) ?? 0;
                     const retryAfter = Number(res.headers.get("x-ratelimit-reset-after") ?? res.headers.get("retry-after") ?? 0) * 1000;

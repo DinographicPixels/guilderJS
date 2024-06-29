@@ -43,8 +43,8 @@ export class CalendarEvent extends Base<number> {
     createdAt: Date | null;
     /** ID of the owner of this event. */
     ownerID: string;
-    /** Details about event cancelation (if canceled) */
-    cancelation: APICalendarEvent["cancellation"] | null;
+    /** Details about event cancellation (if canceled) */
+    cancellation: APICalendarEvent["cancellation"] | null;
     /** Cached RSVPS. */
     rsvps: TypedCollection<number, APICalendarEventRSVP, CalendarEventRSVP>;
     /** Cached Comments */
@@ -72,39 +72,47 @@ export class CalendarEvent extends Base<number> {
         this.mentions = data.mentions ?? null;
         this.createdAt = data.createdAt ? new Date(data.createdAt) : null;
         this.ownerID = data.createdBy;
-        this.cancelation = data.cancellation ?? null;
-        this.rsvps = new TypedCollection(CalendarEventRSVP, client, client.params.collectionLimits?.scheduledEventsRSVPS);
-        this.comments = new TypedCollection(CalendarEventComment, client, client.params.collectionLimits?.calendarComments);
+        this.cancellation = data.cancellation ?? null;
+        this.rsvps = new TypedCollection(
+            CalendarEventRSVP,
+            client,
+            client.params.collectionLimits?.scheduledEventsRSVPS
+        );
+        this.comments = new TypedCollection(
+            CalendarEventComment,
+            client,
+            client.params.collectionLimits?.calendarComments
+        );
         this.update(data);
     }
 
     override toJSON(): JSONCalendarEvent {
         return {
             ...super.toJSON(),
-            data:        this.data,
-            id:          this.id,
-            guildID:     this.guildID,
-            channelID:   this.channelID,
-            name:        this.name,
-            description: this.description,
-            location:    this.location,
-            url:         this.url,
-            color:       this.color,
-            rsvpLimit:   this.rsvpLimit,
-            startsAt:    this.startsAt,
-            duration:    this.duration,
-            isPrivate:   this.isPrivate,
-            mentions:    this.mentions,
-            createdAt:   this.createdAt,
-            ownerID:     this.ownerID,
-            cancelation: this.cancelation,
-            rsvps:       this.rsvps.map(rsvp => rsvp.toJSON())
+            data:         this.data,
+            id:           this.id,
+            guildID:      this.guildID,
+            channelID:    this.channelID,
+            name:         this.name,
+            description:  this.description,
+            location:     this.location,
+            url:          this.url,
+            color:        this.color,
+            rsvpLimit:    this.rsvpLimit,
+            startsAt:     this.startsAt,
+            duration:     this.duration,
+            isPrivate:    this.isPrivate,
+            mentions:     this.mentions,
+            createdAt:    this.createdAt,
+            ownerID:      this.ownerID,
+            cancellation: this.cancellation,
+            rsvps:        this.rsvps.map(rsvp => rsvp.toJSON())
         };
     }
 
     protected override update(data: APICalendarEvent): void {
         if (data.cancellation !== undefined) {
-            this.cancelation = data.cancellation;
+            this.cancellation = data.cancellation;
         }
         if (data.channelId !== undefined) {
             this.channelID = data.channelId;
@@ -170,7 +178,11 @@ export class CalendarEvent extends Base<number> {
 
     /** Edit this event */
     async edit(options: EditCalendarEventOptions): Promise<CalendarEvent>{
-        return this.client.rest.channels.editCalendarEvent(this.channelID, this.id as number, options);
+        return this.client.rest.channels.editCalendarEvent(
+            this.channelID,
+            this.id as number,
+            options
+        );
     }
 
     /** Delete this event */

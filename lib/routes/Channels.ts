@@ -127,18 +127,31 @@ export class Channels {
      * @param messageID The ID of the message to get.
      * @param params Optional parameters.
      */
-    async getMessage<T extends AnyTextableChannel = AnyTextableChannel>(channelID: string, messageID: string, params?: object): Promise<Message<T>> {
+    async getMessage<T extends AnyTextableChannel = AnyTextableChannel>(
+        channelID: string,
+        messageID: string,
+        params?: object
+    ): Promise<Message<T>> {
         return this.#manager.authRequest<GETChannelMessageResponse>({
             method: "GET",
             path:   endpoints.CHANNEL_MESSAGE(channelID, messageID)
-        }).then(data => this.#manager.client.getChannel<TextChannel>(data.message.serverId as string, channelID)?.messages.update(data.message) as Message<T> ?? new Message<T>(data.message, this.#manager.client, params));
+        }).then(data =>
+            this.#manager.client.getChannel<TextChannel>(
+                data.message.serverId as string,
+                channelID
+            )?.messages
+                .update(data.message) as Message<T>
+          ?? new Message<T>(data.message, this.#manager.client, params));
     }
 
     /** This method is used to get a list of Message
      * @param channelID ID of a "Chat" channel.
      * @param filter Object to filter the output.
      */
-    async getMessages(channelID: string, filter?: GetChannelMessagesFilter): Promise<Array<Message<AnyTextableChannel>>> {
+    async getMessages(
+        channelID: string,
+        filter?: GetChannelMessagesFilter
+    ): Promise<Array<Message<AnyTextableChannel>>> {
         const query = new URLSearchParams();
         if (filter){
             if (filter.before) query.set("before", filter.before.toString());
@@ -150,7 +163,14 @@ export class Channels {
             method: "GET",
             path:   endpoints.CHANNEL_MESSAGES(channelID),
             query
-        }).then(data => data.messages.map(d => this.#manager.client.getChannel<TextChannel>(d.serverId as string, channelID)?.messages.update(d) ?? new Message(d, this.#manager.client)));
+        }).then(data =>
+            data.messages.map(d =>
+                this.#manager.client.getChannel<TextChannel>(
+                    d.serverId as string,
+                    channelID
+                )?.messages
+                    .update(d)
+              ?? new Message(d, this.#manager.client)));
     }
 
     /** This method is used to get a channel doc.
@@ -163,7 +183,12 @@ export class Channels {
         return this.#manager.authRequest<GETDocResponse>({
             method: "GET",
             path:   endpoints.CHANNEL_DOC(channelID, docID)
-        }).then(data => this.#manager.client.getChannel<DocChannel>(data.doc.serverId, channelID)?.docs.update(data.doc) ?? new Doc(data.doc, this.#manager.client));
+        }).then(data =>
+            this.#manager.client.getChannel<DocChannel>(
+                data.doc.serverId,
+                channelID)?.docs
+                .update(data.doc)
+          ?? new Doc(data.doc, this.#manager.client));
     }
 
     /** This method is used to get a list of "Channel" Doc.
@@ -180,7 +205,13 @@ export class Channels {
             method: "GET",
             path:   endpoints.CHANNEL_DOCS(channelID),
             query
-        }).then(data => data.docs.map(d => this.#manager.client.getChannel<DocChannel>(d.serverId, channelID)?.docs.update(d) ?? new Doc(d, this.#manager.client)) as never);
+        }).then(data =>
+            data.docs.map(d =>
+                this.#manager.client.getChannel<DocChannel>(
+                    d.serverId,
+                    channelID)?.docs
+                    .update(d)
+            ?? new Doc(d, this.#manager.client)) as never);
     }
 
     /**
@@ -192,7 +223,10 @@ export class Channels {
         return this.#manager.authRequest<GETDocCommentsResponse>({
             method: "GET",
             path:   endpoints.CHANNEL_DOC_COMMENTS(channelID, docID)
-        }).then(data => data.docComments.map(d => new DocComment(d, this.#manager.client)));
+        }).then(data =>
+            data.docComments.map(d =>
+                new DocComment(d, this.#manager.client))
+        );
     }
 
     /**
@@ -235,7 +269,10 @@ export class Channels {
             method: "GET",
             path:   endpoints.FORUM_TOPICS(channelID),
             query
-        }).then(data => data.forumTopics.map(d => this.#manager.client.util.updateForumThread(d)));
+        }).then(data =>
+            data.forumTopics.map(d =>
+                this.#manager.client.util.updateForumThread(d))
+        );
     }
 
     /** This method is used to get a specific forum thread comment.
@@ -247,7 +284,9 @@ export class Channels {
         return this.#manager.authRequest<GETForumTopicCommentResponse>({
             method: "GET",
             path:   endpoints.FORUM_TOPIC_COMMENT(channelID, threadID, commentID)
-        }).then(data => new ForumThreadComment(data.forumTopicComment, this.#manager.client));
+        }).then(data =>
+            new ForumThreadComment(data.forumTopicComment, this.#manager.client)
+        );
     }
 
     /** This method is used to get a list of ForumThreadComment.
@@ -258,7 +297,10 @@ export class Channels {
         return this.#manager.authRequest<GETForumTopicCommentsResponse>({
             method: "GET",
             path:   endpoints.FORUM_TOPIC_COMMENTS(channelID, threadID)
-        }).then(data => data.forumTopicComments.map(d => new ForumThreadComment(d, this.#manager.client)) as never);
+        }).then(data =>
+            data.forumTopicComments.map(d =>
+                new ForumThreadComment(d, this.#manager.client)) as never
+        );
     }
 
     /** This method is used to get a specific calendar event.
@@ -271,7 +313,12 @@ export class Channels {
         return this.#manager.authRequest<GETCalendarEventResponse>({
             method: "GET",
             path:   endpoints.CHANNEL_EVENT(channelID, eventID)
-        }).then(data => this.#manager.client.getChannel<CalendarChannel>(data.calendarEvent.serverId, data.calendarEvent.channelId)?.scheduledEvents.update(data.calendarEvent) ?? new CalendarEvent(data.calendarEvent, this.#manager.client));
+        }).then(data =>
+            this.#manager.client.getChannel<CalendarChannel>(
+                data.calendarEvent.serverId,
+                data.calendarEvent.channelId)?.scheduledEvents
+                .update(data.calendarEvent)
+          ?? new CalendarEvent(data.calendarEvent, this.#manager.client));
     }
 
     /** This method is used to get a list of CalendarEvent
@@ -289,7 +336,13 @@ export class Channels {
             method: "GET",
             path:   endpoints.CHANNEL_EVENTS(channelID),
             query
-        }).then(data => data.calendarEvents.map(d => this.#manager.client.getChannel<CalendarChannel>(d.serverId, d.channelId)?.scheduledEvents.update(d) ?? new CalendarEvent(d, this.#manager.client)) as never);
+        }).then(data =>
+            data.calendarEvents.map(d =>
+                this.#manager.client.getChannel<CalendarChannel>(
+                    d.serverId,
+                    d.channelId)?.scheduledEvents
+                    .update(d)
+            ?? new CalendarEvent(d, this.#manager.client)) as never);
     }
 
     /** This method is used to get a specific event comment coming from a calendar.
@@ -302,7 +355,9 @@ export class Channels {
         return this.#manager.authRequest<GETCalendarEventCommentResponse>({
             method: "GET",
             path:   endpoints.CHANNEL_EVENT_COMMENT(channelID, eventID, commentID)
-        }).then(data => new CalendarEventComment(data.calendarEventComment, this.#manager.client));
+        }).then(data =>
+            new CalendarEventComment(data.calendarEventComment, this.#manager.client)
+        );
     }
 
     /** This method is used to get a list of CalendarEventComment
@@ -314,7 +369,11 @@ export class Channels {
         return this.#manager.authRequest<GETCalendarEventCommentsResponse>({
             method: "GET",
             path:   endpoints.CHANNEL_EVENT_COMMENTS(channelID, eventID)
-        }).then(data => data.calendarEventComments.map(d => new CalendarEventComment(d, this.#manager.client)));
+        }).then(data =>
+            data.calendarEventComments.map(d =>
+                new CalendarEventComment(d, this.#manager.client)
+            )
+        );
     }
 
     /** This method is used to get a specific CalendarEventRSVP.
@@ -328,7 +387,13 @@ export class Channels {
         return this.#manager.authRequest<GETCalendarEventRSVPResponse>({
             method: "GET",
             path:   endpoints.CHANNEL_EVENT_RSVP(channelID, eventID, memberID)
-        }).then(data => this.#manager.client.getChannel<CalendarChannel>(data.calendarEventRsvp.serverId, data.calendarEventRsvp.channelId)?.scheduledEvents.get(data.calendarEventRsvp.calendarEventId)?.rsvps.update(data.calendarEventRsvp) ?? new CalendarEventRSVP(data.calendarEventRsvp, this.#manager.client));
+        }).then(data =>
+            this.#manager.client.getChannel<CalendarChannel>(
+                data.calendarEventRsvp.serverId,
+                data.calendarEventRsvp.channelId)?.scheduledEvents
+                .get(data.calendarEventRsvp.calendarEventId)?.rsvps
+                .update(data.calendarEventRsvp)
+          ?? new CalendarEventRSVP(data.calendarEventRsvp, this.#manager.client));
     }
 
     /** This method is used to get a list of CalendarEventRSVP.
@@ -339,7 +404,14 @@ export class Channels {
         return this.#manager.authRequest<GETCalendarEventRSVPSResponse>({
             method: "GET",
             path:   endpoints.CHANNEL_EVENT_RSVPS(channelID, eventID)
-        }).then(data => data.calendarEventRsvps.map(d => this.#manager.client.getChannel<CalendarChannel>(d.serverId, d.channelId)?.scheduledEvents.get(d.calendarEventId)?.rsvps.update(d) ?? new CalendarEventRSVP(d, this.#manager.client)) as never);
+        }).then(data =>
+            data.calendarEventRsvps.map(d =>
+                this.#manager.client.getChannel<CalendarChannel>(
+                    d.serverId,
+                    d.channelId)?.scheduledEvents
+                    .get(d.calendarEventId)?.rsvps
+                    .update(d)
+            ?? new CalendarEventRSVP(d, this.#manager.client)) as never);
     }
 
     /** This method is used to get a specific list item.
@@ -360,7 +432,10 @@ export class Channels {
         return this.#manager.authRequest<GETChannelListItemsResponse>({
             method: "GET",
             path:   endpoints.LIST_ITEMS(channelID)
-        }).then(data => data.listItems.map(d => new ListItem(d as APIListItem, this.#manager.client)) as never);
+        }).then(data =>
+            data.listItems.map(d =>
+                new ListItem(d as APIListItem, this.#manager.client)) as never
+        );
     }
 
     // CREATE, EDIT & DELETE
@@ -370,13 +445,19 @@ export class Channels {
      * @param options Message options
      * @param params Optional parameters.
      */
-    async createMessage<T extends AnyTextableChannel = AnyTextableChannel>(channelID: string, options: CreateMessageOptions, params?: object): Promise<Message<T>> {
+    async createMessage<T extends AnyTextableChannel = AnyTextableChannel>(
+        channelID: string,
+        options: CreateMessageOptions,
+        params?: object
+    ): Promise<Message<T>> {
         if (typeof options !== "object") throw new Error("message options should be an object.");
         return this.#manager.authRequest<POSTChannelMessageResponse>({
             method: "POST",
             path:   endpoints.CHANNEL_MESSAGES(channelID),
             json:   options
-        }).then(data => new Message<T>(data.message, this.#manager.client, params));
+        }).then(data =>
+            new Message<T>(data.message, this.#manager.client, params)
+        );
     }
 
     /** Edit a specific message coming from a specified channel.
@@ -385,13 +466,20 @@ export class Channels {
      * @param newMessage object containing new message's options.
      * @param params Optional parameters.
      */
-    async editMessage<T extends AnyTextableChannel = AnyTextableChannel>(channelID: string, messageID: string, newMessage: EditMessageOptions, params?: object): Promise<Message<T>> {
+    async editMessage<T extends AnyTextableChannel = AnyTextableChannel>(
+        channelID: string,
+        messageID: string,
+        newMessage: EditMessageOptions,
+        params?: object
+    ): Promise<Message<T>> {
         if (typeof newMessage !== "object") throw new Error("newMessage should be an object.");
         return this.#manager.authRequest<POSTChannelMessageResponse>({
             method: "PUT",
             path:   endpoints.CHANNEL_MESSAGE(channelID, messageID),
             json:   newMessage
-        }).then(data => new Message<T>(data.message, this.#manager.client, params));
+        }).then(data =>
+            new Message<T>(data.message, this.#manager.client, params)
+        );
     }
 
     /** Delete a specific message.
@@ -411,9 +499,25 @@ export class Channels {
      * @param targetID ID of the object you'd like to add the reaction to. (e.g: a message ID)
      * @param reaction ID of the reaction to add.
      */
-    async createReaction(channelID: string, channelType: ChannelReactionTypes, targetID: string | number, reaction: number): Promise<void> {
-        if (channelType !== "ChannelMessage" && channelType !== "ForumThread" && channelType !== "CalendarEvent" && channelType !== "Doc" && channelType !== "ChannelAnnouncement") throw new Error("Invalid channel type.");
-        let endpointType: "CHANNEL_MESSAGE_EMOTE" | "FORUM_TOPIC_EMOTE" | "CHANNEL_EVENT_EMOTE" | "CHANNEL_DOC_EMOTE" | "CHANNEL_ANNOUNCEMENT_EMOTE" | undefined;
+    async createReaction(
+        channelID: string,
+        channelType: ChannelReactionTypes,
+        targetID: string | number,
+        reaction: number
+    ): Promise<void> {
+        if (channelType !== "ChannelMessage"
+          && channelType !== "ForumThread"
+          && channelType !== "CalendarEvent"
+          && channelType !== "Doc"
+          && channelType !== "ChannelAnnouncement"
+        ) throw new Error("Invalid channel type.");
+        let endpointType:
+        "CHANNEL_MESSAGE_EMOTE"
+        | "FORUM_TOPIC_EMOTE"
+        | "CHANNEL_EVENT_EMOTE"
+        | "CHANNEL_DOC_EMOTE"
+        | "CHANNEL_ANNOUNCEMENT_EMOTE"
+        | undefined;
         if (channelType === "ChannelMessage") endpointType = "CHANNEL_MESSAGE_EMOTE";
         if (channelType === "ForumThread") endpointType = "FORUM_TOPIC_EMOTE";
         if (channelType === "CalendarEvent") endpointType = "CHANNEL_EVENT_EMOTE";
@@ -432,9 +536,25 @@ export class Channels {
      * @param targetID ID of the target you'd like to add the reaction to. (e.g: a message ID)
      * @param reaction ID of the reaction.
      */
-    async deleteReaction(channelID: string, channelType: ChannelReactionTypes, targetID: string | number, reaction: number): Promise<void> {
-        if (channelType !== "ChannelMessage" && channelType !== "ForumThread" && channelType !== "CalendarEvent" && channelType !== "Doc" && channelType !== "ChannelAnnouncement") throw new Error("Invalid channel type.");
-        let endpointType: "CHANNEL_MESSAGE_EMOTE" | "FORUM_TOPIC_EMOTE" | "CHANNEL_EVENT_EMOTE" | "CHANNEL_DOC_EMOTE" | "CHANNEL_ANNOUNCEMENT_EMOTE" | undefined;
+    async deleteReaction(
+        channelID: string,
+        channelType: ChannelReactionTypes,
+        targetID: string | number,
+        reaction: number
+    ): Promise<void> {
+        if (channelType !== "ChannelMessage"
+          && channelType !== "ForumThread"
+          && channelType !== "CalendarEvent"
+          && channelType !== "Doc"
+          && channelType !== "ChannelAnnouncement"
+        ) throw new Error("Invalid channel type.");
+        let endpointType:
+        "CHANNEL_MESSAGE_EMOTE"
+        | "FORUM_TOPIC_EMOTE"
+        | "CHANNEL_EVENT_EMOTE"
+        | "CHANNEL_DOC_EMOTE"
+        | "CHANNEL_ANNOUNCEMENT_EMOTE"
+        | undefined;
         if (channelType === "ChannelMessage") endpointType = "CHANNEL_MESSAGE_EMOTE";
         if (channelType === "ForumThread") endpointType = "FORUM_TOPIC_EMOTE";
         if (channelType === "CalendarEvent") endpointType = "CHANNEL_EVENT_EMOTE";
@@ -453,7 +573,12 @@ export class Channels {
      * @param channelType Type of channel.
      * @param targetID Target to remove reactions from it.
      */
-    async bulkDeleteReactions(channelID: string, channelType: ChannelReactionTypeBulkDeleteSupported, targetID: string | number, filter?: DELETEMessageReactionQuery): Promise<void> {
+    async bulkDeleteReactions(
+        channelID: string,
+        channelType: ChannelReactionTypeBulkDeleteSupported,
+        targetID: string | number,
+        filter?: DELETEMessageReactionQuery
+    ): Promise<void> {
         if (channelType !== "ChannelMessage") throw new Error("Invalid channel type.");
         let endpointType: "CHANNEL_MESSAGE_EMOTES" | undefined;
         if (channelType === "ChannelMessage") endpointType = "CHANNEL_MESSAGE_EMOTES";
@@ -475,9 +600,24 @@ export class Channels {
      * @param targetID ID of the target you'd like to add the reaction to. (e.g: a comment id)
      * @param reaction ID of the reaction to add.
      */
-    async createReactionToSubcategory(channelID: string, subcategoryType: ChannelSubcategoryReactionTypes, subcategoryID: string | number, targetID: string | number, reaction: number): Promise<void> {
-        if (subcategoryType !== "CalendarEventComment" && subcategoryType !== "ForumThreadComment" && subcategoryType !== "DocComment" && subcategoryType !== "AnnouncementComment") throw new Error("Invalid channel subcategory.");
-        let endpointType: "FORUM_TOPIC_COMMENT_EMOTE" | "CHANNEL_EVENT_COMMENT_EMOTE" | "CHANNEL_DOC_COMMENT_EMOTE" | "CHANNEL_ANNOUNCEMENT_COMMENT_EMOTE" | undefined;
+    async createReactionToSubcategory(
+        channelID: string,
+        subcategoryType: ChannelSubcategoryReactionTypes,
+        subcategoryID: string | number,
+        targetID: string | number,
+        reaction: number
+    ): Promise<void> {
+        if (subcategoryType !== "CalendarEventComment"
+          && subcategoryType !== "ForumThreadComment"
+          && subcategoryType !== "DocComment"
+          && subcategoryType !== "AnnouncementComment"
+        ) throw new Error("Invalid channel subcategory.");
+        let endpointType:
+        "FORUM_TOPIC_COMMENT_EMOTE"
+        | "CHANNEL_EVENT_COMMENT_EMOTE"
+        | "CHANNEL_DOC_COMMENT_EMOTE"
+        | "CHANNEL_ANNOUNCEMENT_COMMENT_EMOTE"
+        | undefined;
         if (subcategoryType === "CalendarEventComment") endpointType = "CHANNEL_EVENT_COMMENT_EMOTE";
         if (subcategoryType === "ForumThreadComment") endpointType = "FORUM_TOPIC_COMMENT_EMOTE";
         if (subcategoryType === "DocComment") endpointType = "CHANNEL_DOC_COMMENT_EMOTE";
@@ -485,7 +625,12 @@ export class Channels {
 
         return this.#manager.authRequest<void>({
             method: "PUT",
-            path:   endpoints[endpointType as keyof typeof endpoints](channelID, subcategoryID as never, targetID as never, reaction)
+            path:   endpoints[endpointType as keyof typeof endpoints](
+                channelID,
+                subcategoryID as never,
+                targetID as never,
+                reaction
+            )
         });
     }
 
@@ -496,9 +641,24 @@ export class Channels {
      * @param targetID ID of the target you'd like to remove the reaction from. (e.g: a comment id)
      * @param reaction ID of the reaction to add.
      */
-    async deleteReactionFromSubcategory(channelID: string, subcategoryType: ChannelSubcategoryReactionTypes, subcategoryID: string | number, targetID: string | number, reaction: number): Promise<void> {
-        if (subcategoryType !== "CalendarEventComment" && subcategoryType !== "ForumThreadComment" && subcategoryType !== "DocComment" && subcategoryType !== "AnnouncementComment") throw new Error("Invalid channel subcategory.");
-        let endpointType: "FORUM_TOPIC_COMMENT_EMOTE" | "CHANNEL_EVENT_COMMENT_EMOTE" | "CHANNEL_DOC_COMMENT_EMOTE" | "CHANNEL_ANNOUNCEMENT_COMMENT_EMOTE" | undefined;
+    async deleteReactionFromSubcategory(
+        channelID: string,
+        subcategoryType: ChannelSubcategoryReactionTypes,
+        subcategoryID: string | number,
+        targetID: string | number,
+        reaction: number
+    ): Promise<void> {
+        if (subcategoryType !== "CalendarEventComment"
+          && subcategoryType !== "ForumThreadComment"
+          && subcategoryType !== "DocComment"
+          && subcategoryType !== "AnnouncementComment"
+        ) throw new Error("Invalid channel subcategory.");
+        let endpointType:
+        "FORUM_TOPIC_COMMENT_EMOTE"
+        | "CHANNEL_EVENT_COMMENT_EMOTE"
+        | "CHANNEL_DOC_COMMENT_EMOTE"
+        | "CHANNEL_ANNOUNCEMENT_COMMENT_EMOTE"
+        | undefined;
         if (subcategoryType === "CalendarEventComment") endpointType = "CHANNEL_EVENT_COMMENT_EMOTE";
         if (subcategoryType === "ForumThreadComment") endpointType = "FORUM_TOPIC_COMMENT_EMOTE";
         if (subcategoryType === "DocComment") endpointType = "CHANNEL_DOC_COMMENT_EMOTE";
@@ -506,7 +666,12 @@ export class Channels {
 
         return this.#manager.authRequest<void>({
             method: "DELETE",
-            path:   endpoints[endpointType as keyof typeof endpoints](channelID, subcategoryID as never, targetID as never, reaction)
+            path:   endpoints[endpointType as keyof typeof endpoints](
+                channelID,
+                subcategoryID as never,
+                targetID as never,
+                reaction
+            )
         });
     }
 
@@ -514,7 +679,10 @@ export class Channels {
      * @param channelID ID of a "Forums" channel.
      * @param options Thread's options including title & content.
      */
-    async createForumThread<T extends ForumChannel = ForumChannel>(channelID: string, options: CreateForumThreadOptions): Promise<ForumThread<T>> {
+    async createForumThread<T extends ForumChannel = ForumChannel>(
+        channelID: string,
+        options: CreateForumThreadOptions
+    ): Promise<ForumThread<T>> {
         if (typeof options !== "object") throw new Error("thread options should be an object.");
         return this.#manager.authRequest<POSTForumTopicResponse>({
             method: "POST",
@@ -528,7 +696,11 @@ export class Channels {
      * @param threadID ID of a forum thread.
      * @param options Edit options.
      */
-    async editForumThread<T extends ForumChannel = ForumChannel>(channelID: string, threadID: number, options: EditForumThreadOptions): Promise<ForumThread<T>> {
+    async editForumThread<T extends ForumChannel = ForumChannel>(
+        channelID: string,
+        threadID: number,
+        options: EditForumThreadOptions
+    ): Promise<ForumThread<T>> {
         if (typeof options !== "object") throw new Error("thread options should be an object.");
         return this.#manager.authRequest<PATCHForumTopicResponse>({
             method: "PATCH",
@@ -597,13 +769,19 @@ export class Channels {
      * @param threadID ID of a forum thread.
      * @param options Comment's options.
      */
-    async createForumComment(channelID: string, threadID: number, options: CreateForumCommentOptions): Promise<ForumThreadComment> {
+    async createForumComment(
+        channelID: string,
+        threadID: number,
+        options: CreateForumCommentOptions
+    ): Promise<ForumThreadComment> {
         if (typeof options !== "object") throw new Error("comment options should be an object.");
         return this.#manager.authRequest<POSTForumTopicCommentResponse>({
             method: "POST",
             path:   endpoints.FORUM_TOPIC_COMMENTS(channelID, threadID),
             json:   options
-        }).then(data => new ForumThreadComment(data.forumTopicComment, this.#manager.client, { channelID }));
+        }).then(data =>
+            new ForumThreadComment(data.forumTopicComment, this.#manager.client, { channelID })
+        );
     }
 
     /** Edit a forum thread's comment.
@@ -612,13 +790,20 @@ export class Channels {
      * @param commentID ID of a thread comment.
      * @param options Edit options.
      */
-    async editForumComment(channelID: string, threadID: number, commentID: number, options?: EditForumCommentOptions): Promise<ForumThreadComment> {
+    async editForumComment(
+        channelID: string,
+        threadID: number,
+        commentID: number,
+        options?: EditForumCommentOptions
+    ): Promise<ForumThreadComment> {
         if (typeof options !== "object") throw new Error("comment options should be an object.");
         return this.#manager.authRequest<PATCHForumTopicCommentResponse>({
             method: "PATCH",
             path:   endpoints.FORUM_TOPIC_COMMENT(channelID, threadID, commentID),
             json:   options
-        }).then(data => new ForumThreadComment(data.forumTopicComment, this.#manager.client, { channelID }));
+        }).then(data =>
+            new ForumThreadComment(data.forumTopicComment, this.#manager.client, { channelID })
+        );
     }
 
     /** Delete a forum thread comment.
@@ -692,7 +877,12 @@ export class Channels {
      * @param commentID ID of the comment to edit.
      * @param options Edit options.
      */
-    async editDocComment(channelID: string, docID: number, commentID: number, options: EditDocCommentOptions): Promise<DocComment> {
+    async editDocComment(
+        channelID: string,
+        docID: number,
+        commentID: number,
+        options: EditDocCommentOptions
+    ): Promise<DocComment> {
         return this.#manager.authRequest<PATCHDocCommentResponse>({
             method: "PATCH",
             path:   endpoints.CHANNEL_DOC_COMMENT(channelID, docID, commentID),
@@ -718,7 +908,11 @@ export class Channels {
      * @param options Event options.
      * @param createSeries (optional) Create a series. (event's repetition)
      */
-    async createCalendarEvent(channelID: string, options: CreateCalendarEventOptions, createSeries?: POSTCalendarEventBody["repeatInfo"]): Promise<CalendarEvent> {
+    async createCalendarEvent(
+        channelID: string,
+        options: CreateCalendarEventOptions,
+        createSeries?: POSTCalendarEventBody["repeatInfo"]
+    ): Promise<CalendarEvent> {
         if (typeof options !== "object") throw new Error("event options should be an object.");
         if (options.duration && typeof options.duration === "number") {
             if (options.duration < 1000) throw new Error("The duration should be higher than 1000 ms.");
@@ -738,7 +932,11 @@ export class Channels {
      * @param eventID ID of a calendar event.
      * @param options Edit options.
      */
-    async editCalendarEvent(channelID: string, eventID: number, options: EditCalendarEventOptions): Promise<CalendarEvent> {
+    async editCalendarEvent(
+        channelID: string,
+        eventID: number,
+        options: EditCalendarEventOptions
+    ): Promise<CalendarEvent> {
         if (typeof options !== "object") throw new Error("event options should be an object.");
         if (options.duration && typeof options.duration === "number") {
             if (options.duration < 1000) throw new Error("The duration should be higher than 1000 ms.");
@@ -757,7 +955,10 @@ export class Channels {
      * **Use createCalendarEvent and set the createSeries property to create a series.**
      */
     createCalendarEventSeries(): Error {
-        return new Error("The Guilded API only allows series on the event's creation. Use createCalendarEvent and set the createSeries property to create a series.");
+        return new Error(
+            "The Guilded API only allows series on the event's creation. " +
+          "Use createCalendarEvent and set the createSeries property to create a series."
+        );
     }
 
     /**
@@ -767,7 +968,12 @@ export class Channels {
      * @param seriesID ID of the series.
      * @param options Edit repetition options.
      */
-    async editCalendarEventSeries(channelID: string, eventID: number, seriesID: string, options: POSTCalendarEventBody["repeatInfo"]): Promise<void> {
+    async editCalendarEventSeries(
+        channelID: string,
+        eventID: number,
+        seriesID: string,
+        options: POSTCalendarEventBody["repeatInfo"]
+    ): Promise<void> {
         return this.#manager.authRequest<void>({
             method: "PATCH",
             path:   endpoints.CHANNEL_EVENT_EVENT_SERIES_ENTITY(channelID, seriesID),
@@ -794,13 +1000,19 @@ export class Channels {
      * @param eventID The ID of a calendar event.
      * @param options Comment options, includes content, and more.
      */
-    async createCalendarComment(channelID: string, eventID: number, options: CreateCalendarCommentOptions): Promise<CalendarEventComment> {
+    async createCalendarComment(
+        channelID: string,
+        eventID: number,
+        options: CreateCalendarCommentOptions
+    ): Promise<CalendarEventComment> {
         if (typeof options !== "object") throw new Error("comment options should be an object.");
         return this.#manager.authRequest<POSTCalendarEventCommentResponse>({
             method: "POST",
             path:   endpoints.CHANNEL_EVENT_COMMENTS(channelID, eventID),
             json:   options
-        }).then(data => new CalendarEventComment(data.calendarEventComment, this.#manager.client));
+        }).then(data =>
+            new CalendarEventComment(data.calendarEventComment, this.#manager.client)
+        );
     }
 
     /** Edit an existing calendar event comment.
@@ -809,13 +1021,20 @@ export class Channels {
      * @param commentID The ID of the comment to edit.
      * @param options Edit options.
      */
-    async editCalendarComment(channelID: string, eventID: number, commentID: number, options: EditCalendarCommentOptions): Promise<CalendarEventComment> {
+    async editCalendarComment(
+        channelID: string,
+        eventID: number,
+        commentID: number,
+        options: EditCalendarCommentOptions
+    ): Promise<CalendarEventComment> {
         if (typeof options !== "object") throw new Error("comment options should be an object.");
         return this.#manager.authRequest<PATCHCalendarEventCommentResponse>({
             method: "PATCH",
             path:   endpoints.CHANNEL_EVENT_COMMENT(channelID, eventID, commentID),
             json:   options
-        }).then(data => new CalendarEventComment(data.calendarEventComment, this.#manager.client));
+        }).then(data =>
+            new CalendarEventComment(data.calendarEventComment, this.#manager.client)
+        );
     }
 
     /** Delete a comment from a calendar event.
@@ -847,13 +1066,20 @@ export class Channels {
      * @param memberID ID of a member.
      * @param options Edit options.
      */
-    async editCalendarRsvp(channelID: string, eventID: number, memberID: string, options: EditCalendarRSVPOptions): Promise<CalendarEventRSVP> {
+    async editCalendarRsvp(
+        channelID: string,
+        eventID: number,
+        memberID: string,
+        options: EditCalendarRSVPOptions
+    ): Promise<CalendarEventRSVP> {
         if (typeof options !== "object") throw new Error("rsvp options should be an object.");
         return this.#manager.authRequest<PUTCalendarEventRSVPResponse>({
             method: "PUT",
             path:   endpoints.CHANNEL_EVENT_RSVP(channelID, eventID, memberID),
             json:   options
-        }).then(data => new CalendarEventRSVP(data.calendarEventRsvp, this.#manager.client));
+        }).then(data =>
+            new CalendarEventRSVP(data.calendarEventRsvp, this.#manager.client)
+        );
     }
 
     /** Delete a RSVP from a calendar event.
@@ -875,7 +1101,12 @@ export class Channels {
      * @param memberIDs List of multiple member ids.
      * @param options Update options.
      */
-    async bulkCalendarRsvpUpdate(channelID: string, eventID: number, memberIDs: Array<string>, options: EditCalendarRSVPOptions): Promise<void> {
+    async bulkCalendarRsvpUpdate(
+        channelID: string,
+        eventID: number,
+        memberIDs: Array<string>,
+        options: EditCalendarRSVPOptions
+    ): Promise<void> {
         return this.#manager.authRequest({
             method: "PUT",
             path:   endpoints.CHANNEL_EVENT_RSVPS(channelID, eventID),
@@ -891,7 +1122,11 @@ export class Channels {
      * @param content String content of the new item.
      * @param note Add a note to the new item.
      */
-    async createListItem(channelID: string, content: POSTListItemBody["message"], note?: POSTListItemBody["note"]): Promise<ListItem> {
+    async createListItem(
+        channelID: string,
+        content: POSTListItemBody["message"],
+        note?: POSTListItemBody["note"]
+    ): Promise<ListItem> {
         return this.#manager.authRequest<POSTListItemResponse>({
             method: "POST",
             path:   endpoints.LIST_ITEMS(channelID),
@@ -904,7 +1139,11 @@ export class Channels {
      * @param itemID ID of a list item.
      * @param options Edit options.
      */
-    async editListItem(channelID: string, itemID: string, options?: { content?: PATCHListItemBody["message"]; note?: PATCHListItemBody["note"]; }): Promise<ListItem> {
+    async editListItem(
+        channelID: string,
+        itemID: string,
+        options?: { content?: PATCHListItemBody["message"]; note?: PATCHListItemBody["note"]; }
+    ): Promise<ListItem> {
         return this.#manager.authRequest<PATCHListItemResponse>({
             method: "PATCH",
             path:   endpoints.LIST_ITEM(channelID, itemID),
@@ -955,7 +1194,9 @@ export class Channels {
             method: "POST",
             path:   endpoints.CHANNEL_ANNOUNCEMENTS(channelID),
             json:   options
-        }).then(data => new Announcement(data.announcement, this.#manager.client));
+        }).then(data =>
+            new Announcement(data.announcement, this.#manager.client)
+        );
     }
 
     /**
@@ -964,12 +1205,18 @@ export class Channels {
      * @param announcementID ID of the announcement to edit.
      * @param options Edit options
      */
-    async editAnnouncement(channelID: string, announcementID: string, options: PATCHChannelAnnouncementBody): Promise<Announcement> {
+    async editAnnouncement(
+        channelID: string,
+        announcementID: string,
+        options: PATCHChannelAnnouncementBody
+    ): Promise<Announcement> {
         return this.#manager.authRequest<PATCHChannelAnnouncementResponse>({
             method: "PATCH",
             path:   endpoints.CHANNEL_ANNOUNCEMENT(channelID, announcementID),
             json:   options
-        }).then(data => new Announcement(data.announcement, this.#manager.client));
+        }).then(data =>
+            new Announcement(data.announcement, this.#manager.client)
+        );
     }
 
     /**
@@ -997,7 +1244,11 @@ export class Channels {
             method: "GET",
             path:   endpoints.CHANNEL_ANNOUNCEMENTS(channelID),
             query
-        }).then(data => data.announcements.map(d => new Announcement(d, this.#manager.client)));
+        }).then(data =>
+            data.announcements.map(d =>
+                new Announcement(d, this.#manager.client)
+            )
+        );
     }
 
     /**
@@ -1009,7 +1260,9 @@ export class Channels {
         return this.#manager.authRequest<GETChannelAnnouncementResponse>({
             method: "GET",
             path:   endpoints.CHANNEL_ANNOUNCEMENT(channelID, announcementID)
-        }).then(data => new Announcement(data.announcement, this.#manager.client));
+        }).then(data =>
+            new Announcement(data.announcement, this.#manager.client)
+        );
     }
 
     /**
@@ -1018,12 +1271,18 @@ export class Channels {
      * @param announcementID ID of the announcement to create the comment in.
      * @param options Comment creation options.
      */
-    async createAnnouncementComment(channelID: string, announcementID: string, options: POSTChannelAnnouncementCommentBody): Promise<AnnouncementComment> {
+    async createAnnouncementComment(
+        channelID: string,
+        announcementID: string,
+        options: POSTChannelAnnouncementCommentBody
+    ): Promise<AnnouncementComment> {
         return this.#manager.authRequest<POSTChannelAnnouncementCommentResponse>({
             method: "POST",
             path:   endpoints.CHANNEL_ANNOUNCEMENT_COMMENTS(channelID, announcementID),
             json:   options
-        }).then(data => new AnnouncementComment(data.announcementComment, this.#manager.client));
+        }).then(data =>
+            new AnnouncementComment(data.announcementComment, this.#manager.client)
+        );
     }
 
     /**
@@ -1033,12 +1292,23 @@ export class Channels {
      * @param commentID ID of the comment to edit.
      * @param options Edit options.
      */
-    async editAnnouncementComment(channelID: string, announcementID: string, commentID: number, options: PATCHChannelAnnouncementCommentBody): Promise<AnnouncementComment> {
+    async editAnnouncementComment(
+        channelID: string,
+        announcementID: string,
+        commentID: number,
+        options: PATCHChannelAnnouncementCommentBody
+    ): Promise<AnnouncementComment> {
         return this.#manager.authRequest<PATCHChannelAnnouncementCommentResponse>({
             method: "PATCH",
-            path:   endpoints.CHANNEL_ANNOUNCEMENT_COMMENT(channelID, announcementID, commentID),
-            json:   options
-        }).then(data => new AnnouncementComment(data.announcementComment, this.#manager.client));
+            path:   endpoints.CHANNEL_ANNOUNCEMENT_COMMENT(
+                channelID,
+                announcementID,
+                commentID
+            ),
+            json: options
+        }).then(data =>
+            new AnnouncementComment(data.announcementComment, this.#manager.client)
+        );
     }
 
     /**
@@ -1047,10 +1317,18 @@ export class Channels {
      * @param announcementID ID of the announcement where the comment is in.
      * @param commentID ID of the comment to delete.
      */
-    async deleteAnnouncementComment(channelID: string, announcementID: string, commentID: number): Promise<void> {
+    async deleteAnnouncementComment(
+        channelID: string,
+        announcementID: string,
+        commentID: number
+    ): Promise<void> {
         return this.#manager.authRequest<void>({
             method: "DELETE",
-            path:   endpoints.CHANNEL_ANNOUNCEMENT_COMMENT(channelID, announcementID, commentID)
+            path:   endpoints.CHANNEL_ANNOUNCEMENT_COMMENT(
+                channelID,
+                announcementID,
+                commentID
+            )
         });
     }
 
@@ -1059,11 +1337,18 @@ export class Channels {
      * @param channelID ID of an Announcement channel.
      * @param announcementID ID of an announcement.
      */
-    async getAnnouncementComments(channelID: string, announcementID: string): Promise<Array<AnnouncementComment>> {
+    async getAnnouncementComments(
+        channelID: string,
+        announcementID: string
+    ): Promise<Array<AnnouncementComment>> {
         return this.#manager.authRequest<GETChannelAnnouncementCommentsResponse>({
             method: "GET",
             path:   endpoints.CHANNEL_ANNOUNCEMENT_COMMENTS(channelID, announcementID)
-        }).then(data => data.announcementComments.map(d => new AnnouncementComment(d, this.#manager.client)));
+        }).then(data =>
+            data.announcementComments.map(d =>
+                new AnnouncementComment(d, this.#manager.client)
+            )
+        );
     }
 
     /**
@@ -1072,16 +1357,25 @@ export class Channels {
      * @param announcementID ID of the announcement where the comment is in.
      * @param commentID ID of the comment to get.
      */
-    async getAnnouncementComment(channelID: string, announcementID: string, commentID: number): Promise<AnnouncementComment> {
+    async getAnnouncementComment(
+        channelID: string,
+        announcementID: string,
+        commentID: number
+    ): Promise<AnnouncementComment> {
         return this.#manager.authRequest<GETChannelAnnouncementCommentResponse>({
             method: "GET",
-            path:   endpoints.CHANNEL_ANNOUNCEMENT_COMMENT(channelID, announcementID, commentID)
-        }).then(data => new AnnouncementComment(data.announcementComment, this.#manager.client));
+            path:   endpoints.CHANNEL_ANNOUNCEMENT_COMMENT(
+                channelID,
+                announcementID,
+                commentID
+            )
+        }).then(data =>
+            new AnnouncementComment(data.announcementComment, this.#manager.client)
+        );
     }
 
     /**
      * Archive a channel.
-     * @param guildID ID of the guild where the channel to archive is in
      * @param channelID ID of the channel to archive
      */
     async archiveChannel(channelID: string): Promise<void> {
@@ -1093,7 +1387,6 @@ export class Channels {
 
     /**
      * Restore a channel.
-     * @param guildID ID of the guild where the channel to restore is in
      * @param channelID ID of the channel to restore
      */
     async restoreChannel(channelID: string): Promise<void> {
@@ -1136,16 +1429,24 @@ export class Channels {
      *
      * Warning: targetID must have the correct type (number=role, string=user).
      */
-    async createPermission(guildID: string, channelID: string, targetID: string | number, options: POSTChannelUserPermissionBody | POSTChannelRolePermissionBody): Promise<Permission> {
-        return typeof targetID === "string" ? this.#manager.authRequest<POSTChannelUserPermissionResponse>({
-            method: "POST",
-            path:   endpoints.GUILD_CHANNEL_USER_PERMISSION(guildID, channelID, targetID),
-            json:   options
-        }).then(data => new Permission(data.channelUserPermission)) : this.#manager.authRequest<POSTChannelRolePermissionResponse>({
-            method: "POST",
-            path:   endpoints.GUILD_CHANNEL_ROLE_PERMISSION(guildID, channelID, targetID),
-            json:   options
-        }).then(data => new Permission(data.channelRolePermission));
+    async createPermission(
+        guildID: string,
+        channelID: string,
+        targetID: string | number,
+        options: POSTChannelUserPermissionBody | POSTChannelRolePermissionBody
+    ): Promise<Permission> {
+        return typeof targetID === "string"
+            ? this.#manager.authRequest<POSTChannelUserPermissionResponse>({
+                method: "POST",
+                path:   endpoints.GUILD_CHANNEL_USER_PERMISSION(guildID, channelID, targetID),
+                json:   options
+            }).then(data =>
+                new Permission(data.channelUserPermission)
+            ) : this.#manager.authRequest<POSTChannelRolePermissionResponse>({
+                method: "POST",
+                path:   endpoints.GUILD_CHANNEL_ROLE_PERMISSION(guildID, channelID, targetID),
+                json:   options
+            }).then(data => new Permission(data.channelRolePermission));
     }
 
     /**
@@ -1157,16 +1458,24 @@ export class Channels {
      *
      * Warning: targetID must have the correct type (number=role, string=user).
      */
-    async editPermission(guildID: string, channelID: string, targetID: string | number, options: PATCHChannelRolePermissionBody): Promise<Permission> {
-        return typeof targetID === "string" ? this.#manager.authRequest<PATCHChannelUserPermissionResponse>({
-            method: "PATCH",
-            path:   endpoints.GUILD_CHANNEL_USER_PERMISSION(guildID, channelID, targetID),
-            json:   options
-        }).then(data => new Permission(data.channelUserPermission)) : this.#manager.authRequest<PATCHChannelRolePermissionResponse>({
-            method: "PATCH",
-            path:   endpoints.GUILD_CHANNEL_ROLE_PERMISSION(guildID, channelID, targetID),
-            json:   options
-        }).then(data => new Permission(data.channelRolePermission));
+    async editPermission(
+        guildID: string,
+        channelID: string,
+        targetID: string | number,
+        options: PATCHChannelRolePermissionBody
+    ): Promise<Permission> {
+        return typeof targetID === "string"
+            ? this.#manager.authRequest<PATCHChannelUserPermissionResponse>({
+                method: "PATCH",
+                path:   endpoints.GUILD_CHANNEL_USER_PERMISSION(guildID, channelID, targetID),
+                json:   options
+            }).then(data =>
+                new Permission(data.channelUserPermission)
+            ) : this.#manager.authRequest<PATCHChannelRolePermissionResponse>({
+                method: "PATCH",
+                path:   endpoints.GUILD_CHANNEL_ROLE_PERMISSION(guildID, channelID, targetID),
+                json:   options
+            }).then(data => new Permission(data.channelRolePermission));
     }
 
     /**
@@ -1210,7 +1519,9 @@ export class Channels {
         const userPromise = this.getUserPermissions(guildID, channelID);
         const rolePromise = this.getRolePermissions(guildID, channelID);
         return Promise.all([userPromise, rolePromise])
-            .then(([userPermissions, rolePermissions]) => userPermissions.concat(rolePermissions))
+            .then(([userPermissions, rolePermissions]) =>
+                userPermissions.concat(rolePermissions)
+            )
             .catch(err => {
                 throw err;
             });
@@ -1225,7 +1536,9 @@ export class Channels {
         return this.#manager.authRequest<GETChannelUserManyPermissionResponse>({
             method: "GET",
             path:   endpoints.GUILD_CHANNEL_USER_PERMISSIONS(guildID, channelID)
-        }).then(data => data.channelUserPermissions.map(d => new Permission(d)));
+        }).then(data =>
+            data.channelUserPermissions.map(d => new Permission(d))
+        );
     }
 
     /**
@@ -1237,6 +1550,8 @@ export class Channels {
         return this.#manager.authRequest<GETChannelRoleManyPermissionResponse>({
             method: "GET",
             path:   endpoints.GUILD_CHANNEL_ROLE_PERMISSIONS(guildID, channelID)
-        }).then(data => data.channelRolePermissions.map(d => new Permission(d)));
+        }).then(data =>
+            data.channelRolePermissions.map(d => new Permission(d))
+        );
     }
 }

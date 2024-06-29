@@ -18,7 +18,8 @@ export interface JSONMessage extends JSONBase<string> {
     channelID: string;
     /** Content of the message. */
     content: string | null;
-    /** Links in content to prevent unfurling as a link preview when displaying in Guilded (min items 1; must have unique items true) */
+    /** Links in content to prevent unfurling as a link preview when displaying in Guilded
+     * (min items 1; must have unique items true) */
     hiddenLinkPreviewUrls?: Array<string>;
     /** Array of message embed. */
     embeds?: Array<APIEmbedOptions> | [];
@@ -178,7 +179,7 @@ export interface JSONCalendarEvent extends JSONBase<number> {
     /** ID of the owner of this event. */
     ownerID: string;
     /** Details about event cancelation (if canceled) */
-    cancelation: APICalendarEvent["cancellation"] | null;
+    cancellation: APICalendarEvent["cancellation"] | null;
     /** Cached RSVPS. */
     rsvps: Array<JSONCalendarEventRSVP>;
 }
@@ -373,7 +374,19 @@ export interface JSONCalendarEventComment extends JSONBase<number> {
 
 export interface JSONSocialLink {
     /** Social media name. */
-    type: "twitch" | "bnet" | "psn" | "xbox" | "steam" | "origin" | "youtube" | "twitter" | "facebook" | "switch" | "patreon" | "roblox" | "epic";
+    type: "twitch"
+    | "bnet"
+    | "psn"
+    | "xbox"
+    | "steam"
+    | "origin"
+    | "youtube"
+    | "twitter"
+    | "facebook"
+    | "switch"
+    | "patreon"
+    | "roblox"
+    | "epic";
     /** ID of the user having this social linked to their profile. */
     userID: string;
     /** The handle of the user within the external service */
@@ -458,13 +471,15 @@ export interface JSONGuildRole extends JSONBase<number> {
     isMentionable: boolean;
     /** Array of permission (Permissions enum) */
     permissions: Array<Permissions>;
-    /** An array of integer values corresponding to the decimal RGB representation for a color. The first color is solid, and a second color indicates a gradient (min items 0; max items 2) */
+    /** An array of integer values corresponding to the decimal RGB representation for a color.
+     * The first color is solid, and a second color indicates a gradient (min items 0; max items 2) */
     colors: Array<number> | null;
     /** The URL of the role icon */
     iconURL: string | null;
     /** The position the role will be in relation to the roles in the server */
     position: number;
-    /** The default role users are given when joining the server. Base roles are tied directly to the server and cannot be created or deleted */
+    /** The default role users are given when joining the server. Base roles are tied directly to the server
+     * and cannot be created or deleted */
     isBase: boolean;
     /** The bot user ID this role has been defined for. Roles with this populated can only be deleted by kicking the bot */
     botUserID: string | null;

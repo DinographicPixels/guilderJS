@@ -67,7 +67,11 @@ export class GuildChannel extends Base<string> {
         // this.messages = new TypedCollection(Message, client, client.params.collectionLimits?.messages);
         // this.threads = new TypedCollection(ForumThread, client, client.params.collectionLimits?.threads);
         // this.docs = new TypedCollection(Doc, client, client.params.collectionLimits?.docs);
-        // this.scheduledEvents = new TypedCollection(CalendarEvent, client, client.params.collectionLimits?.scheduledEvents);
+        // this.scheduledEvents = new TypedCollection(
+        //   CalendarEvent,
+        //   client,
+        //   client.params.collectionLimits?.scheduledEvents
+        // );
         this.update(data);
     }
 

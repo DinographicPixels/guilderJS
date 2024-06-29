@@ -32,7 +32,9 @@ export class Util {
     }
 
     updateUser(user: APIUser): User {
-        return this.#client.users.has(user.id) ? this.#client.users.update(user) : this.#client.users.add(new User(user, this.#client));
+        return this.#client.users.has(user.id)
+            ? this.#client.users.update(user)
+            : this.#client.users.add(new User(user, this.#client));
     }
 
     updateMember(guildID: string, memberID: string, member: APIGuildMember): Member {
@@ -45,7 +47,8 @@ export class Util {
             }
             return guild["_clientMember"];
         }
-        return guild ? guild.members.update({ ...member, id: memberID }, guildID) : new Member({ ...member }, this.#client, guildID);
+        return guild ? guild.members.update({ ...member, id: memberID }, guildID)
+            : new Member({ ...member }, this.#client, guildID);
     }
 
     updateForumThread(data: APIForumTopic | APIForumTopicSummary): ForumThread<ForumChannel> {
@@ -53,7 +56,9 @@ export class Util {
             const guild = this.#client.guilds.get(data.serverId);
             const channel = guild?.channels.get(data.channelId) as ForumChannel;
             if (guild && channel) {
-                const thread = channel.threads.has(data.id) ? channel.threads.update(data) : channel.threads.add(new ForumThread(data as APIForumTopic, this.#client));
+                const thread = channel.threads.has(data.id)
+                    ? channel.threads.update(data)
+                    : channel.threads.add(new ForumThread(data as APIForumTopic, this.#client));
                 return thread;
             }
         }
@@ -62,7 +67,9 @@ export class Util {
 
     updateGuild(data: APIGuild): Guild {
         if (data.id) {
-            return this.#client.guilds.has(data.id) ? this.#client.guilds.update(data) : this.#client.guilds.add(new Guild(data, this.#client));
+            return this.#client.guilds.has(data.id)
+                ? this.#client.guilds.update(data)
+                : this.#client.guilds.add(new Guild(data, this.#client));
         }
         return new Guild(data, this.#client);
     }
@@ -71,7 +78,9 @@ export class Util {
         if (data.serverId) {
             const guild = this.#client.guilds.get(data.serverId);
             if (guild) {
-                const role = guild.roles.has(data.id) ? guild.roles.update(data as APIGuildRole) : guild.roles.add(new GuildRole(data, this.#client));
+                const role = guild.roles.has(data.id)
+                    ? guild.roles.update(data as APIGuildRole)
+                    : guild.roles.add(new GuildRole(data, this.#client));
                 return role;
             }
         }
@@ -82,7 +91,9 @@ export class Util {
         if (data.serverId) {
             const guild = this.#client.guilds.get(data.serverId);
             if (guild) {
-                const group = guild.groups.has(data.id) ? guild.groups.update(data as APIGuildGroup) : guild.groups.add(new GuildGroup(data, this.#client));
+                const group = guild.groups.has(data.id)
+                    ? guild.groups.update(data as APIGuildGroup)
+                    : guild.groups.add(new GuildGroup(data, this.#client));
                 return group;
             }
         }
@@ -93,7 +104,9 @@ export class Util {
         if (data.serverId) {
             const guild = this.#client.guilds.get(data.serverId);
             if (guild) {
-                const channel = guild.channels.has(data.id) ? guild.channels.update(data as APIGuildChannel) : guild.channels.add(Channel.from<AnyChannel>(data, this.#client));
+                const channel = guild.channels.has(data.id)
+                    ? guild.channels.update(data as APIGuildChannel)
+                    : guild.channels.add(Channel.from<AnyChannel>(data, this.#client));
                 return channel as T;
             }
         }

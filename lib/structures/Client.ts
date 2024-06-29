@@ -261,7 +261,7 @@ export class Client extends TypedEmitter<ClientEvents> {
 
     /** This method is used to get a list of cached guild member.
      *
-     * Note: this method doesn't send a rest request, it only returns cached entities.
+     * Note: this method doesn't send a REST request, it only returns cached entities.
      * @param guildID ID of the guild to get members.
      */
     getMembers(guildID: string): Array<Member> | undefined {

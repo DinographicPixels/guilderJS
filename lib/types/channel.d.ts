@@ -10,7 +10,8 @@ import type { APIEmbedField } from "guildedapi-types.ts/v1";
 export interface CreateMessageOptions {
     /** The content of the message (min length 1; max length 4000) */
     content?: string;
-    /** Links in content to prevent unfurling as a link preview when displaying in Guilded (min items 1; must have unique items true) */
+    /** Links in content to prevent unfurling as a link preview when displaying in Guilded
+     * (min items 1; must have unique items true) */
     hiddenLinkPreviewUrls?: Array<string>;
     /** Embeds */
     embeds?: Array<MessageEmbedOptions>;
@@ -25,7 +26,8 @@ export interface CreateMessageOptions {
 export interface EditMessageOptions {
     /** The content of the message (min length 1; max length 4000) */
     content?: string;
-    /** Links in content to prevent unfurling as a link preview when displaying in Guilded (min items 1; must have unique items true) */
+    /** Links in content to prevent unfurling as a link preview when displaying in Guilded
+     * (min items 1; must have unique items true) */
     hiddenLinkPreviewUrls?: Array<string>;
     /** Embeds */
     embeds?: Array<MessageEmbedOptions>;

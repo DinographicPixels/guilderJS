@@ -12,7 +12,10 @@ import {
 /** Class representing a Permission */
 export class Permission {
     /** raw data */
-    data: APIChannelUserPermission | APIChannelRolePermission | APIGuildCategoryUserPermission | APIGuildCategoryRolePermission;
+    data: APIChannelUserPermission
+    | APIChannelRolePermission
+    | APIGuildCategoryUserPermission
+    | APIGuildCategoryRolePermission;
     /** Date of the creation of the permission */
     createdAt: Date;
     /** Date of the last edition of the permission */
@@ -24,7 +27,12 @@ export class Permission {
     /** Parent object, where the permission is applied. */
     parentID: string | number | null;
 
-    constructor(data: APIChannelUserPermission | APIChannelRolePermission | APIGuildCategoryUserPermission | APIGuildCategoryRolePermission) {
+    constructor(
+        data: APIChannelUserPermission
+        | APIChannelRolePermission
+        | APIGuildCategoryUserPermission
+        | APIGuildCategoryRolePermission
+    ) {
         this.data = data;
         this.createdAt = new Date(data.createdAt);
         this.updatedAt = data.updatedAt ?? null;
@@ -53,7 +61,12 @@ export class Permission {
         return result;
     }
 
-    protected update(data: APIChannelUserPermission | APIChannelRolePermission | APIGuildCategoryUserPermission | APIGuildCategoryRolePermission): void {
+    protected update(
+        data: APIChannelUserPermission
+        | APIChannelRolePermission
+        | APIGuildCategoryUserPermission
+        | APIGuildCategoryRolePermission
+    ): void {
         if (data.createdAt !== undefined) {
             this.createdAt = new Date(data.createdAt);
         }

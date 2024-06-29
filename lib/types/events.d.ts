@@ -85,7 +85,12 @@ export interface ClientEvents {
     /** @event Emitted when a guild channel is created. */
     channelCreate: [channel: AnyChannel];
     /** @event Emitted when a guild channel is updated. */
-    channelUpdate: [channel: TextChannel, oldChannel: JSONTextChannel | null] | [channel: ForumChannel, oldChannel: JSONForumChannel | null] | [channel: CalendarChannel, oldChannel: JSONCalendarChannel | null] | [channel: DocChannel, oldChannel: JSONDocChannel | null] | [channel: GuildChannel, oldChannel: JSONGuildChannel | null] | [channel: Channel, oldChannel: JSONChannel | null];
+    channelUpdate: [channel: TextChannel, oldChannel: JSONTextChannel | null]
+    | [channel: ForumChannel, oldChannel: JSONForumChannel | null]
+    | [channel: CalendarChannel, oldChannel: JSONCalendarChannel | null]
+    | [channel: DocChannel, oldChannel: JSONDocChannel | null]
+    | [channel: GuildChannel, oldChannel: JSONGuildChannel | null]
+    | [channel: Channel, oldChannel: JSONChannel | null];
     /** @event Emitted when a guild channel is deleted. */
     channelDelete: [channel: AnyChannel];
     /** @event Emitted when a channel role permission is created. */

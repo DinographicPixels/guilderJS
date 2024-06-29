@@ -80,11 +80,18 @@ export class Webhook extends Base<string> {
 
     /** Update the webhook. */
     async edit(options: WebhookEditOptions): Promise<Webhook>{
-        return this.client.rest.guilds.editWebhook(this.guildID, this.id, options);
+        return this.client.rest.guilds.editWebhook(
+            this.guildID,
+            this.id,
+            options
+        );
     }
 
     /** Delete the webhook. */
     async delete(): Promise<void>{
-        return this.client.rest.guilds.deleteWebhook(this.guildID, this.id);
+        return this.client.rest.guilds.deleteWebhook(
+            this.guildID,
+            this.id
+        );
     }
 }

@@ -44,14 +44,14 @@ export class WSManager extends TypedEmitter<WebsocketEvents> {
     token: string;
     client!: Client;
     params: WSManagerParams;
-    apiversion: string | number;
+    apiVersion: string | number;
     proxyURL: string;
     reconnect?: boolean;
     reconnectAttemptLimit?: number;
     replayMissedEvents?: boolean;
     #heartbeatInterval: NodeJS.Timeout | null;
     lastMessageID?: string;
-    firstwsMessage: boolean;
+    firstWsMessage: boolean;
     currReconnectAttempt: number;
     reconnectInterval: number;
     alive?: boolean;
@@ -84,8 +84,8 @@ export class WSManager extends TypedEmitter<WebsocketEvents> {
         });
         this.params = params;
         this.token = params.token;
-        this.apiversion = params.apiversion ?? pkgconfig.GuildedAPI.GatewayVersion ?? 1;
-        this.proxyURL = params.proxyURL ?? pkgconfig.GuildedAPI.GatewayURL ?? `wss://www.guilded.gg/websocket/v${this.apiversion}`;
+        this.apiVersion = params.apiVersion ?? pkgconfig.GuildedAPI.GatewayVersion ?? 1;
+        this.proxyURL = params.proxyURL ?? pkgconfig.GuildedAPI.GatewayURL ?? `wss://www.guilded.gg/websocket/v${this.apiVersion}`;
         this.reconnect = params.reconnect ?? true;
         this.reconnectAttemptLimit = params.reconnectAttemptLimit ?? 1;
         this.reconnectInterval = 1000;
@@ -94,7 +94,7 @@ export class WSManager extends TypedEmitter<WebsocketEvents> {
 
         this.ws = null;
 
-        this.firstwsMessage = true;
+        this.firstWsMessage = true;
         this.lastMessageID = undefined;
         this.currReconnectAttempt = 0;
 
@@ -115,7 +115,7 @@ export class WSManager extends TypedEmitter<WebsocketEvents> {
     // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 
     get vAPI(): number {
-        return this.apiversion as number;
+        return this.apiVersion as number;
     }
 
     _debug(message: string | object): boolean {
@@ -128,7 +128,10 @@ export class WSManager extends TypedEmitter<WebsocketEvents> {
 
     connect(): void | Error {
         if (this.ws && this.ws.readyState !== WebSocket.CLOSED) {
-            this.client.emit("error", new Error("Calling connect while an existing connection is already established."));
+            this.client.emit(
+                "error",
+                new Error("Calling connect while an existing connection is already established.")
+            );
             return;
         }
         this.currReconnectAttempt++;
@@ -147,10 +150,16 @@ export class WSManager extends TypedEmitter<WebsocketEvents> {
             this.#sharedZLib = new ZlibSync.Inflate({ chunkSize: 128 * 1024 });
         }
 
-        const wsoptions = { headers: { Authorization: `Bearer ${this.params.token}` }, protocol: "HTTPS" };
-        Object.assign(wsoptions.headers, { "x-guilded-bot-api-use-official-markdown": this.isOfficialMarkdownEnabled }); // temporary header
-        if (this.replayEventsCondition) Object.assign(wsoptions.headers, { "guilded-last-message-id": this.lastMessageID });
-        this.ws = new WebSocket(this.proxyURL, wsoptions);
+        const wsOptions = {
+            headers: { Authorization: `Bearer ${this.params.token}` }, protocol: "HTTPS"
+        };
+        Object.assign(
+            wsOptions.headers,
+            { "x-guilded-bot-api-use-official-markdown": this.isOfficialMarkdownEnabled }
+        ); // temporary header
+        if (this.replayEventsCondition)
+            Object.assign(wsOptions.headers, { "guilded-last-message-id": this.lastMessageID });
+        this.ws = new WebSocket(this.proxyURL, wsOptions);
 
         this.ws.on("open", this.onSocketOpen.bind(this));
         this.ws.on("close", this.onSocketClose.bind(this));
@@ -158,9 +167,7 @@ export class WSManager extends TypedEmitter<WebsocketEvents> {
         this.ws.on("pong", this.onSocketPong.bind(this));
 
         this.ws.on("message", (args: string)=> {
-            if (this.firstwsMessage === true) {
-                this.firstwsMessage = false;
-            }
+            if (this.firstWsMessage) this.firstWsMessage = false;
             this.onSocketMessage(args);
         });
 
@@ -233,11 +240,16 @@ export class WSManager extends TypedEmitter<WebsocketEvents> {
             }
             case GatewayOPCodes.Welcome: {
                 if (!packet.d) throw new Error("WSERR: Couldn't get packet data.");
-                if (!packet.d["heartbeatIntervalMs" as keyof object]) throw new Error("WSERR: Couldn't get the heartbeat interval.");
+                if (!packet.d["heartbeatIntervalMs" as keyof object])
+                    throw new Error("WSERR: Couldn't get the heartbeat interval.");
                 if (this.#connectTimeout) {
                     clearInterval(this.#connectTimeout);
                 }
-                this.#heartbeatInterval = setInterval(() => this.heartbeat(), packet.d["heartbeatIntervalMs" as keyof object] as number);
+                this.#heartbeatInterval =
+                  setInterval(() =>
+                      this.heartbeat(),
+                  packet.d["heartbeatIntervalMs" as keyof object] as number
+                  );
                 this.emit("GATEWAY_WELCOME", packet.d["user" as keyof object] as APIBotUser);
                 this.emit("GATEWAY_WELCOME_PACKET", packet as WelcomePacket);
                 this.connected = true;
@@ -301,7 +313,10 @@ export class WSManager extends TypedEmitter<WebsocketEvents> {
         if (this.heartbeatRequested) {
             if (!this.lastHeartbeatAck) {
                 this.lastHeartbeatAck = false;
-                return this.client.emit("error", new Error("Server didn't acknowledge the previous heartbeat, possible lost connection."));
+                return this.client.emit(
+                    "error",
+                    new Error("Server didn't acknowledge the previous heartbeat, possible lost connection.")
+                );
             }
             this.heartbeatRequested = false;
         } else {
@@ -355,15 +370,26 @@ export class WSManager extends TypedEmitter<WebsocketEvents> {
         this.emit("disconnect", error as Error);
 
         if (this.currReconnectAttempt >= (this.reconnectAttemptLimit as number)) {
-            this.client.emit("debug", `Automatically invalidating session due to excessive resume attempts | Attempt ${this.currReconnectAttempt}`);
+            this.client.emit(
+                "debug",
+                `Automatically invalidating session due to excessive resume attempts 
+                | Attempt ${this.currReconnectAttempt}`
+            );
         }
 
         if (reconnect) {
             if (this.lastMessageID) {
-                this.client.emit("debug", `Immediately reconnecting for potential resume | Attempt ${this.currReconnectAttempt}`);
+                this.client.emit(
+                    "debug",
+                    `Immediately reconnecting for potential resume 
+                  | Attempt ${this.currReconnectAttempt}`
+                );
                 this.connect();
             } else {
-                this.client.emit("debug", `Queueing reconnect in ${this.reconnectInterval}ms | Attempt ${this.currReconnectAttempt}`);
+                this.client.emit(
+                    "debug",
+                    `Queueing reconnect in ${this.reconnectInterval}ms 
+                  | Attempt ${this.currReconnectAttempt}`);
                 setTimeout(() => {
                     this.connect();
                 }, this.reconnectInterval);
@@ -376,7 +402,7 @@ export class WSManager extends TypedEmitter<WebsocketEvents> {
 
     reset(): void {
         this.ws = null;
-        this.firstwsMessage = true;
+        this.firstWsMessage = true;
         this.lastMessageID = undefined;
         this.currReconnectAttempt = 0;
 
@@ -393,15 +419,17 @@ export class WSManager extends TypedEmitter<WebsocketEvents> {
     hardReset(): void {
         this.reset();
         this.token = this.params.token;
-        this.apiversion = this.params.apiversion ?? pkgconfig.GuildedAPI.GatewayVersion ?? 1;
-        this.proxyURL = this.params.proxyURL ?? pkgconfig.GuildedAPI.GatewayURL ?? `wss://www.guilded.gg/websocket/v${this.apiversion}`;
+        this.apiVersion = this.params.apiVersion ?? pkgconfig.GuildedAPI.GatewayVersion ?? 1;
+        this.proxyURL = this.params.proxyURL
+          ?? pkgconfig.GuildedAPI.GatewayURL
+          ?? `wss://www.guilded.gg/websocket/v${this.apiVersion}`;
         this.reconnect = this.params.reconnect ?? true;
         this.reconnectAttemptLimit = this.params.reconnectAttemptLimit ?? 1;
         this.replayMissedEvents = this.params.replayMissedEvents ?? true;
         this.#heartbeatInterval = null;
 
         this.ws = null;
-        this.firstwsMessage = true;
+        this.firstWsMessage = true;
         this.lastMessageID = undefined;
         this.currReconnectAttempt = 0;
 
@@ -423,7 +451,7 @@ export interface WSManagerParams {
     /** Guilded API URL */
     proxyURL?: string;
     /** Guilded API Version */
-    apiversion?: number | 1;
+    apiVersion?: number | 1;
     /** Automatically re-establish connection on error */
     reconnect?: boolean;
     /** Reconnect limit */

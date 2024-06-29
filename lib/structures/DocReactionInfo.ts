@@ -15,7 +15,13 @@ export class DocReactionInfo extends ReactionInfo {
      * @param data raw data.
      * @param client client.
      */
-    constructor(data: GW_DocRCRE | GW_DocRDEL | GW_DocCRCRE | GW_DocCRDEL, client: Client){
+    constructor(
+        data: GW_DocRCRE
+        | GW_DocRDEL
+        | GW_DocCRCRE
+        | GW_DocCRDEL,
+        client: Client
+    ){
         super(data, client);
         this.docID = data.reaction.docId;
         this.type = data["docCommentId" as keyof object] ? "comment" : "doc";
@@ -26,7 +32,11 @@ export class DocReactionInfo extends ReactionInfo {
      * otherwise it'll return basic information about this doc.
      */
     get doc(): DocReactionTypes["doc"] {
-        const channel = this.client.getChannel<DocChannel>(this.raw.serverId as string, this.raw.reaction.channelId);
+        const channel =
+          this.client.getChannel<DocChannel>(
+              this.raw.serverId as string,
+              this.raw.reaction.channelId
+          );
         return channel?.docs?.get(this.docID) ?? {
             id:    this.docID,
             guild: this.client.guilds.get(this.raw.serverId as string) ?? {

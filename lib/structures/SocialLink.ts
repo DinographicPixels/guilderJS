@@ -10,7 +10,19 @@ export class SocialLink {
     /** Client. */
     protected client: Client;
     /** Social media name `¯\_(ツ)_/¯`  */
-    type: "twitch" | "bnet" | "psn" | "xbox" | "steam" | "origin" | "youtube" | "twitter" | "facebook" | "switch" | "patreon" | "roblox" | "epic";
+    type: "twitch"
+    | "bnet"
+    | "psn"
+    | "xbox"
+    | "steam"
+    | "origin"
+    | "youtube"
+    | "twitter"
+    | "facebook"
+    | "switch"
+    | "patreon"
+    | "roblox"
+    | "epic";
     /** ID of the user having this social linked to their profile. */
     userID: string;
     /** The handle of the user within the external service */

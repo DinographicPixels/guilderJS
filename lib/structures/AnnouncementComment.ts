@@ -28,8 +28,13 @@ export class AnnouncementComment extends Base<number> {
     /**
      * @param data raw data.
      * @param client client.
+     * @param options Optional parameters that can be added
      */
-    constructor(data: APIAnnouncementComment, client: Client, options?: ConstructorCalendarEventCommentOptions) {
+    constructor(
+        data: APIAnnouncementComment,
+        client: Client,
+        options?: ConstructorCalendarEventCommentOptions
+    ) {
         super(data.id, client);
         this.content = data.content;
         this.createdAt = new Date(data.createdAt);
@@ -84,13 +89,17 @@ export class AnnouncementComment extends Base<number> {
     }
 
 
-    /** Retrieve the member who sent this comment, if cached.
+    /**
+     * Retrieve the member who sent this comment, if cached.
      * If there is no cached member, this will make a rest request which returns a Promise.
      * If the request fails, it'll return undefined or throw an error that you can catch.
      */
     get member(): Member | Promise<Member> | undefined {
         if (this.guildID === null) throw new Error("Couldn't get member because API didn't return guildID.");
-        return this.client.getGuild(this.guildID as string)?.members.get(this.memberID) ?? this.guildID ? this.client.rest.guilds.getMember(this.guildID as string, this.memberID) : undefined;
+        return this.client.getGuild(this.guildID as string)?.members
+            .get(this.memberID)
+        ?? this.guildID
+            ? this.client.rest.guilds.getMember(this.guildID as string, this.memberID) : undefined;
     }
 
     /**
@@ -98,14 +107,23 @@ export class AnnouncementComment extends Base<number> {
      * @param options Edit options
      */
     async edit(options: PATCHChannelAnnouncementCommentBody): Promise<AnnouncementComment> {
-        return this.client.rest.channels.editAnnouncementComment(this.channelID, this.announcementID, this.id, options);
+        return this.client.rest.channels.editAnnouncementComment(
+            this.channelID,
+            this.announcementID,
+            this.id,
+            options
+        );
     }
 
     /**
      * Delete this comment.
      */
     async delete(): Promise<void> {
-        return this.client.rest.channels.deleteAnnouncementComment(this.channelID, this.announcementID, this.id);
+        return this.client.rest.channels.deleteAnnouncementComment(
+            this.channelID,
+            this.announcementID,
+            this.id
+        );
     }
 
     /**
@@ -113,22 +131,38 @@ export class AnnouncementComment extends Base<number> {
      * @param options Create options.
      */
     async createComment(options: POSTChannelAnnouncementCommentBody): Promise<AnnouncementComment> {
-        return this.client.rest.channels.createAnnouncementComment(this.channelID, this.announcementID, options);
+        return this.client.rest.channels.createAnnouncementComment(
+            this.channelID,
+            this.announcementID,
+            options
+        );
     }
 
     /**
      * Add a reaction to this comment.
-     * @param reactionID ID of the emote to add
+     * @param emoteID ID of the emote to add
      */
     async createReaction(emoteID: number): Promise<void> {
-        return this.client.rest.channels.createReactionToSubcategory(this.channelID, "AnnouncementComment", this.announcementID, this.id, emoteID);
+        return this.client.rest.channels.createReactionToSubcategory(
+            this.channelID,
+            "AnnouncementComment",
+            this.announcementID,
+            this.id,
+            emoteID
+        );
     }
 
     /**
      * Remove a reaction from this comment.
-     * @param reactionID ID of the emote to remove
+     * @param emoteID ID of the emote to remove
      */
     async deleteReaction(emoteID: number): Promise<void> {
-        return this.client.rest.channels.deleteReactionFromSubcategory(this.channelID, "AnnouncementComment", this.announcementID, this.id, emoteID);
+        return this.client.rest.channels.deleteReactionFromSubcategory(
+            this.channelID,
+            "AnnouncementComment",
+            this.announcementID,
+            this.id,
+            emoteID
+        );
     }
 }

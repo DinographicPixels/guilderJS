@@ -55,12 +55,21 @@ export class ForumThread<T extends ForumChannel> extends Base<number> {
         this.name = data.title;
         this.createdAt = new Date(data.createdAt);
         this.ownerID = data.createdBy;
-        this.owner =  (this.client.getMember(data.serverId, data.createdBy) ?? this.client.users.get(data.createdBy) ?? this.client.rest.guilds.getMember(data.serverId, data.createdBy)) as T extends Guild ? Member : Member | User | Promise<Member> | undefined;
+        this.owner =  (this.client.getMember(data.serverId, data.createdBy)
+          ?? this.client.users.get(data.createdBy)
+          ?? this.client.rest.guilds.getMember(
+              data.serverId,
+              data.createdBy
+          )) as T extends Guild ? Member : Member | User | Promise<Member> | undefined;
         this.editedTimestamp = data.updatedAt ? new Date(data.updatedAt) : null;
         this.bumpedAt = data.bumpedAt ? new Date(data.bumpedAt) : null;
         this.content = data.content;
         this.mentions = data.mentions ?? null;
-        this.comments = new TypedCollection(ForumThreadComment, client, client.params.collectionLimits?.threadComments);
+        this.comments = new TypedCollection(
+            ForumThreadComment,
+            client,
+            client.params.collectionLimits?.threadComments
+        );
         this.isLocked = data.isLocked ?? false;
         this.isPinned = data.isPinned ?? false;
         this.update(data);
@@ -134,26 +143,41 @@ export class ForumThread<T extends ForumChannel> extends Base<number> {
 
     /** The forum channel this thread was created in.  */
     get channel(): T extends AnyTextableChannel ? T : undefined {
-        return this._cachedChannel ?? (this._cachedChannel = this.client.getChannel(this.guildID, this.channelID) as T extends AnyTextableChannel ? T : undefined);
+        return this._cachedChannel
+          ?? (this._cachedChannel = this.client.getChannel(
+              this.guildID,
+              this.channelID
+          ) as T extends AnyTextableChannel ? T : undefined);
     }
 
     /** Add a comment to this forum thread.
      * @param options Options of the comment.
      */
     async createForumComment(options: CreateForumCommentOptions): Promise<ForumThreadComment>{
-        return this.client.rest.channels.createForumComment(this.channelID, this.id as number, options);
+        return this.client.rest.channels.createForumComment(
+            this.channelID,
+            this.id as number,
+            options
+        );
     }
 
     /** Edit the forum thread.
      * @param options Edit options.
      */
     async edit(options: EditForumThreadOptions): Promise<ForumThread<T>> {
-        return this.client.rest.channels.editForumThread<T>(this.channelID, this.id as number, options);
+        return this.client.rest.channels.editForumThread<T>(
+            this.channelID,
+            this.id as number,
+            options
+        );
     }
 
     /** Delete this forum thread. */
     async delete(): Promise<void> {
-        return this.client.rest.channels.deleteForumThread(this.channelID, this.id as number);
+        return this.client.rest.channels.deleteForumThread(
+            this.channelID,
+            this.id as number
+        );
     }
 
     /** Pin this forum thread. */
@@ -180,13 +204,23 @@ export class ForumThread<T extends ForumChannel> extends Base<number> {
      * @param emoteID ID of the emote to be added.
      */
     async createReaction(emoteID: number): Promise<void> {
-        return this.client.rest.channels.createReaction(this.channelID, "ForumThread", this.id as number, emoteID);
+        return this.client.rest.channels.createReaction(
+            this.channelID,
+            "ForumThread",
+            this.id as number,
+            emoteID
+        );
     }
 
     /** Remove a reaction from this forum thread.
      * @param emoteID ID of the emote to be added.
      */
     async deleteReaction(emoteID: number): Promise<void> {
-        return this.client.rest.channels.deleteReaction(this.channelID, "ForumThread", this.id as number, emoteID);
+        return this.client.rest.channels.deleteReaction(
+            this.channelID,
+            "ForumThread",
+            this.id as number,
+            emoteID
+        );
     }
 }

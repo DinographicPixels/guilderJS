@@ -30,11 +30,19 @@ export class MemberUpdateInfo extends MemberInfo {
      * @param memberID ID of the member.
      * @param client client.
      */
-    constructor(data: GWMUpdated | GWRolesUpdated | GWSocialLink, memberID: string, client: Client){
+    constructor(
+        data: GWMUpdated
+        | GWRolesUpdated
+        | GWSocialLink,
+        memberID: string,
+        client: Client
+    ){
         super(data, memberID, client);
         this.updatedNickname = (data as GWMUpdated)?.userInfo?.nickname ?? null;
         this.roles = (data as GWRolesUpdated)?.memberRoleIds?.[0]?.roleIds ?? null;
         this.oldRoles = (this.client.getGuild(data.serverId)?.members.get(this.memberID))?.roles ?? null;
-        this.socialLink = (data as GWSocialLink)?.socialLink ? new SocialLink((data as GWSocialLink)?.socialLink, client) : null;
+        this.socialLink = (data as GWSocialLink)?.socialLink
+            ? new SocialLink((data as GWSocialLink)?.socialLink, client)
+            : null;
     }
 }

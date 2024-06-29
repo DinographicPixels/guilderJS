@@ -31,8 +31,8 @@ export class User extends Base<string> {
         this.avatarURL = data.avatar ?? null;
         this.bannerURL = data.banner ?? null;
 
-        if (!this.type) this.type = "user"; // since it's only defined when it's a bot.
-        this.bot = this.type === "bot" ? true : false;
+        if (!this.type) this.type = "user"; // as it is undefined when the user is a bot.
+        this.bot = this.type === "bot";
 
         this.update(data);
     }
@@ -49,7 +49,11 @@ export class User extends Base<string> {
         };
     }
 
-    protected override update(d: APIUser | APIGuildMember | APIUserSummary): void {
+    protected override update(
+        d: APIUser
+        | APIGuildMember
+        | APIUserSummary
+    ): void {
         const data = d as APIUser;
         if (data.avatar !== undefined) {
             this.avatarURL = data.avatar ?? null;

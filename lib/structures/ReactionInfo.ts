@@ -24,11 +24,22 @@ import {
 /** Default information every other reaction has. */
 export class ReactionInfo {
     client!: Client;
-    raw: GatewayEvent_ChannelMessageReactionCreated | GatewayEvent_ChannelMessageReactionDeleted | GatewayEvent_ForumTopicReactionCreated |
-    GatewayEvent_ForumTopicReactionDeleted | GatewayEvent_CalendarEventReactionCreated | GatewayEvent_CalendarEventReactionDeleted |
-    GatewayEvent_CalendarEventCommentReactionCreated | GatewayEvent_CalendarEventCommentReactionDeleted | GatewayEvent_DocReactionCreated |
-    GatewayEvent_DocReactionDeleted | GatewayEvent_DocCommentReactionCreated | GatewayEvent_DocCommentReactionDeleted | GatewayEvent_AnnouncementReactionCreated
-    | GatewayEvent_AnnouncementReactionDeleted | GatewayEvent_AnnouncementCommentReactionCreated | GatewayEvent_AnnouncementCommentReactionDeleted;
+    raw: GatewayEvent_ChannelMessageReactionCreated
+    | GatewayEvent_ChannelMessageReactionDeleted
+    | GatewayEvent_ForumTopicReactionCreated
+    | GatewayEvent_ForumTopicReactionDeleted
+    | GatewayEvent_CalendarEventReactionCreated
+    | GatewayEvent_CalendarEventReactionDeleted
+    | GatewayEvent_CalendarEventCommentReactionCreated
+    | GatewayEvent_CalendarEventCommentReactionDeleted
+    | GatewayEvent_DocReactionCreated
+    | GatewayEvent_DocReactionDeleted
+    | GatewayEvent_DocCommentReactionCreated
+    | GatewayEvent_DocCommentReactionDeleted
+    | GatewayEvent_AnnouncementReactionCreated
+    | GatewayEvent_AnnouncementReactionDeleted
+    | GatewayEvent_AnnouncementCommentReactionCreated
+    | GatewayEvent_AnnouncementCommentReactionDeleted;
     /** Channel where the reaction was added/removed. */
     channelID: string;
     /** ID of the user who added the reaction. */
@@ -39,12 +50,25 @@ export class ReactionInfo {
      * @param data raw data.
      * @param client client.
      */
-    constructor(data: GatewayEvent_ChannelMessageReactionCreated | GatewayEvent_ChannelMessageReactionDeleted | GatewayEvent_ForumTopicReactionCreated |
-    GatewayEvent_ForumTopicReactionDeleted | GatewayEvent_CalendarEventReactionCreated | GatewayEvent_CalendarEventReactionDeleted |
-    GatewayEvent_CalendarEventCommentReactionCreated | GatewayEvent_CalendarEventCommentReactionDeleted | GatewayEvent_DocReactionCreated |
-    GatewayEvent_DocReactionDeleted | GatewayEvent_DocCommentReactionCreated | GatewayEvent_DocCommentReactionDeleted |
-    GatewayEvent_AnnouncementReactionCreated | GatewayEvent_AnnouncementReactionDeleted | GatewayEvent_AnnouncementCommentReactionCreated
-    | GatewayEvent_AnnouncementCommentReactionDeleted, client: Client) {
+    constructor(
+        data: GatewayEvent_ChannelMessageReactionCreated
+        | GatewayEvent_ChannelMessageReactionDeleted
+        | GatewayEvent_ForumTopicReactionCreated
+        | GatewayEvent_ForumTopicReactionDeleted
+        | GatewayEvent_CalendarEventReactionCreated
+        | GatewayEvent_CalendarEventReactionDeleted
+        | GatewayEvent_CalendarEventCommentReactionCreated
+        | GatewayEvent_CalendarEventCommentReactionDeleted
+        | GatewayEvent_DocReactionCreated
+        | GatewayEvent_DocReactionDeleted
+        | GatewayEvent_DocCommentReactionCreated
+        | GatewayEvent_DocCommentReactionDeleted
+        | GatewayEvent_AnnouncementReactionCreated
+        | GatewayEvent_AnnouncementReactionDeleted
+        | GatewayEvent_AnnouncementCommentReactionCreated
+        | GatewayEvent_AnnouncementCommentReactionDeleted,
+        client: Client
+    ) {
         this.raw = data;
         this.channelID = data.reaction.channelId;
         this.reactorID = data.reaction.createdBy;
@@ -63,8 +87,10 @@ export class ReactionInfo {
 
     /** Cached member. If member isn't cached will return an object with the member's id. */
     get reactor(): Member | { id: string; } {
-        return this.client.getGuild(this.raw.serverId as string)?.members.get(this.raw.reaction.createdBy) ?? {
-            id: this.raw.reaction.createdBy
-        };
+        return this.client.getGuild(this.raw.serverId as string)?.members
+            .get(this.raw.reaction.createdBy)
+          ?? {
+              id: this.raw.reaction.createdBy
+          };
     }
 }

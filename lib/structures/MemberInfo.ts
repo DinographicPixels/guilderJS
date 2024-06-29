@@ -12,7 +12,14 @@ export abstract class MemberInfo {
     guildID: string;
     /** ID of the member. */
     memberID: string;
-    constructor(data: GWMUpdated | GWMRemoved | GWMRolesUpdated | GWSocialLink, memberID: string, client: Client) {
+    constructor(
+        data: GWMUpdated
+        | GWMRemoved
+        | GWMRolesUpdated
+        | GWSocialLink,
+        memberID: string,
+        client: Client
+    ) {
         this.client! = client;
         this.guildID = data.serverId;
         this.memberID = memberID;
@@ -23,6 +30,7 @@ export abstract class MemberInfo {
     }
 
     get member(): Member | Promise<Member> {
-        return this.client!.getGuild(this.guildID)?.members.get(this.memberID) ?? this.client!.rest.guilds.getMember(this.guildID, this.memberID);
+        return this.client!.getGuild(this.guildID)?.members.get(this.memberID)
+          ?? this.client!.rest.guilds.getMember(this.guildID, this.memberID);
     }
 }

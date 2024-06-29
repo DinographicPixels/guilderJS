@@ -46,7 +46,11 @@ export class Doc extends Base<number> {
         this.memberID = data.createdBy;
         this.editedTimestamp = data.updatedAt ? new Date(data.updatedAt) : null;
         this.updatedBy = data.updatedBy ?? null;
-        this.comments = new TypedCollection(DocComment, client, client.params.collectionLimits?.docComments);
+        this.comments = new TypedCollection(
+            DocComment,
+            client,
+            client.params.collectionLimits?.docComments
+        );
         this.update(data);
     }
 
@@ -102,7 +106,8 @@ export class Doc extends Base<number> {
      * Note: If this doc has been edited, the updatedBy id will be used to get you the member.
      */
     get member(): Member | Promise<Member> {
-        return this.client.getGuild(this.guildID)?.members.get(this.updatedBy ?? this.memberID) ?? this.client.rest.guilds.getMember(this.guildID, this.updatedBy ?? this.memberID);
+        return this.client.getGuild(this.guildID)?.members.get(this.updatedBy ?? this.memberID)
+          ?? this.client.rest.guilds.getMember(this.guildID, this.updatedBy ?? this.memberID);
     }
 
     /** Edit this doc.

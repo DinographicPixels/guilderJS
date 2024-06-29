@@ -26,7 +26,7 @@ export class Member extends User {
      * @param client client.
      * @param guildID ID of the guild.
      */
-    constructor(data: APIGuildMember, client: Client, guildID: string){
+    constructor(data: APIGuildMember, client: Client, guildID: string) {
         super(data.user, client);
         this._data = data;
         this.roles = data.roleIds ?? null;
@@ -112,7 +112,11 @@ export class Member extends User {
      * @param socialMediaName Name of a social media linked to this member.
      */
     async getSocialLink(socialMediaName: string): Promise<SocialLink>{
-        return this.client.rest.misc.getSocialLink(this.guildID, this.id as string, socialMediaName);
+        return this.client.rest.misc.getSocialLink(
+            this.guildID,
+            this.id as string,
+            socialMediaName
+        );
     }
 
     /** Add this member to a guild group.

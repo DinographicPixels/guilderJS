@@ -17,21 +17,24 @@ export class GuildRole extends Base<number> {
     name: string;
     /** If set, the role will be displayed separately in the channel member */
     isDisplayedSeparately: boolean;
-    /** If set, this roll will be self assigned*/
+    /** If set, this roll will be self-assigned*/
     isSelfAssignable: boolean;
     /** If set, this role can be mentioned */
     isMentionable: boolean;
     /** Array of permission (Permissions enum) */
     permissions: Array<Permissions>;
-    /** An array of integer values corresponding to the decimal RGB representation for a color. The first color is solid, and a second color indicates a gradient (min items 0; max items 2) */
+    /** An array of integer values corresponding to the decimal RGB representation for a color.
+     * The first color is solid, and a second color indicates a gradient (min items 0; max items 2) */
     colors: Array<number> | null;
     /** The URL of the role icon */
     iconURL: string | null;
     /** The position the role will be in relation to the roles in the server */
     position: number;
-    /** The default role users are given when joining the server. Base roles are tied directly to the server and cannot be created or deleted */
+    /** The default role users are given when joining the server.
+     * Base roles are tied directly to the server and cannot be created or deleted */
     isBase: boolean;
-    /** The bot user ID this role has been defined for. Roles with this populated can only be deleted by kicking the bot */
+    /** The bot user ID this role has been defined for.
+     * Roles with this populated can only be deleted by kicking the bot */
     botUserID: string | null;
     constructor(data: APIGuildRole, client: Client) {
         super(data.id, client);
@@ -111,6 +114,10 @@ export class GuildRole extends Base<number> {
 
     /** Edit the role permission */
     async editPermission(options: PATCHGuildRoleUpdateBody): Promise<GuildRole>{
-        return this.client.rest.guilds.editRolePermission(this.guildID as string, this.id as number, options);
+        return this.client.rest.guilds.editRolePermission(
+            this.guildID as string,
+            this.id as number,
+            options
+        );
     }
 }

@@ -135,14 +135,21 @@ export class ListItem extends Base<string> {
      * Note: If the item has been edited, the updatedBy id will be used to get you the member.
      */
     get member(): Member | Promise<Member> {
-        return this.client.getGuild(this.guildID)?.members.get(this.updatedBy ?? this.memberID) ?? this.client.rest.guilds.getMember(this.guildID, this.updatedBy ?? this.memberID);
+        return this.client.getGuild(this.guildID)?.members.get(this.updatedBy ?? this.memberID)
+          ?? this.client.rest.guilds.getMember(this.guildID, this.updatedBy ?? this.memberID);
     }
 
     /** Edit this item.
      * @param options Edit options.
      */
-    async edit(options?: { content?: PATCHListItemBody["message"]; note?: PATCHListItemBody["note"]; }): Promise<ListItem> {
-        return this.client.rest.channels.editListItem(this.channelID, this.id as string, options);
+    async edit(
+        options?: { content?: PATCHListItemBody["message"]; note?: PATCHListItemBody["note"]; }
+    ): Promise<ListItem> {
+        return this.client.rest.channels.editListItem(
+            this.channelID,
+            this.id as string,
+            options
+        );
     }
 
     /** Delete this item. */
@@ -155,7 +162,7 @@ export class ListItem extends Base<string> {
         return this.client.rest.channels.completeListItem(this.channelID, this.id as string);
     }
 
-    /** Set this item as "uncomplete". */
+    /** Set this item as "incomplete". */
     async uncomplete(): Promise<void> {
         return this.client.rest.channels.uncompleteListItem(this.channelID, this.id as string);
     }

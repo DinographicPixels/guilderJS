@@ -17,7 +17,11 @@ export class AnnouncementChannel extends GuildChannel {
      */
     constructor(data: APIGuildChannel, client: Client){
         super(data, client);
-        this.announcements = new TypedCollection(Announcement, client, client.params.collectionLimits?.announcements);
+        this.announcements = new TypedCollection(
+            Announcement,
+            client,
+            client.params.collectionLimits?.announcements
+        );
         this.update(data);
     }
 

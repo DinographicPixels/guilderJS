@@ -14,7 +14,11 @@ export class MemberRemoveInfo extends MemberInfo {
      * @param memberID ID of the member.
      * @param client client.
      */
-    constructor(data: GatewayEvent_ServerMemberRemoved, memberID: string, client: Client){
+    constructor(
+        data: GatewayEvent_ServerMemberRemoved,
+        memberID: string,
+        client: Client
+    ) {
         super(data, memberID, client);
         this.isKick = data.isKick;
         this.isBan = data.isBan;

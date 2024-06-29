@@ -67,18 +67,18 @@ export class GuildCategory extends Base<number> {
 
     /**
      * Update a guild category.
-     * @param guildID ID of the guild to create a category in.
-     * @param categoryID ID of the category you want to read.
-     * @param options Options to update a category.
+     * @param options Edit options.
      */
     async editCategory(options: PATCHUpdateCategoryBody): Promise<GuildCategory> {
-        return this.client.rest.guilds.editCategory(this.guildID as string, this.id as number, options);
+        return this.client.rest.guilds.editCategory(
+            this.guildID as string,
+            this.id as number,
+            options
+        );
     }
 
     /**
      * Delete a guild category.
-     * @param guildID ID of the guild to create a category in.
-     * @param categoryID ID of the category you want to read.
      */
     async deleteCategory(): Promise<GuildCategory> {
         return this.client.rest.guilds.deleteCategory(this.guildID as string, this.id as number);
@@ -91,8 +91,16 @@ export class GuildCategory extends Base<number> {
      *
      * Warning: targetID must have the correct type (number=role, string=user).
      */
-    async createPermission(targetID: string | number, options: POSTChannelCategoryUserPermissionBody): Promise<Permission> {
-        return this.client.rest.guilds.createCategoryPermission(this.guildID, this.id, targetID, options);
+    async createPermission(
+        targetID: string | number,
+        options: POSTChannelCategoryUserPermissionBody
+    ): Promise<Permission> {
+        return this.client.rest.guilds.createCategoryPermission(
+            this.guildID,
+            this.id,
+            targetID,
+            options
+        );
     }
 
     /**
@@ -100,8 +108,16 @@ export class GuildCategory extends Base<number> {
      *
      * Warning: targetID must have the correct type (number=role, string=user).
      */
-    async editPermission(targetID: string | number, options: PATCHChannelCategoryUserPermissionBody): Promise<Permission> {
-        return this.client.rest.guilds.editCategoryPermission(this.guildID, this.id, targetID, options);
+    async editPermission(
+        targetID: string | number,
+        options: PATCHChannelCategoryUserPermissionBody
+    ): Promise<Permission> {
+        return this.client.rest.guilds.editCategoryPermission(
+            this.guildID,
+            this.id,
+            targetID,
+            options
+        );
     }
 
     /**
@@ -111,7 +127,11 @@ export class GuildCategory extends Base<number> {
      * Warning: targetID must have the correct type (number=role, string=user).
      */
     async getPermission(targetID: string | number): Promise<Permission> {
-        return this.client.rest.guilds.getCategoryPermission(this.guildID, this.id, targetID);
+        return this.client.rest.guilds.getCategoryPermission(
+            this.guildID,
+            this.id,
+            targetID
+        );
     }
 
     /**
@@ -140,6 +160,10 @@ export class GuildCategory extends Base<number> {
      * @param targetID ID of the user or role to delete the permission from
      */
     async deletePermission(targetID: string | number): Promise<void> {
-        return this.client.rest.guilds.deleteCategoryPermission(this.guildID, this.id, targetID);
+        return this.client.rest.guilds.deleteCategoryPermission(
+            this.guildID,
+            this.id,
+            targetID
+        );
     }
 }

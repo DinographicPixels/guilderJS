@@ -17,7 +17,13 @@ export class CalendarReactionInfo extends ReactionInfo {
      * @param data raw data.
      * @param client client.
      */
-    constructor(data: GatewayEvent_CalendarEventReactionCreated | GatewayEvent_CalendarEventReactionDeleted | GatewayEvent_CalendarEventCommentReactionCreated | GatewayEvent_CalendarEventCommentReactionDeleted, client: Client){
+    constructor(
+        data: GatewayEvent_CalendarEventReactionCreated
+        | GatewayEvent_CalendarEventReactionDeleted
+        | GatewayEvent_CalendarEventCommentReactionCreated
+        | GatewayEvent_CalendarEventCommentReactionDeleted,
+        client: Client
+    ){
         super(data, client);
         this.eventID = data.reaction.calendarEventId;
         this.commentID = data.reaction["calendarEventCommentId" as keyof object] ?? null;
@@ -29,12 +35,16 @@ export class CalendarReactionInfo extends ReactionInfo {
      * otherwise it'll return basic information about this event.
      */
     get event(): CalendarReactionTypes["event"] {
-        return this.client.getChannel<CalendarChannel>(this.raw.serverId as string, this.raw.reaction.channelId)?.scheduledEvents.get(this.eventID) ?? {
-            id:    this.eventID,
-            guild: this.client.guilds.get(this.raw.serverId as string) ?? {
-                id: this.raw.serverId
-            },
-            channelID: this.raw.reaction.channelId
-        };
+        return this.client.getChannel<CalendarChannel>(
+            this.raw.serverId as string,
+            this.raw.reaction.channelId
+        )?.scheduledEvents.get(this.eventID)
+          ?? {
+              id:    this.eventID,
+              guild: this.client.guilds.get(this.raw.serverId as string) ?? {
+                  id: this.raw.serverId
+              },
+              channelID: this.raw.reaction.channelId
+          };
     }
 }

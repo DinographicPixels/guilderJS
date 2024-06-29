@@ -18,7 +18,11 @@ export class ForumChannel extends GuildChannel {
      */
     constructor(data: APIGuildChannel, client: Client){
         super(data, client);
-        this.threads = new TypedCollection(ForumThread, client, client.params.collectionLimits?.threads);
+        this.threads = new TypedCollection(
+            ForumThread,
+            client,
+            client.params.collectionLimits?.threads
+        );
         this.update(data);
     }
 

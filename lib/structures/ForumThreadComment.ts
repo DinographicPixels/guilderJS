@@ -25,7 +25,11 @@ export class ForumThreadComment extends Base<number> {
     /** Mentions in this thread comment. */
     mentions: APIMentions | null;
 
-    constructor(data: APIForumTopicComment, client: Client, options?: ConstructorForumThreadOptions){
+    constructor(
+        data: APIForumTopicComment,
+        client: Client,
+        options?: ConstructorForumThreadOptions
+    ){
         super(data.id, client);
         this.content = data.content;
         this.createdAt = new Date(data.createdAt);
@@ -85,39 +89,67 @@ export class ForumThreadComment extends Base<number> {
      * If the request fails, it'll return you undefined as a value.
      */
     get member(): Member | Promise<Member> | undefined {
-        return this.client.getGuild(this.guildID as string)?.members.get(this.memberID) ?? this.guildID ? this.client.rest.guilds.getMember(this.guildID as string, this.memberID) : undefined;
+        return this.client.getGuild(this.guildID as string)?.members.get(this.memberID)
+        ?? this.guildID
+            ? this.client.rest.guilds.getMember(this.guildID as string, this.memberID)
+            : undefined;
     }
 
     /** Add a comment to the same forum thread as this comment.
      * @param options New comment's options.
      */
     async createForumComment(options: CreateForumCommentOptions): Promise<ForumThreadComment> {
-        return this.client.rest.channels.createForumComment(this.channelID, this.threadID, options);
+        return this.client.rest.channels.createForumComment(
+            this.channelID,
+            this.threadID,
+            options
+        );
     }
 
     /** Add a reaction to the comment.
      * @param reaction The ID of the reaction to add.
      */
     async createReaction(reaction: number): Promise<void> {
-        return this.client.rest.channels.createReactionToSubcategory(this.channelID, "ForumThreadComment", this.threadID, this.id, reaction);
+        return this.client.rest.channels.createReactionToSubcategory(
+            this.channelID,
+            "ForumThreadComment",
+            this.threadID,
+            this.id,
+            reaction
+        );
     }
 
     /** Remove a reaction from the comment.
      * @param reaction The ID of the reaction to remove.
      */
     async deleteReaction(reaction: number): Promise<void> {
-        return this.client.rest.channels.deleteReactionFromSubcategory(this.channelID, "ForumThreadComment", this.threadID, this.id, reaction);
+        return this.client.rest.channels.deleteReactionFromSubcategory(
+            this.channelID,
+            "ForumThreadComment",
+            this.threadID,
+            this.id,
+            reaction
+        );
     }
 
     /** Edit this forum thread's comment.
      * @param options Edit options.
      */
     async edit(options?: EditForumCommentOptions): Promise<ForumThreadComment>{
-        return this.client.rest.channels.editForumComment(this.channelID, this.threadID, this.id as number, { content: options?.content });
+        return this.client.rest.channels.editForumComment(
+            this.channelID,
+            this.threadID,
+            this.id as number,
+            { content: options?.content }
+        );
     }
 
     /** Delete this forum thread comment. */
     async delete(): Promise<void>{
-        return this.client.rest.channels.deleteForumComment(this.channelID, this.threadID, this.id as number);
+        return this.client.rest.channels.deleteForumComment(
+            this.channelID,
+            this.threadID,
+            this.id as number
+        );
     }
 }

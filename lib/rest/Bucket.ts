@@ -16,7 +16,11 @@ export default class Bucket {
     timeout: NodeJS.Timeout | null;
     tokenLimit: number;
     tokens: number;
-    constructor(tokenLimit: number, interval: number, options?: { latencyRef?: { latency: number; }; reservedTokens?: number; }) {
+    constructor(
+        tokenLimit: number,
+        interval: number,
+        options?: { latencyRef?: { latency: number; }; reservedTokens?: number; }
+    ) {
         this.tokenLimit = tokenLimit;
         this.interval = interval;
         this.latencyRef = options?.latencyRef ?? { latency: 0 };
@@ -58,7 +62,13 @@ export default class Bucket {
             this.timeout = setTimeout(() => {
                 this.timeout = null;
                 this.check();
-            }, this.tokens < this.tokenLimit ? this.latencyRef.latency : Math.max(0, this.lastReset + this.interval + this.tokenLimit * this.latencyRef.latency - Date.now()));
+            }, this.tokens < this.tokenLimit ?
+                this.latencyRef.latency
+                : Math.max(
+                    0,
+                    this.lastReset + this.interval + this.tokenLimit * this.latencyRef.latency - Date.now()
+                )
+            );
         }
 
 

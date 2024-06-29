@@ -31,6 +31,7 @@ export class DocComment extends Base<number> {
     /**
      * @param data raw data.
      * @param client client.
+     * @param options Additional properties that can be added.
      */
     constructor(data: APIDocComment, client: Client, options?: ConstructorDocCommentOptions) {
         super(data.id, client);
@@ -94,7 +95,9 @@ export class DocComment extends Base<number> {
      */
     get member(): Member | Promise<Member> | undefined {
         if (this.guildID === null) throw new Error("Couldn't get member because API didn't return guildID.");
-        return this.client.getGuild(this.guildID as string)?.members.get(this.memberID) ?? this.guildID ? this.client.rest.guilds.getMember(this.guildID as string, this.memberID) : undefined;
+        return this.client.getGuild(this.guildID as string)?.members.get(this.memberID)
+        ?? this.guildID
+            ? this.client.rest.guilds.getMember(this.guildID as string, this.memberID) : undefined;
     }
 
     /** Create a comment in the same doc as this one.
@@ -108,19 +111,36 @@ export class DocComment extends Base<number> {
      * @param reaction ID of the reaction to add.
      */
     async createReaction(reaction: number): Promise<void> {
-        return this.client.rest.channels.createReactionToSubcategory(this.channelID, "DocComment", this.docID, this.id, reaction);
+        return this.client.rest.channels.createReactionToSubcategory(
+            this.channelID,
+            "DocComment",
+            this.docID,
+            this.id,
+            reaction
+        );
     }
 
     /** Remove a reaction from this comment.
      * @param reaction ID of the reaction to remove.
      */
     async deleteReaction(reaction: number): Promise<void> {
-        return this.client.rest.channels.deleteReactionFromSubcategory(this.channelID, "DocComment", this.docID, this.id, reaction);
+        return this.client.rest.channels.deleteReactionFromSubcategory(
+            this.channelID,
+            "DocComment",
+            this.docID,
+            this.id,
+            reaction
+        );
     }
 
     /** Edit this comment */
     async edit(options: EditDocCommentOptions): Promise<DocComment>{
-        return this.client.rest.channels.editDocComment(this.channelID, this.docID, this.id, options);
+        return this.client.rest.channels.editDocComment(
+            this.channelID,
+            this.docID,
+            this.id,
+            options
+        );
     }
 
     /** Delete this comment */

@@ -25,14 +25,18 @@ export class TextChannel extends GuildChannel {
      */
     constructor(data: APIGuildChannel, client: Client){
         super(data, client);
-        this.messages = new TypedCollection(Message, client, client.params.collectionLimits?.messages);
+        this.messages = new TypedCollection(
+            Message,
+            client,
+            client.params.collectionLimits?.messages
+        );
         this.update(data);
     }
 
     /** Create a message in this channel.
      * @param options Message options.
      */
-    async createMessage(options: APIMessageOptions): Promise<Message<TextChannel>>{
+    async createMessage(options: APIMessageOptions): Promise<Message<TextChannel>> {
         return this.client.rest.channels.createMessage<TextChannel>(this.id, options);
     }
 
@@ -40,8 +44,15 @@ export class TextChannel extends GuildChannel {
      * @param messageID ID of the message to edit.
      * @param options Message options.
      */
-    async editMessage(messageID: string, options: EditMessageOptions): Promise<Message<TextChannel>>{
-        return this.client.rest.channels.editMessage<TextChannel>(this.id, messageID, options);
+    async editMessage(
+        messageID: string,
+        options: EditMessageOptions
+    ): Promise<Message<TextChannel>> {
+        return this.client.rest.channels.editMessage<TextChannel>(
+            this.id,
+            messageID,
+            options
+        );
     }
 
     /** Delete a message from this channel.
@@ -57,8 +68,16 @@ export class TextChannel extends GuildChannel {
      *
      * Warning: targetID must have the correct type (number=role, string=user).
      */
-    async createPermission(targetID: string | number, options: POSTChannelRolePermissionBody): Promise<Permission> {
-        return this.client.rest.channels.createPermission(this.guildID, this.id, targetID, options);
+    async createPermission(
+        targetID: string | number,
+        options: POSTChannelRolePermissionBody
+    ): Promise<Permission> {
+        return this.client.rest.channels.createPermission(
+            this.guildID,
+            this.id,
+            targetID,
+            options
+        );
     }
 
     /**
@@ -68,8 +87,16 @@ export class TextChannel extends GuildChannel {
      *
      * Warning: targetID must have the correct type (number=role, string=user).
      */
-    async editPermission(targetID: string | number, options: PATCHChannelRolePermissionBody): Promise<Permission> {
-        return this.client.rest.channels.editPermission(this.guildID, this.id, targetID, options);
+    async editPermission(
+        targetID: string | number,
+        options: PATCHChannelRolePermissionBody
+    ): Promise<Permission> {
+        return this.client.rest.channels.editPermission(
+            this.guildID,
+            this.id,
+            targetID,
+            options
+        );
     }
 
     /**
@@ -79,7 +106,11 @@ export class TextChannel extends GuildChannel {
      * Warning: targetID must have the correct type (number=role, string=user).
      */
     async deletePermission(targetID: string | number): Promise<void> {
-        return this.client.rest.channels.deletePermission(this.guildID, this.id, targetID);
+        return this.client.rest.channels.deletePermission(
+            this.guildID,
+            this.id,
+            targetID
+        );
     }
 
     override toJSON(): JSONTextChannel {

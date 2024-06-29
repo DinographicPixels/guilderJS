@@ -157,5 +157,6 @@ export interface UserStatusCreate extends UserStatusDelete {
     expiresAt: string | null;
 }
 
-export type AnyReactionInfo = MessageReactionInfo | ForumThreadReactionInfo | CalendarReactionInfo | DocReactionInfo | AnnouncementReactionInfo;
+export type AnyReactionInfo = MessageReactionInfo
+| ForumThreadReactionInfo | CalendarReactionInfo | DocReactionInfo | AnnouncementReactionInfo;
 export interface Uncached<ID = string | number> { id: ID; }

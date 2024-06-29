@@ -38,7 +38,8 @@ export default class GuildedHTTPError extends Error {
                 continue;
             }
             if (Array.isArray(errors[fieldName])) {
-                messages = messages.concat((errors[fieldName] as Array<string>).map(str => `${`${keyPrefix}${fieldName}`}: ${str}`));
+                messages = messages.concat((errors[fieldName] as Array<string>)
+                    .map(str => `${keyPrefix}${fieldName}: ${str}`));
             }
         }
         return messages;

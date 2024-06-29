@@ -44,7 +44,11 @@ export class Announcement extends Base<string> {
         this.content = data.content;
         this.mentions = data.mentions ?? null;
         this.title = data.title;
-        this.comments = new TypedCollection(AnnouncementComment, client, client.params.collectionLimits?.announcementComments);
+        this.comments = new TypedCollection(
+            AnnouncementComment,
+            client,
+            client.params.collectionLimits?.announcementComments
+        );
         this.update(data);
     }
 
@@ -93,7 +97,11 @@ export class Announcement extends Base<string> {
      * @param options Edit options
      */
     async edit(options: PATCHChannelAnnouncementBody): Promise<Announcement> {
-        return this.client.rest.channels.editAnnouncement(this.channelID, this.id, options);
+        return this.client.rest.channels.editAnnouncement(
+            this.channelID,
+            this.id,
+            options
+        );
     }
 
     /**
@@ -113,17 +121,27 @@ export class Announcement extends Base<string> {
 
     /**
      * Add a reaction to this announcement.
-     * @param reactionID ID of the emote to add
+     * @param emoteID ID of the emote to add
      */
     async createReaction(emoteID: number): Promise<void> {
-        return this.client.rest.channels.createReaction(this.channelID, "ChannelAnnouncement", this.id, emoteID);
+        return this.client.rest.channels.createReaction(
+            this.channelID,
+            "ChannelAnnouncement",
+            this.id,
+            emoteID
+        );
     }
 
     /**
      * Remove a reaction from this announcement.
-     * @param reactionID ID of the emote to remove
+     * @param emoteID ID of the emote to remove
      */
     async deleteReaction(emoteID: number): Promise<void> {
-        return this.client.rest.channels.deleteReaction(this.channelID, "ChannelAnnouncement", this.id, emoteID);
+        return this.client.rest.channels.deleteReaction(
+            this.channelID,
+            "ChannelAnnouncement",
+            this.id,
+            emoteID
+        );
     }
 }

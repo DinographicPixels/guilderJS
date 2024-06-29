@@ -17,7 +17,13 @@ export class ForumThreadReactionInfo extends ReactionInfo {
      * @param data raw data.
      * @param client client.
      */
-    constructor(data: GatewayEvent_ForumTopicReactionCreated | GatewayEvent_ForumTopicReactionDeleted | GatewayEvent_ForumTopicCommentReactionCreated | GatewayEvent_ForumTopicCommentReactionDeleted, client: Client){
+    constructor(
+        data: GatewayEvent_ForumTopicReactionCreated
+        | GatewayEvent_ForumTopicReactionDeleted
+        | GatewayEvent_ForumTopicCommentReactionCreated
+        | GatewayEvent_ForumTopicCommentReactionDeleted,
+        client: Client
+    ){
         super(data, client);
         this.threadID = data.reaction.forumTopicId;
         this.commentID = data.reaction["forumTopicCommentId" as keyof object] ?? null;
@@ -29,12 +35,16 @@ export class ForumThreadReactionInfo extends ReactionInfo {
      * otherwise it'll return basic information about this thread.
      */
     get thread(): ForumThreadReactionTypes["thread"] {
-        return this.client.getChannel<ForumChannel>(this.raw.serverId as string, this.raw.reaction.channelId)?.threads.get(this.threadID) ?? {
-            id:    this.threadID,
-            guild: this.client.guilds.get(this.raw.serverId as string) ?? {
-                id: this.raw.serverId
-            },
-            channelID: this.raw.reaction.channelId
-        };
+        return this.client.getChannel<ForumChannel>(
+            this.raw.serverId as string,
+            this.raw.reaction.channelId
+        )?.threads.get(this.threadID)
+          ?? {
+              id:    this.threadID,
+              guild: this.client.guilds.get(this.raw.serverId as string) ?? {
+                  id: this.raw.serverId
+              },
+              channelID: this.raw.reaction.channelId
+          };
     }
 }

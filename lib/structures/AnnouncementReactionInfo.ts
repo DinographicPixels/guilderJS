@@ -17,7 +17,13 @@ export class AnnouncementReactionInfo extends ReactionInfo {
      * @param data raw data.
      * @param client client.
      */
-    constructor(data: GatewayEvent_AnnouncementReactionCreated | GatewayEvent_AnnouncementReactionDeleted | GatewayEvent_AnnouncementCommentReactionCreated | GatewayEvent_AnnouncementCommentReactionDeleted, client: Client){
+    constructor(
+        data: GatewayEvent_AnnouncementReactionCreated
+        | GatewayEvent_AnnouncementReactionDeleted
+        | GatewayEvent_AnnouncementCommentReactionCreated
+        | GatewayEvent_AnnouncementCommentReactionDeleted,
+        client: Client
+    ){
         super(data, client);
         this.announcementID = data.reaction.announcementId;
         this.commentID = data.reaction["announcementCommentId" as keyof object] ?? null;
@@ -29,12 +35,15 @@ export class AnnouncementReactionInfo extends ReactionInfo {
      * otherwise it'll return basic information about this announcement.
      */
     get announcement(): AnnouncementReactionTypes["announcement"] {
-        return this.client.getChannel<AnnouncementChannel>(this.raw.serverId as string, this.raw.reaction.channelId)?.announcements.get(this.announcementID) ?? {
-            id:    this.announcementID,
-            guild: this.client.guilds.get(this.raw.serverId as string) ?? {
-                id: this.raw.serverId
-            },
-            channelID: this.raw.reaction.channelId
-        };
+        return this.client.getChannel<AnnouncementChannel>(
+            this.raw.serverId as string, this.raw.reaction.channelId)?.announcements
+            .get(this.announcementID)
+          ?? {
+              id:    this.announcementID,
+              guild: this.client.guilds.get(this.raw.serverId as string) ?? {
+                  id: this.raw.serverId
+              },
+              channelID: this.raw.reaction.channelId
+          };
     }
 }

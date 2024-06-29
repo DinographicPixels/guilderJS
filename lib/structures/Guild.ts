@@ -143,7 +143,9 @@ export class Guild extends Base<string> {
 
     /** Retrieve cached or rest guild's owner. */
     get owner(): Member | User | Promise<Member> {
-        return this.client.getGuild(this.id)?.members.get(this.ownerID) ?? this.client.users.get(this.ownerID) ?? this.client.rest.guilds.getMember(this.id, this.ownerID);
+        return this.client.getGuild(this.id)?.members.get(this.ownerID)
+          ?? this.client.users.get(this.ownerID)
+          ?? this.client.rest.guilds.getMember(this.id, this.ownerID);
     }
 
     /** Get a channel from this guild, if cached.

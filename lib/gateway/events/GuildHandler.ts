@@ -32,12 +32,14 @@ import { GuildCategory } from "../../structures/GuildCategory";
 /** Internal component, emitting guild events. */
 export class GuildHandler extends GatewayEventHandler {
     guildBanAdd(data: GatewayEvent_ServerMemberBanned): void{
-        const GuildMemberBanComponent = new BannedMember(data.serverId, data.serverMemberBan, this.client);
+        const GuildMemberBanComponent =
+          new BannedMember(data.serverId, data.serverMemberBan, this.client);
         this.client.emit("guildBanAdd", GuildMemberBanComponent);
     }
 
     guildBanRemove(data: GatewayEvent_ServerMemberUnbanned): void{
-        const GuildMemberBanComponent = new BannedMember(data.serverId, data.serverMemberBan, this.client);
+        const GuildMemberBanComponent =
+          new BannedMember(data.serverId, data.serverMemberBan, this.client);
         this.client.emit("guildBanRemove", GuildMemberBanComponent);
     }
 
@@ -57,7 +59,8 @@ export class GuildHandler extends GatewayEventHandler {
     }
 
     guildMemberRoleUpdate(data: GatewayEvent_ServerRolesUpdated): void{
-        const output = new MemberUpdateInfo(data, data.memberRoleIds[0].userId, this.client);
+        const output =
+          new MemberUpdateInfo(data, data.memberRoleIds[0].userId, this.client);
         this.client.emit("guildMemberUpdate", output);
     }
 
@@ -82,15 +85,24 @@ export class GuildHandler extends GatewayEventHandler {
     }
 
     guildMemberSocialLinkCreate(data: GatewayEvent_ServerMemberSocialLinkCreated): void {
-        this.client.emit("guildMemberUpdate", new MemberUpdateInfo(data, data.socialLink.userId, this.client));
+        this.client.emit(
+            "guildMemberUpdate",
+            new MemberUpdateInfo(data, data.socialLink.userId, this.client)
+        );
     }
 
     guildMemberSocialLinkUpdate(data: GatewayEvent_ServerMemberSocialLinkUpdated): void {
-        this.client.emit("guildMemberUpdate", new MemberUpdateInfo(data, data.socialLink.userId, this.client));
+        this.client.emit(
+            "guildMemberUpdate",
+            new MemberUpdateInfo(data, data.socialLink.userId, this.client)
+        );
     }
 
     guildMemberSocialLinkDelete(data: GatewayEvent_ServerMemberSocialLinkDeleted): void {
-        this.client.emit("guildMemberUpdate", new MemberUpdateInfo(data, data.socialLink.userId, this.client));
+        this.client.emit(
+            "guildMemberUpdate",
+            new MemberUpdateInfo(data, data.socialLink.userId, this.client)
+        );
     }
 
     guildGroupCreate(data: GatewayEvent_GroupCreated): void {
@@ -102,32 +114,42 @@ export class GuildHandler extends GatewayEventHandler {
     guildGroupUpdate(data: GatewayEvent_GroupUpdated): void {
         const guild = this.client.guilds.get(data.serverId);
         const CachedGroup = guild?.groups.get(data.group.id)?.toJSON() ?? null;
-        const GuildGroupComponent = guild?.groups.update(new GuildGroup(data.group, this.client)) ?? new GuildGroup(data.group, this.client);
+        const GuildGroupComponent =
+          guild?.groups.update(new GuildGroup(data.group, this.client))
+          ?? new GuildGroup(data.group, this.client);
         this.client.emit("guildGroupUpdate", GuildGroupComponent, CachedGroup);
     }
 
     guildGroupDelete(data: GatewayEvent_GroupDeleted): void {
         const guild = this.client.guilds.get(data.serverId);
-        const GuildGroupComponent = guild?.groups.update(new GuildGroup(data.group, this.client)) ?? new GuildGroup(data.group, this.client);
+        const GuildGroupComponent =
+          guild?.groups.update(new GuildGroup(data.group, this.client))
+          ?? new GuildGroup(data.group, this.client);
         this.client.emit("guildGroupDelete", GuildGroupComponent);
     }
 
     guildRoleCreate(data: GatewayEvent_RoleCreated): void {
         const guild = this.client.guilds.get(data.serverId);
-        const role = guild?.roles.add(new GuildRole(data.role, this.client)) ?? new GuildRole(data.role, this.client);
+        const role =
+          guild?.roles.add(new GuildRole(data.role, this.client))
+          ?? new GuildRole(data.role, this.client);
         this.client.emit("guildRoleCreate", role);
     }
 
     guildRoleUpdate(data: GatewayEvent_RoleUpdated): void {
         const guild = this.client.guilds.get(data.serverId);
         const cachedRole = guild?.roles.get(data.role.id)?.toJSON() ?? null;
-        const role = guild?.roles.update(new GuildRole(data.role, this.client)) ?? new GuildRole(data.role, this.client);
+        const role =
+          guild?.roles.update(new GuildRole(data.role, this.client))
+          ?? new GuildRole(data.role, this.client);
         this.client.emit("guildRoleUpdate", role, cachedRole);
     }
 
     guildRoleDelete(data: GatewayEvent_RoleDeleted): void {
         const guild = this.client.guilds.get(data.serverId);
-        const role = guild?.roles.update(new GuildRole(data.role, this.client)) ?? new GuildRole(data.role, this.client);
+        const role =
+          guild?.roles.update(new GuildRole(data.role, this.client))
+          ?? new GuildRole(data.role, this.client);
         guild?.roles.delete(data.role.id);
         this.client.emit("guildRoleDelete", role);
     }

@@ -24,7 +24,8 @@ export class Message<T extends AnyTextableChannel> extends Base<string> {
     channelID: string;
     /** Content of the message. */
     content: string | null;
-    /** Links in content to prevent unfurling as a link preview when displaying in Guilded (min items 1; must have unique items true) */
+    /** Links in content to prevent unfurling as a link preview when displaying in Guilded
+     * (min items 1; must have unique items true) */
     hiddenLinkPreviewUrls?: Array<string>;
     /** Array of message embed. */
     embeds?: Array<APIEmbedOptions> | [];
@@ -46,14 +47,17 @@ export class Message<T extends AnyTextableChannel> extends Base<string> {
     editedTimestamp: Date | null;
     /** When the message was deleted. */
     deletedAt: Date | null;
-
     /** ID of the last message created with the message itself. */
     _lastMessageID: string | null;
     /** ID of the message's original message. */
     #originalMessageID: string | null;
     #originalMessageBool: boolean;
 
-    constructor(data: APIChatMessage, client: Client, params?: { originalMessageID?: string | null; }){
+    constructor(
+        data: APIChatMessage,
+        client: Client,
+        params?: { originalMessageID?: string | null; }
+    ) {
         super(data.id, client);
         this.#data = data;
         this.type = data.type;
@@ -70,7 +74,9 @@ export class Message<T extends AnyTextableChannel> extends Base<string> {
         this.editedTimestamp = data.updatedAt ? new Date(data.updatedAt) : null;
         this.memberID = data.createdBy;
         this.webhookID = data.createdByWebhookId ?? null;
-        this.deletedAt = data["deletedAt" as keyof object] ? new Date(data["deletedAt" as keyof object]) : null;
+        this.deletedAt = data["deletedAt" as keyof object]
+            ? new Date(data["deletedAt" as keyof object])
+            : null;
         this._lastMessageID = null;
         this.#originalMessageID = params?.originalMessageID ?? null;
         this.#originalMessageBool = false;
@@ -151,16 +157,21 @@ export class Message<T extends AnyTextableChannel> extends Base<string> {
     get member(): T extends Guild ? Member : Member | Promise<Member> | undefined {
         const guild = this.client.guilds.get(this.guildID as string);
         if (guild?.members?.get(this.memberID) && this.memberID) {
-            return guild?.members?.get(this.memberID) as T extends Guild ? Member : Member | Promise<Member> | undefined;
+            return guild?.members
+                ?.get(this.memberID) as T extends Guild ? Member : Member | Promise<Member> | undefined;
         } else if (this.memberID && this.guildID) {
-            const restMember = this.client.rest.guilds.getMember(this.guildID, this.memberID);
+            const restMember =
+              this.client.rest.guilds.getMember(this.guildID, this.memberID);
             void this.setCache(restMember);
-            return (guild?.members.get(this.memberID) ?? restMember) as T extends Guild ? Member : Member | Promise<Member> | undefined;
+            return (guild?.members.get(this.memberID) ?? restMember) as
+              T extends Guild ? Member : Member | Promise<Member> | undefined;
         } else {
-            const channel = this.client.getChannel(this.guildID as string, this.channelID) as TextChannel;
+            const channel =
+              this.client.getChannel(this.guildID as string, this.channelID) as TextChannel;
             const message = channel?.messages?.get(this.id);
             if (message instanceof Message && message.guildID && message.memberID) {
-                const restMember = this.client.rest.guilds.getMember(message.guildID, message.memberID);
+                const restMember =
+                  this.client.rest.guilds.getMember(message.guildID, message.memberID);
                 void this.setCache(restMember);
                 return restMember as T extends Guild ? Member : Member | Promise<Member> | undefined;
             }
@@ -170,7 +181,8 @@ export class Message<T extends AnyTextableChannel> extends Base<string> {
 
     /** The guild the message is in. This will throw an error if the guild isn't cached.*/
     get guild(): T extends Guild ? Guild : Guild | null {
-        if (!this.guildID) throw new Error(`Couldn't get ${this.constructor.name}#guildID. (guild cannot be retrieved)`);
+        if (!this.guildID)
+            throw new Error(`Couldn't get ${this.constructor.name}#guildID. (guild cannot be retrieved)`);
         if (!this._cachedGuild) {
             this._cachedGuild = this.client.getGuild(this.guildID);
             if (!this._cachedGuild) {
@@ -182,9 +194,15 @@ export class Message<T extends AnyTextableChannel> extends Base<string> {
 
     /** The channel this message was created in.  */
     get channel(): T extends AnyTextableChannel ? T : undefined {
-        if (!this.guildID) throw new Error(`Couldn't get ${this.constructor.name}#guildID. (channel cannot be retrieved)`);
-        if (!this.channelID) throw new Error(`Couldn't get ${this.constructor.name}#channelID. (channel cannot be retrieved)`);
-        return this._cachedChannel ?? (this._cachedChannel = this.client.getChannel(this.guildID, this.channelID) as T extends AnyTextableChannel ? T : undefined);
+        if (!this.guildID)
+            throw new Error(`Couldn't get ${this.constructor.name}#guildID. (channel cannot be retrieved)`);
+        if (!this.channelID)
+            throw new Error(`Couldn't get ${this.constructor.name}#channelID. (channel cannot be retrieved)`);
+        return this._cachedChannel
+          ?? (this._cachedChannel = this.client.getChannel(
+              this.guildID,
+              this.channelID
+          ) as T extends AnyTextableChannel ? T : undefined);
     }
 
     private async setCache(obj: Promise<Member> | Promise<Guild>): Promise<void> {
@@ -204,9 +222,14 @@ export class Message<T extends AnyTextableChannel> extends Base<string> {
      * @param options Message options.
      */
     async createMessage(options: APIMessageOptions): Promise<Message<T>>{
-        const response = await this.client.rest.channels.createMessage<T>(this.channelID, options, { originalMessageID: this.#originalMessageID });
+        const response =
+          await this.client.rest.channels.createMessage<T>(
+              this.channelID,
+              options,
+              { originalMessageID: this.#originalMessageID }
+          );
         this._lastMessageID = response.id as string;
-        if (this.#originalMessageBool === false){
+        if (!this.#originalMessageBool){
             this.#originalMessageBool = true;
             this.#originalMessageID = response.id as string;
         }
@@ -217,7 +240,12 @@ export class Message<T extends AnyTextableChannel> extends Base<string> {
      * @param newMessage New message's options
      */
     async edit(newMessage: {content?: string; embeds?: Array<APIEmbedOptions>;}): Promise<Message<T>>{
-        return this.client.rest.channels.editMessage<T>(this.channelID, this.id as string, newMessage, { originalMessageID: this.#originalMessageID });
+        return this.client.rest.channels.editMessage<T>(
+            this.channelID,
+            this.id as string,
+            newMessage,
+            { originalMessageID: this.#originalMessageID }
+        );
     }
 
     /** This method is used to delete the current message. */
@@ -231,7 +259,11 @@ export class Message<T extends AnyTextableChannel> extends Base<string> {
      */
     async editLast(newMessage: {content?: string; embeds?: Array<APIEmbedOptions>;}): Promise<Message<T>>{
         if (!this._lastMessageID) throw new TypeError("Can't edit last message if it does not exist.");
-        return this.client.rest.channels.editMessage<T>(this.channelID, this._lastMessageID, newMessage);
+        return this.client.rest.channels.editMessage<T>(
+            this.channelID,
+            this._lastMessageID,
+            newMessage
+        );
     }
 
     /** Delete the last message sent with the message itself. */
@@ -244,13 +276,20 @@ export class Message<T extends AnyTextableChannel> extends Base<string> {
      * @param newMessage New message's options.
      */
     async editOriginal(newMessage: { content?: string; embeds?: Array<APIEmbedOptions>; }): Promise<Message<T>>{
-        if (!this.#originalMessageID) throw new TypeError("Can't edit original message if it does not exist.");
-        return this.client.rest.channels.editMessage<T>(this.channelID, this.#originalMessageID, newMessage, { originalMessageID: this.#originalMessageID });
+        if (!this.#originalMessageID)
+            throw new TypeError("Can't edit original message if it does not exist.");
+        return this.client.rest.channels.editMessage<T>(
+            this.channelID,
+            this.#originalMessageID,
+            newMessage,
+            { originalMessageID: this.#originalMessageID }
+        );
     }
 
     /** Delete the message's original response message. */
     async deleteOriginal(): Promise<void>{
-        if (!this.#originalMessageID) throw new TypeError("Can't delete original message if it does not exist.");
+        if (!this.#originalMessageID)
+            throw new TypeError("Can't delete original message if it does not exist.");
         return this.client.rest.channels.deleteMessage(this.channelID, this.#originalMessageID);
     }
 
@@ -258,14 +297,24 @@ export class Message<T extends AnyTextableChannel> extends Base<string> {
      * @param reaction ID of a reaction/emote.
      */
     async createReaction(reaction: number): Promise<void>{
-        return this.client.rest.channels.createReaction(this.channelID, "ChannelMessage", this.id as string, reaction);
+        return this.client.rest.channels.createReaction(
+            this.channelID,
+            "ChannelMessage",
+            this.id as string,
+            reaction
+        );
     }
 
     /** Remove a reaction from this message.
      * @param reaction ID of a reaction/emote.
      */
     async deleteReaction(reaction: number): Promise<void>{
-        return this.client.rest.channels.deleteReaction(this.channelID, "ChannelMessage", this.id as string, reaction);
+        return this.client.rest.channels.deleteReaction(
+            this.channelID,
+            "ChannelMessage",
+            this.id as string,
+            reaction
+        );
     }
 
     /** Pin this message */
