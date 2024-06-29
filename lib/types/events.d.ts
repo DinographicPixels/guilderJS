@@ -221,9 +221,9 @@ export interface ClientEvents {
     announcementCommentUpdate: [comment: AnnouncementComment, oldComment: JSONAnnouncementComment | null];
     /** @event Emitted when a comment within an announcement is deleted. */
     announcementCommentDelete: [comment: AnnouncementComment];
-    /** @event Emitted when a webhook got created. */
+    /** @event Emitted when a webhook is being created. */
     webhooksCreate: [webhook: Webhook];
-    /** @event Emitted when a webhook is deleted. */
+    /** @event Emitted when a webhook is definitely created, or has been updated. */
     webhooksUpdate: [webhook: Webhook];
     /** @event Emitted when a user updates their user status. */
     userStatusCreate: [userStatus: UserStatusCreate];
