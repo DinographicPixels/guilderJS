@@ -10,7 +10,7 @@ const client = new Client({ token: config.token });
 const guildSettingsMap = new Map();
 
 client.on("messageCreate", async (message) => {
-    if ((await message.member)?.bot == true) return;
+    if ((await message.member)?.bot === true) return;
     if (message.content?.startsWith(config.prefix)) {
         const msgcontent = message.content.toLowerCase().split(config.prefix)[1];
         switch (msgcontent) {

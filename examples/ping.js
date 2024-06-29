@@ -10,15 +10,15 @@ client.on("error", (err) => {
 });
 
 client.on("messageCreate", async (message) => {
-    if ((await message.member).bot == true) return;
-    if (message.content == "!ping") {
-        const GettingPing = "Please wait..";
-        const PingResultText1 = "your ping: `";
-        const PingResultText2 = "ms`";
+    if ((await message.member).bot === true) return;
+    if (message.content === "!ping") {
+        const gettingPing = "Please wait..";
+        const pingResultText1 = "your ping: `";
+        const pingResultText2 = "ms`";
 
-        await message.createMessage({ content: GettingPing, replyMessageIds: [message.id] });
+        await message.createMessage({ content: gettingPing, replyMessageIds: [message.id] });
         const ping = Date.now() - message.createdAt.getTime();
-        await message.editOriginal({ content: PingResultText1 + ping + PingResultText2 });
+        await message.editOriginal({ content: pingResultText1 + ping + pingResultText2 });
     }
 });
 
