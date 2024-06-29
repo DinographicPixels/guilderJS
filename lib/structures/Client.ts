@@ -153,7 +153,7 @@ export class Client extends TypedEmitter<ClientEvents> {
 
     /** Bot's token. */
     get token(): string {
-        return this.params.token;
+        return this.params.token.includes("gapi_") ? this.params.token : "gapi_" + this.params.token;
     }
 
     get uptime(): number {
