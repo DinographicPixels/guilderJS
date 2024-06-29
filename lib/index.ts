@@ -13,6 +13,7 @@
 // Documentation: https://docs.touchguild.com/
 //
 // Contact: wade@dinographicpixels.com
+// Support by donating: https://github.com/sponsors/pakkographic
 //
 //
 // Copyright (c) – DinographicPixels. All rights reserved.
