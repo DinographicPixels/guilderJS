@@ -52,7 +52,7 @@ export class MessageHandler extends GatewayEventHandler {
         else void this.addGuildChannel(data.serverId, data.message.channelId);
         const channel =
           this.client.getChannel<TextChannel>(data.serverId, data.message.channelId);
-        const PU_Message = channel?.messages.update(data.message) ?? {
+        const PU_Message = channel?.messages?.update(data.message) ?? {
             id:        data.message.id,
             guildID:   data.serverId,
             channelID: data.message.channelId,
