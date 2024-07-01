@@ -221,7 +221,7 @@ export class Channels {
     }
 
     /**
-     * Get every comments from a doc.
+     * Get every comment from a doc.
      * @param channelID ID of the channel containing the doc.
      * @param docID ID of the doc the comment is in.
      */
@@ -251,7 +251,7 @@ export class Channels {
     /** This method is used to get a specific forum thread.
      *
      * Note: This method requires a "Forum" channel.
-     * @param channelID ID of a speific Forum channel.
+     * @param channelID ID of a specific Forum channel.
      * @param threadID ID of the specific Forum Thread.
      */
     async getForumThread(channelID: string, threadID: number): Promise<ForumThread<ForumChannel>> {
@@ -1066,7 +1066,7 @@ export class Channels {
         });
     }
 
-    /** Add/Edit a RSVP in a calendar event.
+    /** Add/Edit an RSVP in a calendar event.
      * @param channelID ID of a "Calendar" channel.
      * @param eventID ID of a calendar event.
      * @param memberID ID of a member.
@@ -1088,7 +1088,7 @@ export class Channels {
         );
     }
 
-    /** Delete a RSVP from a calendar event.
+    /** Delete an RSVP from a calendar event.
      * @param channelID ID of a "Calendar" channel.
      * @param eventID ID of a calendar event.
      * @param memberID ID of a member.
@@ -1534,7 +1534,7 @@ export class Channels {
     }
 
     /**
-     * Get the permissions of every users in the guild for a specified channel.
+     * Get the permissions of every user in the guild for a specified channel.
      * @param guildID ID of the guild where the channel is in
      * @param channelID ID of the channel
      */
