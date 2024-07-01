@@ -78,6 +78,7 @@ import { GuildGroup } from "../structures/GuildGroup";
 import { GuildSubscription } from "../structures/GuildSubscription";
 import { GuildCategory } from "../structures/GuildCategory";
 import { Permission } from "../structures/Permission";
+import { GETGuildMemberRolesResponse } from "guildedapi-types.ts/v1";
 
 export class Guilds {
     #manager: RESTManager;
@@ -239,9 +240,21 @@ export class Guilds {
         });
     }
 
+    /**
+     * Get a list of role IDs of a specific member within a guild.
+     * @param guildID ID of the guild the member is in.
+     * @param memberID ID of the member to get roles from.
+     */
+    async getMemberRoles(guildID: string, memberID: string): Promise<Array<number>> {
+        return this.#manager.authRequest<GETGuildMemberRolesResponse>({
+            method: "GET",
+            path:   endpoints.GUILD_MEMBER_ROLES(guildID, memberID)
+        }).then(data => data.roleIds);
+    }
+
     /** Edit a member.
      * @param guildID ID of the guild the member is in.
-     * @param memberID ID of the the member to edit.
+     * @param memberID ID of the member to edit.
      * @param options Edit options.
      */
     async editMember(guildID: string, memberID: string, options: EditMemberOptions): Promise<void> {
@@ -367,7 +380,7 @@ export class Guilds {
         }).then(data => Number(data.total));
     }
 
-    /** Award every members of a guild having a role using the built-in EXP system.
+    /** Award every member of a guild having a role using the built-in EXP system.
      * @param guildID ID of a guild.
      * @param roleID ID of a role.
      * @param amount Amount of experience.
