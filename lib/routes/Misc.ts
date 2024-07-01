@@ -1,4 +1,4 @@
-/** @module Routes/Guilds */
+/** @module Routes/Misc */
 
 //
 // Created by Wade (@pakkographic)
