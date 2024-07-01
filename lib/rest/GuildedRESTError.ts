@@ -9,7 +9,7 @@ import type { RESTMethod } from "../Constants";
 import type { Headers, Response } from "undici";
 
 /** A REST error received from Discord. */
-/** Credits to Ocanic.js  */
+/** Credits to Oceanic.js  */
 export default class GuildedRESTError extends Error {
     code: number | null;
     method: RESTMethod;

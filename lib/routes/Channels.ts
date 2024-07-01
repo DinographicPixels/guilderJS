@@ -578,6 +578,7 @@ export class Channels {
      * @param channelID ID of a channel.
      * @param channelType Type of channel.
      * @param targetID Target to remove reactions from it.
+     * @param filter Filter options.
      */
     async bulkDeleteReactions(
         channelID: string,
@@ -920,7 +921,7 @@ export class Channels {
         createSeries?: POSTCalendarEventBody["repeatInfo"]
     ): Promise<CalendarEvent> {
         if (typeof options !== "object") throw new Error("event options should be an object.");
-        if (options.duration && typeof options.duration === "number") {
+        if (options.duration && typeof options.duration === "number") { // check for JS
             if (options.duration < 1000) throw new Error("The duration should be higher than 1000 ms.");
             options.duration = options.duration / 1000; // ms to min.
         }
@@ -944,7 +945,7 @@ export class Channels {
         options: EditCalendarEventOptions
     ): Promise<CalendarEvent> {
         if (typeof options !== "object") throw new Error("event options should be an object.");
-        if (options.duration && typeof options.duration === "number") {
+        if (options.duration && typeof options.duration === "number") { // check for JS
             if (options.duration < 1000) throw new Error("The duration should be higher than 1000 ms.");
             options.duration = options.duration / 1000; // ms to min.
         }

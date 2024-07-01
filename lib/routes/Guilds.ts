@@ -358,7 +358,8 @@ export class Guilds {
      * @param amount Amount of experience.
      */
     async awardMember(guildID: string, memberID: string, amount: POSTGuildMemberXPBody["amount"]): Promise<number>{
-        if (typeof amount !== "number") throw new TypeError("amount must be an integer/number.");
+        if (typeof amount !== "number") // check for JS
+            throw new TypeError("amount must be an integer/number.");
         return this.#manager.authRequest<POSTGuildMemberXPResponse>({
             method: "POST",
             path:   endpoints.GUILD_MEMBER_XP(guildID, memberID),
@@ -372,7 +373,8 @@ export class Guilds {
      * @param amount Total amount of experience.
      */
     async setMemberXP(guildID: string, memberID: string, amount: PUTGuildMemberXPBody["total"]): Promise<number>{
-        if (typeof amount !== "number") throw new TypeError("amount must be an integer/number.");
+        if (typeof amount !== "number") // check for JS
+            throw new TypeError("amount must be an integer/number.");
         return this.#manager.authRequest<PUTGuildMemberXPResponse>({
             method: "PUT",
             path:   endpoints.GUILD_MEMBER_XP(guildID, memberID),
@@ -386,7 +388,8 @@ export class Guilds {
      * @param amount Amount of experience.
      */
     async awardRole(guildID: string, roleID: number, amount: POSTGuildRoleXPBody["amount"]): Promise<void>{
-        if (typeof amount !== "number") throw new TypeError("amount must be an integer/number.");
+        if (typeof amount !== "number") // check for JS
+            throw new TypeError("amount must be an integer/number.");
         return this.#manager.authRequest<void>({
             method: "POST",
             path:   endpoints.GUILD_MEMBER_ROLE_XP(guildID, roleID),

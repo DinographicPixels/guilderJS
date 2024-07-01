@@ -9,7 +9,7 @@ import type { RESTMethod } from "../Constants";
 import type { Headers, Response } from "undici";
 
 /** An HTTP error received from Guilded. */
-/** Credits to Ocanic.js  */
+/** Credits to Oceanic.js  */
 export default class GuildedHTTPError extends Error {
     method: RESTMethod;
     override name = "GuildedHTTPError";

@@ -157,8 +157,10 @@ export class Message<T extends AnyTextableChannel> extends Base<string> {
 
     /** Retrieve message's member.
      *
-     * Make sure to await this property (getter) to still get results even if the member is not cached.
-     * @note The API does not provide member information, that's why you might need to await this property.
+     * Make sure to await this property (getter) to still
+     * get results even if the member is not cached.
+     * @note The API does not provide member information,
+     * that's why you might need to await this property.
      */
     get member(): T extends Guild ? Member : Member | Promise<Member> | undefined {
         const guild = this.client.guilds.get(this.guildID as string);
@@ -245,7 +247,12 @@ export class Message<T extends AnyTextableChannel> extends Base<string> {
     /** This method is used to edit the current message.
      * @param newMessage New message's options
      */
-    async edit(newMessage: {content?: string; embeds?: Array<APIEmbedOptions>;}): Promise<Message<T>>{
+    async edit(
+        newMessage: {
+            content?: string;
+            embeds?: Array<APIEmbedOptions>;
+        }
+    ): Promise<Message<T>>{
         return this.client.rest.channels.editMessage<T>(
             this.channelID,
             this.id as string,
@@ -264,7 +271,7 @@ export class Message<T extends AnyTextableChannel> extends Base<string> {
      * @param newMessage New message's options.
      */
     async editLast(newMessage: {content?: string; embeds?: Array<APIEmbedOptions>;}): Promise<Message<T>>{
-        if (!this._lastMessageID) throw new TypeError("Can't edit last message if it does not exist.");
+        if (!this._lastMessageID) throw new TypeError("Cannot edit last message if it does not exist.");
         return this.client.rest.channels.editMessage<T>(
             this.channelID,
             this._lastMessageID,
@@ -274,7 +281,7 @@ export class Message<T extends AnyTextableChannel> extends Base<string> {
 
     /** Delete the last message sent with the message itself. */
     async deleteLast(): Promise<void>{
-        if (!this._lastMessageID) throw new TypeError("Can't delete last message if it does not exist.");
+        if (!this._lastMessageID) throw new TypeError("Cannot delete last message if it does not exist.");
         return this.client.rest.channels.deleteMessage(this.channelID, this._lastMessageID);
     }
 
@@ -283,7 +290,7 @@ export class Message<T extends AnyTextableChannel> extends Base<string> {
      */
     async editOriginal(newMessage: { content?: string; embeds?: Array<APIEmbedOptions>; }): Promise<Message<T>>{
         if (!this.#originalMessageID)
-            throw new TypeError("Can't edit original message if it does not exist.");
+            throw new TypeError("Cannot edit original message if it does not exist.");
         return this.client.rest.channels.editMessage<T>(
             this.channelID,
             this.#originalMessageID,
@@ -295,7 +302,7 @@ export class Message<T extends AnyTextableChannel> extends Base<string> {
     /** Delete the message's original response message. */
     async deleteOriginal(): Promise<void>{
         if (!this.#originalMessageID)
-            throw new TypeError("Can't delete original message if it does not exist.");
+            throw new TypeError("Cannot delete original message if it does not exist.");
         return this.client.rest.channels.deleteMessage(this.channelID, this.#originalMessageID);
     }
 

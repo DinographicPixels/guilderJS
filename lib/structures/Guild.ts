@@ -213,7 +213,6 @@ export class Guild extends Base<string> {
 
     /**
      * Create a category
-     * @param guildID ID of the guild.
      * @param options Create options.
      */
     async createCategory(options: POSTCreateCategoryBody): Promise<GuildCategory> {
@@ -221,7 +220,6 @@ export class Guild extends Base<string> {
     }
     /**
      * Read a guild category.
-     * @param guildID ID of the guild to create a category in.
      * @param categoryID ID of the category you want to read.
      */
     async getCategory(categoryID: number): Promise<GuildCategory> {
@@ -229,7 +227,6 @@ export class Guild extends Base<string> {
     }
     /**
      * Edit a category.
-     * @param guildID ID of the guild to create a category in.
      * @param categoryID ID of the category you want to read.
      * @param options Options to update a category.
      */
@@ -239,7 +236,6 @@ export class Guild extends Base<string> {
 
     /**
      * Delete a category.
-     * @param guildID ID of the guild to create a category in.
      * @param categoryID ID of the category you want to read.
      */
     async deleteCategory(categoryID: number): Promise<GuildCategory> {
@@ -262,7 +258,7 @@ export class Guild extends Base<string> {
         return this.client.rest.guilds.setMemberXP(this.id as string, memberID, amount);
     }
 
-    /** Award every members of a guild having a role using the built-in EXP system.
+    /** Award every member of a guild having a role using the built-in EXP system.
      * @param roleID ID of a role.
      * @param amount Amount of experience.
      */

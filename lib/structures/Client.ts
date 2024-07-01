@@ -2,6 +2,10 @@
 /* eslint-disable @typescript-eslint/method-signature-style */
 
 //
+// TouchGuild Library
+// Client structure class
+// Main access component
+//
 // Created by Wade (@pakkographic)
 // Copyright (c) 2024 DinographicPixels. All rights reserved.
 //
@@ -101,7 +105,14 @@ import { CreateDocCommentOptions, EditDocCommentOptions } from "../types/docComm
 import { config } from "../../pkgconfig";
 import { fetch } from "undici";
 
-/** Represents the bot's client. */
+/** Represents the application client,
+ * enabling you to perform actions, detect events,
+ * get data that is automatically managed for you,
+ * configure internal properties, and way more.
+ *
+ * It is the root of the creation of your application.
+ *
+ * That's where everything begins.*/
 export class Client extends TypedEmitter<ClientEvents> {
     /** Client's params, including bot's token & rest options. */
     params: ClientOptions;
@@ -150,17 +161,24 @@ export class Client extends TypedEmitter<ClientEvents> {
         this.ws = new WSManager(this, { token: this.token, client: this });
         this.guilds = new TypedCollection(Guild, this);
         this.users = new TypedCollection(User, this);
-        this.rest = (!this.params.ForceDisableREST ? new RESTManager(this, params.RESTOptions) : null) as RESTManager;
+        this.rest = (
+            !this.params.ForceDisableREST
+                ? new RESTManager(this, params.RESTOptions)
+                : null
+        ) as RESTManager;
         this.#gateway = new GatewayHandler(this);
         this.util = new Util(this);
         this.startTime = 0;
     }
 
-    /** Bot's token. */
+    /** Get the application token you initially passed into the constructor.
+     * @note If "gapi_" is not present in the token, it is automatically
+     * added for you, enabling TouchGuild to connect in proper conditions.*/
     get token(): string {
         return this.params.token.includes("gapi_") ? this.params.token : "gapi_" + this.params.token;
     }
 
+    /** Application Uptime */
     get uptime(): number {
         return this.startTime ? Date.now() - this.startTime : 0;
     }

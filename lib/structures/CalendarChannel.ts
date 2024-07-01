@@ -53,7 +53,6 @@ export class CalendarChannel extends GuildChannel {
 
     /**
      * Edit an event series set in this channel.
-     * @param channelID ID of the channel.
      * @param eventID ID of the event.
      * @param seriesID ID of the series.
      * @param options Edit repetition options.
