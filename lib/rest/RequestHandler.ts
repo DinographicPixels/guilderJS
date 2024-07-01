@@ -81,6 +81,7 @@ export class RequestHandler {
 
                     headers["User-Agent"] =
                       `TouchGuild ${pkgconfig.branch} (${pkgconfig.version}) Node.JS ${pkgconfig.NodeJSVersion}`;
+                    headers["X-Library-Details"] = headers["User-Agent"];
                     headers["x-guilded-bot-api-use-official-markdown"] =
                       String(this.#manager.client.params.isOfficialMarkdownEnabled ?? true); // temporary header
 

@@ -157,7 +157,13 @@ export class WSManager extends TypedEmitter<WebsocketEvents> {
         }
 
         const wsOptions = {
-            headers: { Authorization: `Bearer ${this.params.token}` }, protocol: "HTTPS"
+            headers: {
+                "Authorization": `Bearer ${this.params.token}`,
+                "User-Agent":
+                  `TouchGuild ${pkgconfig.branch} (${pkgconfig.version}) Node.JS ${pkgconfig.NodeJSVersion}`,
+                "X-Library-Details":
+                  `TouchGuild ${pkgconfig.branch} (${pkgconfig.version}) Node.JS ${pkgconfig.NodeJSVersion}`
+            }, protocol: "HTTPS"
         };
         Object.assign(
             wsOptions.headers,
