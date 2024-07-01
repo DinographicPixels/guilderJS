@@ -149,7 +149,11 @@ export class Guilds {
             path:   endpoints.GUILD_MEMBERS(guildID)
         }).then(data =>
             data.members.map(d =>
-                this.#manager.client.util.updateMember(guildID, d.user.id, d as APIGuildMember)
+                this.#manager.client.util.updateMember(
+                    guildID,
+                    d.user.id,
+                    d as APIGuildMember
+                )
             )
         );
     }
@@ -163,7 +167,11 @@ export class Guilds {
             method: "GET",
             path:   endpoints.GUILD_BAN(guildID, memberID)
         }).then(data =>
-            new BannedMember(guildID, data.serverMemberBan, this.#manager.client)
+            new BannedMember(
+                guildID,
+                data.serverMemberBan,
+                this.#manager.client
+            )
         );
     }
 
@@ -176,7 +184,11 @@ export class Guilds {
             path:   endpoints.GUILD_BANS(guildID)
         }).then(data =>
             data.serverMemberBans.map(d =>
-                new BannedMember(guildID, d, this.#manager.client)
+                new BannedMember(
+                    guildID,
+                    d,
+                    this.#manager.client
+                )
             )
         );
     }
