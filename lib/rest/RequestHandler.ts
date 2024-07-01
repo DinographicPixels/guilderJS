@@ -26,9 +26,9 @@ export class RequestHandler {
         this.#manager = manager;
         this.options = {
             agent:                      options.agent,
-            baseURL:                    options.baseURL ?? pkgconfig.GuildedAPI.APIURL,
+            baseURL:                    options.baseURL ?? pkgconfig.GuildedAPI.API_URL,
             disableLatencyCompensation: !!options.disableLatencyCompensation,
-            host:                       options.host ?? (options.baseURL ? new URL(options.baseURL as string).host : new URL(pkgconfig.GuildedAPI.APIURL).host),
+            host:                       options.host ?? (options.baseURL ? new URL(options.baseURL as string).host : new URL(pkgconfig.GuildedAPI.API_URL).host),
             latencyThreshold:           options.latencyThreshold ?? 30000,
             ratelimiterOffset:          options.ratelimiterOffset ?? 0,
             requestTimeout:             options.requestTimeout ?? 15000,
@@ -67,7 +67,7 @@ export class RequestHandler {
         if (!options.path.startsWith("/")) {
             options.path = `/${options.path}`;
         }
-        const route = options.route ?? `${pkgconfig.GuildedAPI.APIURL}/${options.path}`;
+        const route = options.route ?? `${pkgconfig.GuildedAPI.API_URL}/${options.path}`;
         if (!this.ratelimits[route]) {
             this.ratelimits[route] = new SequentialBucket(1, this.latencyRef);
         }
