@@ -1,5 +1,5 @@
 const { Client } = require("touchguild");
-const client = new Client({ token: "TOKEN" });
+const client = new Client({ token: "INSERT TOKEN" });
 
 client.on("ready", () => {
     console.log("Ready as", client.user.username);

@@ -3,7 +3,7 @@ const { Client, Member } = require("touchguild");
 
 // Creating client & connecting.
 const client = new Client({
-    token: "TOKEN"
+    token: "INSERT TOKEN"
 });
 
 client.on("ready", () => {
@@ -15,16 +15,16 @@ client.on("error", (err) => {
 });
 
 const badWords = [
-    "fuck",
-    "bitch",
-    "dick"
-]
+    "take the L",
+    "noob",
+    "looser"
+];
 
 client.on("messageCreate", async (message) => {
     const member = await message.member;
     if (member.bot) return;
     if (member instanceof Member) {
-        if (badWords.some(badword => message.content.includes(badword))) {
+        if (badWords.some(badWord => message.content.includes(badWord))) {
             message.delete().then(() => console.log("Successfully deleted the swear."))
               .catch(err => console.log("Failed to delete the swear."));
             member.ban(`bad word: ${message.content}`)

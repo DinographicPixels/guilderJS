@@ -1,35 +1,57 @@
-const { Client } = require("touchguild");
+// Imports
+const { Client } = require("touchguild"); // JavaScript/TS (CommonJS)
+// TypeScript/JavaScript (ES): import { Client } from "touchguild";
 
+// Configuration
 const config = {
-    token: "TOKEN",
+    token: "INSERT TOKEN",
     prefix: "/"
 }
 
+// Constructing the Client, passing the token into it.
 const client = new Client({ token: config.token });
 
+// Map that will contain settings for each registered guild.
 const guildSettingsMap = new Map();
 
+// Listening to the Client 'ready' state that is emitted.
+client.on("ready", () => {
+    console.log("Ready as", client.user?.username, "(" + client.user?.id + ")");
+});
+
+// Listening to new messages being sent.
 client.on("messageCreate", async (message) => {
-    if ((await message.member)?.bot === true) return;
+    // Check if the user is a bot or not, if yes, return
+    // preventing potential message creation loop when making out our commands
+    if ((await message.member)?.bot) return;
+    // Check if the message content starts with the set prefix
     if (message.content?.startsWith(config.prefix)) {
-        const msgcontent = message.content.toLowerCase().split(config.prefix)[1];
-        switch (msgcontent) {
+        // Split the message at the prefix symbol
+        // so we can separate the prefix from the message content
+        const msgContent = message.content.toLowerCase().split(config.prefix)[1];
+        switch (msgContent) {
+          // First command, 'help', a list of command you can use
             case "help": {
                 const helpEmbed = {
                     title: "Help",
-                    description: "Every commands you can use.",
+                    description: "Here are all the commands you can use:",
                     fields: [
-                        { name: `${config.prefix}help`, value: "shows every command you can use." },
-                        { name: `${config.prefix}uptime`, value: "bot up time." },
-                        { name: `${config.prefix}latency`, value: "bot's latency in ms." },
-                        { name: `${config.prefix}hi`, value: "say hi" },
-                        { name: `${config.prefix}ping`, value: "pong" },
-                        { name: `${config.prefix}pong`, value: "ping" },
-                        { name: `${config.prefix}cmdnotfound`, value: "Disable the command not found message." }
+                        { name: `${config.prefix }help`,      value: "shows all the command you can use."     },
+                        { name: `${config.prefix }uptime`,    value: "bot up time."                           },
+                        { name: `${config.prefix }latency`,   value: "bot's latency in ms."                   },
+                        { name: `${config.prefix }hi`,        value: "say hi"                                 },
+                        { name: `${config.prefix }ping`,      value: "pong"                                   },
+                        { name: `${config.prefix }pong`,      value: "ping"                                   },
+                        { name: `${config.prefix }not_found`, value: "Disable the command not found message." }
                     ]
                 }
-                return message.createMessage({ embeds: [helpEmbed], replyMessageIds: [message.id] });
+                return message.createMessage({
+                    embeds: [helpEmbed],
+                    replyMessageIds: [message.id]
+                });
             }
+          // Uptime command, showing precisely for how long
+          // the application is up.
             case "uptime": {
                 const uptime = new Date(client.uptime);
                 const days = uptime.getDate() - 1;
@@ -41,55 +63,77 @@ client.on("messageCreate", async (message) => {
                         {
                             title: "Client uptime",
                             fields: [
-                                { name: "Days", value: days.toString(), inline: true },
-                                { name: "Hours", value: hours.toString(), inline: true },
-                                { name: "Minutes", value: mins.toString(), inline: true },
-                                { name: "Seconds", value: secs.toString(), inline: true }
+                                { name: "Days",    value: days.toString(),  inline: true },
+                                { name: "Hours",   value: hours.toString(), inline: true },
+                                { name: "Minutes", value: mins.toString(),  inline: true },
+                                { name: "Seconds", value: secs.toString(),  inline: true }
                             ]
                         }
                     ]
                 });
             }
+          // Latency command, gives the bot latency in ms
             case "latency": {
                 const latency = Date.now() - message.createdAt.getTime();
                 return message.createMessage({ embeds: [{ title: "Latency: " + latency + "ms" }] })
             }
+          // Simple hi command
             case "hi": {
                 return message.createMessage({ content: "hi", replyMessageIds: [message.id] });
             }
+          // ping!
             case "ping": {
                 return message.createMessage({ content: "pong!", replyMessageIds: [message.id] })
             }
+          // pong!
             case "pong": {
                 return message.createMessage({ content: "ping!", replyMessageIds: [message.id] });
             }
-            case "cmdnotfound": {
-                if (!guildSettingsMap.has(message.guildID) && message.guildID) setGuildSettings(message.guildID); else if (!message.guildID) return message.createMessage({ content: "Something went wrong." });
+          // Toggle the command not found message if it is annoying,
+          // or if you're using another bot with the same prefix (in both case it is annoying)
+            case "not_found": {
+                if (!guildSettingsMap.has(message.guildID) && message.guildID)
+                    setGuildSettings(message.guildID);
+                else if (!message.guildID)
+                    return message.createMessage({ content: "Something went wrong." });
+
+                // get settings object
                 const settings = guildSettingsMap.get(message.guildID);
-                if (settings["cmdnotfound"] == true) {
-                    settings["cmdnotfound"] = false;
-                } else if (settings["cmdnotfound"] == false) {
-                    settings["cmdnotfound"] = true;
-                }
+                // toggle not_found boolean
+                settings["not_found"] = !settings["not_found"];
+                // replace the old settings object with the new one
                 guildSettingsMap.set(message.guildID, settings);
-                message.createMessage({ content: `Successfully ${settings["cmdnotfound"] ? "enabled" : "disabled"} cmdnotfound.` })
+                // send success message
+                void message.createMessage({
+                    content: `Successfully ${settings["not_found"] ? "enabled" : "disabled"} not_found.`
+                });
                 break;
             }
+          // The command not found message,
+          // if the command the user is trying to execute is unknown
             default: {
-                if (guildSettingsMap.get(message.guildID) == undefined && message.guildID) setGuildSettings(message.guildID);
-                if (guildSettingsMap.get(message.guildID)?.["cmdnotfound"] == true) {
-                    message.createMessage({ content: "command not found", replyMessageIds: [message.id] });
-                }
+                if (guildSettingsMap.get(message.guildID) == undefined && message.guildID)
+                    setGuildSettings(message.guildID);
+                if (guildSettingsMap.get(message.guildID)?.["not_found"])
+                    void message.createMessage({
+                        content: "command not found", replyMessageIds: [message.id]
+                    });
             }
         }
-    } else if (message.mentions && message.mentions.users?.find(user => user.id == client.user?.id)) {
-        message.createMessage({ content: `haha, stop pinging me! (list of commands: ${config.prefix}help)`, replyMessageIds: [message.id] });
+    } else if (message.mentions
+      && message.mentions.users?.find(user => user.id === client.user?.id)
+    ) {
+        void message.createMessage({
+            content: `haha, stop pinging me! (list of commands: ${config.prefix}help)`,
+            replyMessageIds: [message.id]
+        });
     }
 });
 
+// Function used to assign a default settings object to a guild ID
 function setGuildSettings(guildID) {
     const settings = {
-        cmdnotfound: true
+        not_found: true
     }
     guildSettingsMap.set(guildID, settings);
 }
