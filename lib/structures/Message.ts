@@ -320,13 +320,16 @@ export class Message<T extends AnyTextableChannel> extends Base<string> {
 
     /** Remove a reaction from this message.
      * @param reaction ID of a reaction/emote.
+     * @param targetUserID ID of the user to remove reaction from.
+     * (works only on Channel Messages | default: @me)
      */
-    async deleteReaction(reaction: number): Promise<void>{
+    async deleteReaction(reaction: number, targetUserID?: "@me" | string): Promise<void>{
         return this.client.rest.channels.deleteReaction(
             this.channelID,
             "ChannelMessage",
             this.id as string,
-            reaction
+            reaction,
+            targetUserID
         );
     }
 

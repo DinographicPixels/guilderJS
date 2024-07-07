@@ -541,12 +541,15 @@ export class Channels {
      * @param channelType Type of the selected channel. (e.g: "ChannelMessage")
      * @param targetID ID of the target you'd like to add the reaction to. (e.g: a message ID)
      * @param reaction ID of the reaction.
+     * @param targetUserID ID of the user to remove reaction from.
+     * (works only on Channel Messages | default: @me)
      */
     async deleteReaction(
         channelID: string,
         channelType: ChannelReactionTypes,
         targetID: string | number,
-        reaction: number
+        reaction: number,
+        targetUserID?: "@me" | string
     ): Promise<void> {
         if (channelType !== "ChannelMessage"
           && channelType !== "ForumThread"
@@ -567,9 +570,13 @@ export class Channels {
         if (channelType === "Doc") endpointType = "CHANNEL_DOC_EMOTE";
         if (channelType === "ChannelAnnouncement") endpointType = "CHANNEL_ANNOUNCEMENT_EMOTE";
 
+        const query = new URLSearchParams();
+        if (targetUserID && channelType === "ChannelMessage") query.set("userId", targetUserID);
+
         return this.#manager.authRequest<void>({
             method: "DELETE",
-            path:   endpoints[endpointType as keyof typeof endpoints](channelID, targetID as never, reaction as never, 0)
+            path:   endpoints[endpointType as keyof typeof endpoints](channelID, targetID as never, reaction as never, 0),
+            query
         });
     }
 

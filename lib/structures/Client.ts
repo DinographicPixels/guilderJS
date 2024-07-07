@@ -650,18 +650,22 @@ export class Client extends TypedEmitter<ClientEvents> {
      * @param channelType Type of the selected channel. (e.g: "ChannelMessage")
      * @param targetID ID of the target you'd like to add the reaction from. (e.g: a message id)
      * @param reaction ID of the reaction.
+     * @param targetUserID ID of the user to remove reaction from.
+     * (works only on Channel Messages | default: @me)
      */
     async deleteReaction(
         channelID: string,
         channelType: ChannelReactionTypes,
         targetID: string | number,
-        reaction: number
+        reaction: number,
+        targetUserID?: "@me" | string
     ): Promise<void> {
         return this.rest.channels.deleteReaction(
             channelID,
             channelType,
             targetID,
-            reaction
+            reaction,
+            targetUserID
         );
     }
 
