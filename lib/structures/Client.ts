@@ -86,7 +86,8 @@ import {
     AnyTextableChannel,
     CreateChannelOptions,
     CreateMessageOptions,
-    EditChannelOptions
+    EditChannelOptions,
+    EditMessageOptions
 } from "../types/channel";
 import { CreateForumThreadOptions, EditForumThreadOptions, GetForumThreadsFilter } from "../types/forumThread";
 import { CreateForumCommentOptions, EditForumCommentOptions } from "../types/forumThreadComment";
@@ -612,7 +613,7 @@ export class Client extends TypedEmitter<ClientEvents> {
     async editMessage<T extends AnyTextableChannel>(
         channelID: string,
         messageID: string,
-        newMessage: object
+        newMessage: EditMessageOptions
     ): Promise<Message<T>> {
         return this.rest.channels.editMessage<T>(channelID, messageID, newMessage);
     }
