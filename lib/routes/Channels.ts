@@ -111,6 +111,7 @@ import { DocComment } from "../structures/DocComment";
 import { Announcement } from "../structures/Announcement";
 import { AnnouncementComment } from "../structures/AnnouncementComment";
 import { Permission } from "../structures/Permission";
+import { MessageConstructorParams } from "../types/message";
 
 export class Channels {
     #manager: RESTManager;
@@ -454,7 +455,7 @@ export class Channels {
     async createMessage<T extends AnyTextableChannel = AnyTextableChannel>(
         channelID: string,
         options: CreateMessageOptions,
-        params?: object
+        params?: MessageConstructorParams
     ): Promise<Message<T>> {
         if (typeof options !== "object") throw new Error("message options should be an object.");
         return this.#manager.authRequest<POSTChannelMessageResponse>({

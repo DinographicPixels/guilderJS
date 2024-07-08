@@ -14,7 +14,8 @@ import { Base } from "./Base";
 import { TextChannel } from "./TextChannel";
 import { APIChatMessage, APIEmbedOptions, APIMentions, APIMessageOptions } from "../Constants";
 import { JSONMessage } from "../types/json";
-import { AnyTextableChannel } from "../types/channel";
+import { AnyTextableChannel, EditMessageOptions } from "../types/channel";
+import { MessageConstructorParams } from "../types/message";
 
 /** Represents a guild message. */
 export class Message<T extends AnyTextableChannel> extends Base<string> {
@@ -62,7 +63,7 @@ export class Message<T extends AnyTextableChannel> extends Base<string> {
     constructor(
         data: APIChatMessage,
         client: Client,
-        params?: { originalMessageID?: string | null; }
+        params?: MessageConstructorParams
     ) {
         super(data.id, client);
         this.#data = data;
@@ -247,12 +248,7 @@ export class Message<T extends AnyTextableChannel> extends Base<string> {
     /** This method is used to edit the current message.
      * @param newMessage New message's options
      */
-    async edit(
-        newMessage: {
-            content?: string;
-            embeds?: Array<APIEmbedOptions>;
-        }
-    ): Promise<Message<T>>{
+    async edit(newMessage: EditMessageOptions): Promise<Message<T>>{
         return this.client.rest.channels.editMessage<T>(
             this.channelID,
             this.id as string,

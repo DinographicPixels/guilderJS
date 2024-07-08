@@ -37,12 +37,12 @@ export interface EditMessageOptions {
     hiddenLinkPreviewUrls?: Array<string>;
     /** Embeds */
     embeds?: Array<MessageEmbedOptions>;
-    /** Message IDs to reply to (min items 1; max items 5) */
-    replyMessageIds?: Array<string>;
-    /** If set, this message will not notify any mentioned users or roles (default `false`) */
-    isSilent?: boolean;
-    /** If set, this message will only be seen by those mentioned or replied to */
-    isPrivate?: boolean;
+    // /** Message IDs to reply to (min items 1; max items 5) */
+    // replyMessageIds?: Array<string>;
+    // /** If set, this message will not notify any mentioned users or roles (default `false`) */
+    // isSilent?: boolean;
+    // /** If set, this message will only be seen by those mentioned or replied to */
+    // isPrivate?: boolean;
 }
 
 export interface MessageEmbedOptions {
