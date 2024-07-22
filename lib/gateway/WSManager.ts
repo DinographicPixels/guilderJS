@@ -280,6 +280,7 @@ export class WSManager extends TypedEmitter<WebsocketEvents> {
 
     private onSocketOpen(): void {
         this.alive = true;
+        this.currReconnectAttempt = 0; // reset reconnection attempts
         this.emit("debug", "Socket connection is open.");
     }
 
@@ -291,6 +292,7 @@ export class WSManager extends TypedEmitter<WebsocketEvents> {
 
     private onSocketClose(code: number, r: Buffer): void {
         const reason = r.toString();
+        // reconnect: can be set within the switch depending on the code to toggle reconnection.
         let reconnect: boolean | undefined;
         let err: Error | undefined;
         this.alive = false;
@@ -381,12 +383,13 @@ export class WSManager extends TypedEmitter<WebsocketEvents> {
 
         this.emit("disconnect", error as Error);
 
-        if (this.currReconnectAttempt >= (this.reconnectAttemptLimit as number)) {
+        if (this.lastMessageID && this.currReconnectAttempt >= (this.reconnectAttemptLimit as number)) {
             this.client.emit(
                 "debug",
                 `Automatically invalidating session due to excessive resume attempts 
                 | Attempt ${this.currReconnectAttempt}`
             );
+            this.lastMessageID = undefined;
         }
 
         if (reconnect) {
@@ -416,7 +419,6 @@ export class WSManager extends TypedEmitter<WebsocketEvents> {
         this.ws = null;
         this.firstWsMessage = true;
         this.lastMessageID = undefined;
-        this.currReconnectAttempt = 0;
 
         this.alive = false;
         this.latency = NaN;
@@ -430,6 +432,7 @@ export class WSManager extends TypedEmitter<WebsocketEvents> {
 
     hardReset(): void {
         this.reset();
+        this.currReconnectAttempt = 0;
         this.token = this.params.token;
         this.apiVersion = this.params.apiVersion ?? pkgconfig.GuildedAPI.GatewayVersion ?? 1;
         this.proxyURL = this.params.proxyURL
@@ -466,7 +469,7 @@ export interface WSManagerParams {
     apiVersion?: number | 1;
     /** Automatically re-establish connection on error */
     reconnect?: boolean;
-    /** Reconnect limit */
+    /** Reconnect limit (for invalidating session) */
     reconnectAttemptLimit?: number;
     /** Replay missed events on connection interruption */
     replayMissedEvents?: boolean;
