@@ -71,6 +71,11 @@ export interface ClientOptions {
         announcements?: number;
         announcementComments?: number;
     };
+
+    /** Websocket auto reconnect on connection loss.
+     * @default true
+     */
+    wsReconnect?: boolean;
 }
 
 export interface RESTOptions {

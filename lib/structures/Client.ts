@@ -146,6 +146,7 @@ export class Client extends TypedEmitter<ClientEvents> {
             updateWarning:             params.updateWarning ?? true,
             waitForCaching:            params.waitForCaching ?? true,
             isOfficialMarkdownEnabled: params.isOfficialMarkdownEnabled ?? true,
+            wsReconnect:               params.wsReconnect,
             collectionLimits:          {
                 messages:             params.collectionLimits?.messages             ?? 100,
                 threads:              params.collectionLimits?.threads              ?? 100,
@@ -159,7 +160,7 @@ export class Client extends TypedEmitter<ClientEvents> {
                 announcementComments: params.collectionLimits?.announcementComments ?? 100
             }
         };
-        this.ws = new WSManager(this, { token: this.token, client: this });
+        this.ws = new WSManager(this, { token: this.token, client: this, reconnect: params.wsReconnect });
         this.guilds = new TypedCollection(Guild, this);
         this.users = new TypedCollection(User, this);
         this.rest = (
