@@ -189,10 +189,10 @@ export class Client extends TypedEmitter<ClientEvents> {
     connect(): void {
         void this.checkForUpdate();
         this.ws.connect();
-        this.ws.on("GATEWAY_WELCOME", data => {
+        this.ws.on("GATEWAY_WELCOME", async data => {
             this.user = new UserClient(data, this);
             if (this.params.connectionMessage) console.log("> Connection established.");
-            void this.rest.misc.getUserGuilds("@me").catch(() => [])
+            await this.rest.misc.getUserGuilds("@me").catch(() => [])
                 .then(guilds => {
                     if (!guilds) guilds = [];
                     for (const guild of guilds) this.guilds.add(guild);
