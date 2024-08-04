@@ -334,6 +334,17 @@ export class Message<T extends AnyTextableChannel> extends Base<string> {
         return this.client.rest.channels.deleteMessage(this.channelID, this.id as string);
     }
 
+    /**
+     * Get the latest message sent with this Message.
+     */
+    async getLast(): Promise<Message<T>> {
+        if (!this._lastMessageID)
+            throw new TypeError("Cannot get last message if it does not exist.");
+        return this.client.rest.channels.getMessage<T>(
+            this.channelID,
+            this._lastMessageID
+        );
+    }
 
     /** Edit the last message sent with the message itself.
      * @param newMessage New message's options.
@@ -351,6 +362,19 @@ export class Message<T extends AnyTextableChannel> extends Base<string> {
     async deleteLast(): Promise<void>{
         if (!this._lastMessageID) throw new TypeError("Cannot delete last message if it does not exist.");
         return this.client.rest.channels.deleteMessage(this.channelID, this._lastMessageID);
+    }
+
+    /**
+     * Get original message response.
+     */
+    async getOriginal(): Promise<Message<T>> {
+        if (!this.#originalMessageID)
+            throw new TypeError("Cannot get original message if it does not exist.");
+        return this.client.rest.channels.getMessage<T>(
+            this.channelID,
+            this.#originalMessageID,
+            { originalMessageID: this.#originalMessageID }
+        );
     }
 
     /** Edit the message's original response message.
