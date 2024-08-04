@@ -15,7 +15,9 @@ import { TextChannel } from "./TextChannel";
 import { APIChatMessage, APIEmbedOptions, APIMentions, APIMessageOptions } from "../Constants";
 import { JSONMessage } from "../types/json";
 import { AnyTextableChannel, EditMessageOptions } from "../types/channel";
-import { MessageConstructorParams } from "../types/message";
+import { MessageAttachment, MessageConstructorParams } from "../types/message";
+import { fetch } from "undici";
+import { APIURLSignature } from "guildedapi-types.ts/typings/payloads/v1/URLSignature";
 
 /** Represents a guild message. */
 export class Message<T extends AnyTextableChannel> extends Base<string> {
@@ -212,6 +214,76 @@ export class Message<T extends AnyTextableChannel> extends Base<string> {
               this.guildID,
               this.channelID
           ) as T extends AnyTextableChannel ? T : undefined);
+    }
+
+    /**
+     * Get attachment URLs from this Message
+     * *(works for embedded content such as images).*
+     */
+    get attachmentURLs(): Array<string> {
+        const regex = /!\[]\((https:\/\/[^)]+)\)/g;
+        const URLs: Array<string> = [];
+        let match: RegExpExecArray | null;
+        while ((match = regex.exec(this.content ?? "")) !== null) {
+            URLs.push(match[1]);
+        }
+        return URLs;
+    }
+
+    /**
+     * Get attachments from this Message (using REST)
+     * *(works for embedded content such as images).*
+     */
+    async getAttachments(): Promise<Array<MessageAttachment>> {
+        const imageExtensions = new Set(["jpg", "jpeg", "png", "gif", "bmp", "webp", "svg"]);
+        const MessageAttachments: Array<MessageAttachment> = [];
+
+        // Signing URLs
+        let signedURLs: Array<APIURLSignature> = [];
+        try {
+            signedURLs =
+              (await this.client.rest.misc.signURL({
+                  urls: this.attachmentURLs
+              })).urlSignatures;
+        } catch {
+            this.client.emit(
+                "error",
+                new Error("Couldn't automatically sign attachment CDN URL.")
+            );
+        }
+
+        for (const attachmentURL of this.attachmentURLs) {
+            const URLObject = new URL(attachmentURL);
+            const pathName = URLObject.pathname;
+            const extension = pathName.split(".").pop()?.toLowerCase() || "";
+            const isImage = imageExtensions.has(extension);
+
+            let arrayBuffer: ArrayBuffer | null = null;
+
+            try {
+                if (isImage) {
+                    const fetchData = await fetch(attachmentURL);
+                    arrayBuffer = await fetchData.arrayBuffer();
+                }
+            } catch {
+                throw new Error("Couldn't get image ArrayBuffer data.");
+            }
+
+            // Array supposed to include only one URL, the target one.
+            const signedURL = signedURLs
+                .find(urlSignatureObj =>
+                    urlSignatureObj.url === attachmentURL
+                );
+
+            MessageAttachments.push({
+                originalURL:   attachmentURL,
+                signedURL:     signedURL?.signature ?? null,
+                isImage,
+                arrayBuffer,
+                fileExtension: extension
+            });
+        }
+        return MessageAttachments;
     }
 
     private async setCache(obj: Promise<Member> | Promise<Guild>): Promise<void> {
