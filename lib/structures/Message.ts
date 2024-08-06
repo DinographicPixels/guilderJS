@@ -15,7 +15,7 @@ import { TextChannel } from "./TextChannel";
 import { APIChatMessage, APIEmbedOptions, APIMentions, APIMessageOptions } from "../Constants";
 import { JSONMessage } from "../types/json";
 import { AnyTextableChannel, EditMessageOptions } from "../types/channel";
-import { MessageAttachment, MessageConstructorParams } from "../types/message";
+import { MessageAttachment, MessageConstructorParams, MessageOriginals } from "../types/message";
 import { fetch } from "undici";
 import { APIURLSignature } from "guildedapi-types.ts/typings/payloads/v1/URLSignature";
 
@@ -59,8 +59,9 @@ export class Message<T extends AnyTextableChannel> extends Base<string> {
     /** ID of the last message created with the message itself. */
     _lastMessageID: string | null;
     /** ID of the message's original message. */
-    #originalMessageID: string | null;
-    #originalMessageBool: boolean;
+    originalResponseID: string | null;
+    /** ID of the message sent by a user, triggering the original response. */
+    originalTriggerID: string | null;
 
     constructor(
         data: APIChatMessage,
@@ -87,8 +88,9 @@ export class Message<T extends AnyTextableChannel> extends Base<string> {
             ? new Date(data["deletedAt" as keyof object])
             : null;
         this._lastMessageID = null;
-        this.#originalMessageID = params?.originalMessageID ?? null;
-        this.#originalMessageBool = false;
+        this.originalResponseID = params?.originalResponseID ?? null;
+        this.originalTriggerID = params?.originalTriggerID ?? null;
+
         this.update(data);
     }
 
@@ -156,6 +158,22 @@ export class Message<T extends AnyTextableChannel> extends Base<string> {
         if (data.updatedAt !== undefined) {
             this.editedTimestamp = new Date(data.updatedAt);
         }
+    }
+
+    /** Get to know if this Message is original.
+     *
+     * It is Original when:
+     * - it is a user message that is the original trigger of a response (returns: "trigger")
+     * - it is a response to a trigger message (returns: "response")
+     *
+     * If not, this getter returns the boolean state: false.
+     */
+    get isOriginal(): "trigger" | "response" | false {
+        return (this.originalTriggerID === this.id)
+            ? "trigger"
+            : ((this.originalResponseID === this.id)
+                ? "response"
+                : false);
     }
 
     /** Retrieve message's member.
@@ -303,17 +321,18 @@ export class Message<T extends AnyTextableChannel> extends Base<string> {
      * @param options Message options.
      */
     async createMessage(options: APIMessageOptions): Promise<Message<T>>{
+        if (!this.isOriginal && !(this.originalTriggerID)) this.originalTriggerID = this.id;
         const response =
           await this.client.rest.channels.createMessage<T>(
               this.channelID,
               options,
-              { originalMessageID: this.#originalMessageID }
+              {
+                  originalTriggerID:  this.originalTriggerID,
+                  originalResponseID: this.originalResponseID
+              }
           );
         this._lastMessageID = response.id as string;
-        if (!this.#originalMessageBool){
-            this.#originalMessageBool = true;
-            this.#originalMessageID = response.id as string;
-        }
+        if (this.isOriginal && !(this.originalResponseID)) this.originalResponseID = response.id;
         return response;
     }
 
@@ -325,7 +344,10 @@ export class Message<T extends AnyTextableChannel> extends Base<string> {
             this.channelID,
             this.id as string,
             newMessage,
-            { originalMessageID: this.#originalMessageID }
+            {
+                originalTriggerID:  this.originalTriggerID,
+                originalResponseID: this.originalResponseID
+            }
         );
     }
 
@@ -365,37 +387,82 @@ export class Message<T extends AnyTextableChannel> extends Base<string> {
     }
 
     /**
-     * Get original message response.
+     * Get original message response or trigger
+     * (prioritizes response over trigger if getSpecific parameter is not set).
+     * @param getSpecific Get Trigger or Response Original (instead of prioritizing the response)
      */
-    async getOriginal(): Promise<Message<T>> {
-        if (!this.#originalMessageID)
-            throw new TypeError("Cannot get original message if it does not exist.");
+    async getOriginal(getSpecific?: "trigger" | "response"): Promise<Message<T>> {
+        if (!(this.originalResponseID) && !(this.originalTriggerID)
+          || this.isOriginal
+        ) throw new TypeError("Cannot get original message if it does not exist.");
+        const specific =
+          getSpecific === "trigger"
+              ? this.originalTriggerID
+              : (getSpecific === "response" ? this.originalResponseID : null);
         return this.client.rest.channels.getMessage<T>(
             this.channelID,
-            this.#originalMessageID,
-            { originalMessageID: this.#originalMessageID }
+            specific ?? (this.originalResponseID ?? this.originalTriggerID) as string,
+            {
+                originalUserMessageID: this.originalTriggerID,
+                originalResponseID:    this.originalResponseID
+            }
         );
+    }
+
+    /**
+     * Get original messages
+     * (the one triggering the response, and the original response message)
+     */
+    async getOriginals(): Promise<MessageOriginals> {
+        if (!(this.originalResponseID) && !(this.originalTriggerID))
+            throw new TypeError("Cannot get original messages if they don't exist.");
+
+        const request =
+          (messageID: string): Promise<Message<T>> => this.client.rest.channels.getMessage<T>(
+              this.channelID,
+              messageID,
+              {
+                  originalUserMessageID: this.originalTriggerID,
+                  originalResponseID:    this.originalResponseID
+              });
+
+        let originalUserMessage: Message<T> | null = null;
+        let originalResponse: Message<T> | null = null;
+
+        if (this.originalTriggerID)
+            originalUserMessage = await request(this.originalTriggerID);
+
+        if (this.originalResponseID)
+            originalResponse = await request(this.originalResponseID);
+
+        return {
+            triggerMessage: originalUserMessage,
+            originalResponse
+        };
     }
 
     /** Edit the message's original response message.
      * @param newMessage New message's options.
      */
     async editOriginal(newMessage: { content?: string; embeds?: Array<APIEmbedOptions>; }): Promise<Message<T>>{
-        if (!this.#originalMessageID)
+        if (!this.originalResponseID)
             throw new TypeError("Cannot edit original message if it does not exist.");
         return this.client.rest.channels.editMessage<T>(
             this.channelID,
-            this.#originalMessageID,
+            this.originalResponseID,
             newMessage,
-            { originalMessageID: this.#originalMessageID }
+            {
+                originalTriggerID:  this.originalTriggerID,
+                originalResponseID: this.originalResponseID
+            }
         );
     }
 
     /** Delete the message's original response message. */
     async deleteOriginal(): Promise<void>{
-        if (!this.#originalMessageID)
+        if (!this.originalResponseID)
             throw new TypeError("Cannot delete original message if it does not exist.");
-        return this.client.rest.channels.deleteMessage(this.channelID, this.#originalMessageID);
+        return this.client.rest.channels.deleteMessage(this.channelID, this.originalResponseID);
     }
 
     /** Add a reaction to this message.
