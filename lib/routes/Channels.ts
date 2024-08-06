@@ -477,7 +477,7 @@ export class Channels {
         channelID: string,
         messageID: string,
         newMessage: EditMessageOptions,
-        params?: object
+        params?: MessageConstructorParams
     ): Promise<Message<T>> {
         if (typeof newMessage !== "object") throw new Error("newMessage should be an object.");
         return this.#manager.authRequest<POSTChannelMessageResponse>({
