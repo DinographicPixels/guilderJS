@@ -401,7 +401,10 @@ export class Message<T extends AnyTextableChannel> extends Base<string> {
 
         if (!(this.originalResponseID) && !(this.originalTriggerID)
           || this.isOriginal || target && !targetID || !messageID
-        ) throw new TypeError("Cannot get original message if it does not exist.");
+        ) throw new Error(
+            "Couldn't get the original message from this Message, " +
+          "as it either does not exist or has not been stored inside this component."
+        );
 
         return this.client.rest.channels.getMessage<T>(
             this.channelID,
@@ -419,7 +422,10 @@ export class Message<T extends AnyTextableChannel> extends Base<string> {
      */
     async getOriginals(): Promise<MessageOriginals> {
         if (!(this.originalResponseID) && !(this.originalTriggerID))
-            throw new TypeError("Cannot get original messages if they don't exist.");
+            throw new Error(
+                "Couldn't get original messages from this Message, " +
+            "as they either do not exist or have not been stored inside this component."
+            );
 
         const request =
           (messageID: string): Promise<Message<T>> => this.client.rest.channels.getMessage<T>(
@@ -452,7 +458,10 @@ export class Message<T extends AnyTextableChannel> extends Base<string> {
         newMessage: { content?: string; embeds?: Array<APIEmbedOptions>; }
     ): Promise<Message<T>>{
         if (!this.originalResponseID || this.isOriginal)
-            throw new TypeError("Cannot edit original message if it does not exist.");
+            throw new Error(
+                "Couldn't edit the original message from this Message, " +
+              "as it either does not exist or has not been stored inside this component."
+            );
 
         return this.client.rest.channels.editMessage<T>(
             this.channelID,
@@ -478,7 +487,10 @@ export class Message<T extends AnyTextableChannel> extends Base<string> {
 
         if (!(this.originalResponseID) && !(this.originalTriggerID)
           || this.isOriginal || target && !targetID || !messageID
-        ) throw new TypeError("Cannot delete original message if it does not exist.");
+        ) throw new Error(
+            "Couldn't delete original message from this Message, " +
+          "as it either does not exist or has not been stored inside this component."
+        );
 
 
         return this.client.rest.channels.deleteMessage(
