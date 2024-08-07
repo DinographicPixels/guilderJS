@@ -388,17 +388,17 @@ export class Message<T extends AnyTextableChannel> extends Base<string> {
 
     /**
      * Get original message response or trigger
-     * (prioritizes response over trigger if getSpecific parameter is not set).
-     * @param getSpecific Get Trigger or Response Original (instead of prioritizing the response)
+     * (prioritizes parent, the original response).
+     * @param target (optional) Get either the trigger or the response.
      */
-    async getOriginal(getSpecific?: "trigger" | "response"): Promise<Message<T>> {
+    async getOriginal(target?: "trigger" | "response"): Promise<Message<T>> {
         if (!(this.originalResponseID) && !(this.originalTriggerID)
           || this.isOriginal
         ) throw new TypeError("Cannot get original message if it does not exist.");
         const specific =
-          getSpecific === "trigger"
+          target === "trigger"
               ? this.originalTriggerID
-              : (getSpecific === "response" ? this.originalResponseID : null);
+              : (target === "response" ? this.originalResponseID : null);
         return this.client.rest.channels.getMessage<T>(
             this.channelID,
             specific ?? (this.originalResponseID ?? this.originalTriggerID) as string,
@@ -444,9 +444,12 @@ export class Message<T extends AnyTextableChannel> extends Base<string> {
     /** Edit the message's original response message.
      * @param newMessage New message's options.
      */
-    async editOriginal(newMessage: { content?: string; embeds?: Array<APIEmbedOptions>; }): Promise<Message<T>>{
+    async editOriginal(
+        newMessage: { content?: string; embeds?: Array<APIEmbedOptions>; }
+    ): Promise<Message<T>>{
         if (!this.originalResponseID)
             throw new TypeError("Cannot edit original message if it does not exist.");
+
         return this.client.rest.channels.editMessage<T>(
             this.channelID,
             this.originalResponseID,
@@ -458,11 +461,23 @@ export class Message<T extends AnyTextableChannel> extends Base<string> {
         );
     }
 
-    /** Delete the message's original response message. */
-    async deleteOriginal(): Promise<void>{
-        if (!this.originalResponseID)
-            throw new TypeError("Cannot delete original message if it does not exist.");
-        return this.client.rest.channels.deleteMessage(this.channelID, this.originalResponseID);
+    /** Delete the message's original response message (prioritizes parent).
+     * @param target (optional) Delete specifically the trigger or the response.
+     */
+    async deleteOriginal(target?: "trigger" | "response"): Promise<void>{
+        if (!(this.originalResponseID) && !(this.originalTriggerID)
+          || this.isOriginal
+        ) throw new TypeError("Cannot delete original message if it does not exist.");
+
+        const targetID =
+          target === "trigger"
+              ? this.originalTriggerID
+              : (target === "response" ? this.originalResponseID : null);
+
+        return this.client.rest.channels.deleteMessage(
+            this.channelID,
+            targetID ?? (this.originalResponseID ?? this.originalTriggerID) as string
+        );
     }
 
     /** Add a reaction to this message.
