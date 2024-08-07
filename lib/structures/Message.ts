@@ -392,16 +392,20 @@ export class Message<T extends AnyTextableChannel> extends Base<string> {
      * @param target (optional) Get either the trigger or the response.
      */
     async getOriginal(target?: "trigger" | "response"): Promise<Message<T>> {
-        if (!(this.originalResponseID) && !(this.originalTriggerID)
-          || this.isOriginal
-        ) throw new TypeError("Cannot get original message if it does not exist.");
-        const specific =
+        const targetID =
           target === "trigger"
               ? this.originalTriggerID
               : (target === "response" ? this.originalResponseID : null);
+
+        const messageID = targetID ?? this.originalResponseID ?? this.originalTriggerID;
+
+        if (!(this.originalResponseID) && !(this.originalTriggerID)
+          || this.isOriginal || target && !targetID || !messageID
+        ) throw new TypeError("Cannot get original message if it does not exist.");
+
         return this.client.rest.channels.getMessage<T>(
             this.channelID,
-            specific ?? (this.originalResponseID ?? this.originalTriggerID) as string,
+            messageID,
             {
                 originalUserMessageID: this.originalTriggerID,
                 originalResponseID:    this.originalResponseID
@@ -447,7 +451,7 @@ export class Message<T extends AnyTextableChannel> extends Base<string> {
     async editOriginal(
         newMessage: { content?: string; embeds?: Array<APIEmbedOptions>; }
     ): Promise<Message<T>>{
-        if (!this.originalResponseID)
+        if (!this.originalResponseID || this.isOriginal)
             throw new TypeError("Cannot edit original message if it does not exist.");
 
         return this.client.rest.channels.editMessage<T>(
@@ -465,18 +469,21 @@ export class Message<T extends AnyTextableChannel> extends Base<string> {
      * @param target (optional) Delete specifically the trigger or the response.
      */
     async deleteOriginal(target?: "trigger" | "response"): Promise<void>{
-        if (!(this.originalResponseID) && !(this.originalTriggerID)
-          || this.isOriginal
-        ) throw new TypeError("Cannot delete original message if it does not exist.");
-
         const targetID =
           target === "trigger"
               ? this.originalTriggerID
               : (target === "response" ? this.originalResponseID : null);
 
+        const messageID = targetID ?? this.originalResponseID ?? this.originalTriggerID;
+
+        if (!(this.originalResponseID) && !(this.originalTriggerID)
+          || this.isOriginal || target && !targetID || !messageID
+        ) throw new TypeError("Cannot delete original message if it does not exist.");
+
+
         return this.client.rest.channels.deleteMessage(
             this.channelID,
-            targetID ?? (this.originalResponseID ?? this.originalTriggerID) as string
+            messageID
         );
     }
 
