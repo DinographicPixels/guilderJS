@@ -375,10 +375,13 @@ export class Message<T extends AnyTextableChannel> extends Base<string> {
             );
 
         if (options.replyMessageIds)
-            options.replyMessageIds.push(this.originals.triggerID ?? this.id, this.originals.responseID);
+            options.replyMessageIds.push(this.id);
         else
-            options.replyMessageIds = [this.originals.triggerID ?? this.id, this.originals.responseID];
+            options.replyMessageIds = [this.id];
 
+        if (options.replyMessageIds?.includes(this.originals.triggerID ?? " ")) {
+            options.replyMessageIds[options.replyMessageIds.length - 1] = this.originals.responseID;
+        }
         const response =
           await this.client.rest.channels.createMessage<T>(
               this.channelID,
@@ -489,7 +492,7 @@ export class Message<T extends AnyTextableChannel> extends Base<string> {
         if (!(this.originals.responseID) && !(this.originals.triggerID))
             throw new Error(
                 "Couldn't get original messages from this Message, " +
-            "as they either do not exist or have not been stored inside this component."
+              "as they either do not exist or have not been stored inside this component."
             );
 
         const request =
