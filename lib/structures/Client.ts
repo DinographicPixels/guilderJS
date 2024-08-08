@@ -158,6 +158,9 @@ export class Client extends TypedEmitter<ClientEvents> {
                 docComments:          params.collectionLimits?.docComments          ?? 100,
                 announcements:        params.collectionLimits?.announcements        ?? 100,
                 announcementComments: params.collectionLimits?.announcementComments ?? 100
+            },
+            deprecations: {
+                independentMessageBehavior: params.deprecations?.independentMessageBehavior
             }
         };
         this.ws = new WSManager(this, { token: this.token, client: this, reconnect: params.wsReconnect });

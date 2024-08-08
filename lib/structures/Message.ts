@@ -331,16 +331,20 @@ export class Message<T extends AnyTextableChannel> extends Base<string> {
      * @param options Message options.
      */
     async createMessage(options: APIMessageOptions): Promise<Message<T>> {
-        if (this.acknowledged) throw new Error(
+        if (this.acknowledged
+          && !(this.client.params.deprecations?.independentMessageBehavior)
+        ) throw new Error(
             "Message has already been acknowledged, " +
           "please use the createFollowup method."
         );
         if (!this.isOriginal && !(this.originals.triggerID)) this.originals.triggerID = this.id;
 
-        if (options.replyMessageIds)
-            options.replyMessageIds.push(this.originals.triggerID ?? this.id);
-        else
-            options.replyMessageIds = [this.originals.triggerID ?? this.id];
+        if (!(this.client.params.deprecations?.independentMessageBehavior)) {
+            if (options.replyMessageIds)
+                options.replyMessageIds.push(this.originals.triggerID ?? this.id);
+            else
+                options.replyMessageIds = [this.originals.triggerID ?? this.id];
+        }
 
         const response =
           await this.client.rest.channels.createMessage<T>(

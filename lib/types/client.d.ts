@@ -76,6 +76,20 @@ export interface ClientOptions {
      * @default true
      */
     wsReconnect?: boolean;
+
+    /** Revert to old behaviors, we recommend to update your codebase ASAP. */
+    deprecations?: {
+        /** Revert to the old Message#createMessage method
+         * that creates independent messages instead of replies
+         * @deprecated This option can or will be removed sooner or later,
+         * please update your project to support new features, and accommodate
+         * to an intuitive and natural behavior.
+         * @note
+         * You can still use Client#createMessage to create independent messages
+         * instead of replies.
+         */
+        independentMessageBehavior?: boolean;
+    };
 }
 
 export interface RESTOptions {
