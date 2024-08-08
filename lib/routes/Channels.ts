@@ -137,7 +137,7 @@ export class Channels {
     async getMessage<T extends AnyTextableChannel = AnyTextableChannel>(
         channelID: string,
         messageID: string,
-        params?: object
+        params?: MessageConstructorParams
     ): Promise<Message<T>> {
         return this.#manager.authRequest<GETChannelMessageResponse>({
             method: "GET",
