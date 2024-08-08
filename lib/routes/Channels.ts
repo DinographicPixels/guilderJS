@@ -463,7 +463,7 @@ export class Channels {
             path:   endpoints.CHANNEL_MESSAGES(channelID),
             json:   options
         }).then(data =>
-            new Message<T>(data.message, this.#manager.client, params)
+            this.#manager.client.util.updateMessage(data.message, params)
         );
     }
 
@@ -485,7 +485,7 @@ export class Channels {
             path:   endpoints.CHANNEL_MESSAGE(channelID, messageID),
             json:   newMessage
         }).then(data =>
-            new Message<T>(data.message, this.#manager.client, params)
+            this.#manager.client.util.updateMessage(data.message, params)
         );
     }
 

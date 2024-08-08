@@ -7,7 +7,7 @@
 
 import { Client } from "../structures/Client";
 import { Member } from "../structures/Member";
-import { AnyChannel } from "../types/channel";
+import { AnyChannel, AnyTextableChannel } from "../types/channel";
 import { Channel } from "../structures/Channel";
 import { ForumThread } from "../structures/ForumThread";
 import { ForumChannel } from "../structures/ForumChannel";
@@ -17,6 +17,8 @@ import { GuildRole } from "../structures/GuildRole";
 import { GuildGroup } from "../structures/GuildGroup";
 import { GuildSubscription } from "../structures/GuildSubscription";
 import { GuildCategory } from "../structures/GuildCategory";
+import { Message } from "../structures/Message";
+import { MessageConstructorParams } from "../types/message";
 import {
     APIForumTopic,
     APIForumTopicSummary,
@@ -27,7 +29,8 @@ import {
     APIGuildRole,
     APIGuildSubscription,
     APIUser,
-    APIGuildCategory
+    APIGuildCategory,
+    APIChatMessage
 } from "guildedapi-types.ts/v1";
 
 export class Util {
@@ -124,6 +127,21 @@ export class Util {
 
     updateGuildCategory(data: APIGuildCategory): GuildCategory {
         return new GuildCategory(data, this.#client);
+    }
+
+    updateMessage<T extends AnyTextableChannel = AnyTextableChannel>(
+        data: APIChatMessage,
+        params?: MessageConstructorParams
+    ): Message<T> {
+        const channel = this.#client.getChannel<T>(data.serverId ?? "", data.channelId);
+        if (channel) {
+            const message =
+              channel.messages.has(data.id)
+                  ? channel.messages.update(data)
+                  : channel.messages.add(new Message<T>(data, this.#client, params));
+            return message as Message<T>;
+        }
+        return new Message<T>(data, this.#client, params);
     }
 }
 
