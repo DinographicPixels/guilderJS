@@ -65,6 +65,8 @@ export class Message<T extends AnyTextableChannel> extends Base<string> {
         /** ID of the message sent by a user, triggering the original response. */
         triggerID: string | null;
     };
+    /** Message acknowledgement. */
+    acknowledged: boolean;
 
     constructor(
         data: APIChatMessage,
@@ -95,6 +97,7 @@ export class Message<T extends AnyTextableChannel> extends Base<string> {
             responseID: params?.originals?.responseID ?? null,
             triggerID:  params?.originals?.triggerID ?? null
         };
+        this.acknowledged = params?.acknowledged ?? false;
 
         this.update(data);
     }
@@ -320,13 +323,25 @@ export class Message<T extends AnyTextableChannel> extends Base<string> {
         }
     }
 
-    /** This method is used to create a message following this message.
+    /** This method is used to create a message following this message
+     * (use Message#createFollowup on already acknowledged messages).
      *
-     * Note: this method DOES NOT reply to the current message, you have to do it yourself.
+     * Note: The trigger message is automatically replied and acknowledged,
+     * use Client#createMessage to create an independent message.
      * @param options Message options.
      */
-    async createMessage(options: APIMessageOptions): Promise<Message<T>>{
+    async createMessage(options: APIMessageOptions): Promise<Message<T>> {
+        if (this.acknowledged) throw new Error(
+            "Message has already been acknowledged, " +
+          "please use the createFollowup method."
+        );
         if (!this.isOriginal && !(this.originals.triggerID)) this.originals.triggerID = this.id;
+
+        if (options.replyMessageIds)
+            options.replyMessageIds.push(this.originals.triggerID ?? this.id);
+        else
+            options.replyMessageIds = [this.originals.triggerID ?? this.id];
+
         const response =
           await this.client.rest.channels.createMessage<T>(
               this.channelID,
@@ -335,9 +350,48 @@ export class Message<T extends AnyTextableChannel> extends Base<string> {
                   originals: {
                       triggerID:  this.originals.triggerID,
                       responseID: this.originals.responseID
-                  }
+                  },
+                  acknowledged: true
               }
           );
+        this._lastMessageID = response.id as string;
+        this.acknowledged = true;
+        if (this.isOriginal && !(this.originals.responseID)) this.originals.responseID = response.id;
+        return response;
+    }
+
+    /** Create a follow-up message that replies to the trigger message and original response.
+     * (use Message#createMessage if the message has not been acknowledged).
+     *
+     * Note: The trigger message and original response are automatically replied,
+     * use Client#createMessage to create an independent message.
+     * @param options Message options.
+     */
+    async createFollowup(options: APIMessageOptions): Promise<Message<T>> {
+        if (!this.acknowledged || !this.originals.responseID)
+            throw new Error(
+                "Message has not been acknowledged, " +
+              "please acknowledge the message using the createMessage method."
+            );
+
+        if (options.replyMessageIds)
+            options.replyMessageIds.push(this.originals.triggerID ?? this.id, this.originals.responseID);
+        else
+            options.replyMessageIds = [this.originals.triggerID ?? this.id, this.originals.responseID];
+
+        const response =
+          await this.client.rest.channels.createMessage<T>(
+              this.channelID,
+              options,
+              {
+                  originals: {
+                      triggerID:  this.originals.triggerID,
+                      responseID: this.originals.responseID
+                  },
+                  acknowledged: true
+              }
+          );
+
         this._lastMessageID = response.id as string;
         if (this.isOriginal && !(this.originals.responseID)) this.originals.responseID = response.id;
         return response;

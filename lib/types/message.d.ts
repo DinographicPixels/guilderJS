@@ -6,6 +6,7 @@ export interface MessageConstructorParams {
         responseID?: string | null;
         triggerID?: string | null;
     };
+    acknowledged?: boolean;
 }
 
 export interface MessageAttachment {
