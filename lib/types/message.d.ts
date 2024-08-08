@@ -2,8 +2,10 @@ import { AnyTextableChannel } from "./channel";
 import { Message } from "../structures/Message";
 
 export interface MessageConstructorParams {
-    originalResponseID?: string | null;
-    originalTriggerID?: string | null;
+    originals?: {
+        responseID?: string | null;
+        triggerID?: string | null;
+    };
 }
 
 export interface MessageAttachment {

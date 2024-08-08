@@ -58,10 +58,13 @@ export class Message<T extends AnyTextableChannel> extends Base<string> {
     deletedAt: Date | null;
     /** ID of the last message created with the message itself. */
     _lastMessageID: string | null;
-    /** ID of the message's original message. */
-    originalResponseID: string | null;
-    /** ID of the message sent by a user, triggering the original response. */
-    originalTriggerID: string | null;
+    /** Message Originals */
+    originals: {
+        /** ID of the message's original message. */
+        responseID: string | null;
+        /** ID of the message sent by a user, triggering the original response. */
+        triggerID: string | null;
+    };
 
     constructor(
         data: APIChatMessage,
@@ -88,8 +91,10 @@ export class Message<T extends AnyTextableChannel> extends Base<string> {
             ? new Date(data["deletedAt" as keyof object])
             : null;
         this._lastMessageID = null;
-        this.originalResponseID = params?.originalResponseID ?? null;
-        this.originalTriggerID = params?.originalTriggerID ?? null;
+        this.originals = {
+            responseID: params?.originals?.responseID ?? null,
+            triggerID:  params?.originals?.triggerID ?? null
+        };
 
         this.update(data);
     }
@@ -169,9 +174,9 @@ export class Message<T extends AnyTextableChannel> extends Base<string> {
      * If not, this getter returns the boolean state: false.
      */
     get isOriginal(): "trigger" | "response" | false {
-        return (this.originalTriggerID === this.id)
+        return (this.originals.triggerID === this.id)
             ? "trigger"
-            : ((this.originalResponseID === this.id)
+            : ((this.originals.responseID === this.id)
                 ? "response"
                 : false);
     }
@@ -321,18 +326,20 @@ export class Message<T extends AnyTextableChannel> extends Base<string> {
      * @param options Message options.
      */
     async createMessage(options: APIMessageOptions): Promise<Message<T>>{
-        if (!this.isOriginal && !(this.originalTriggerID)) this.originalTriggerID = this.id;
+        if (!this.isOriginal && !(this.originals.triggerID)) this.originals.triggerID = this.id;
         const response =
           await this.client.rest.channels.createMessage<T>(
               this.channelID,
               options,
               {
-                  originalTriggerID:  this.originalTriggerID,
-                  originalResponseID: this.originalResponseID
+                  originals: {
+                      triggerID:  this.originals.triggerID,
+                      responseID: this.originals.responseID
+                  }
               }
           );
         this._lastMessageID = response.id as string;
-        if (this.isOriginal && !(this.originalResponseID)) this.originalResponseID = response.id;
+        if (this.isOriginal && !(this.originals.responseID)) this.originals.responseID = response.id;
         return response;
     }
 
@@ -345,8 +352,10 @@ export class Message<T extends AnyTextableChannel> extends Base<string> {
             this.id as string,
             newMessage,
             {
-                originalTriggerID:  this.originalTriggerID,
-                originalResponseID: this.originalResponseID
+                originals: {
+                    triggerID:  this.originals.triggerID,
+                    responseID: this.originals.responseID
+                }
             }
         );
     }
@@ -394,12 +403,12 @@ export class Message<T extends AnyTextableChannel> extends Base<string> {
     async getOriginal(target?: "trigger" | "response"): Promise<Message<T>> {
         const targetID =
           target === "trigger"
-              ? this.originalTriggerID
-              : (target === "response" ? this.originalResponseID : null);
+              ? this.originals.triggerID
+              : (target === "response" ? this.originals.responseID : null);
 
-        const messageID = targetID ?? this.originalResponseID ?? this.originalTriggerID;
+        const messageID = targetID ?? this.originals.responseID ?? this.originals.triggerID;
 
-        if (!(this.originalResponseID) && !(this.originalTriggerID)
+        if (!(this.originals.responseID) && !(this.originals.triggerID)
           || this.isOriginal || target && !targetID || !messageID
         ) throw new Error(
             "Couldn't get the original message from this Message, " +
@@ -410,8 +419,10 @@ export class Message<T extends AnyTextableChannel> extends Base<string> {
             this.channelID,
             messageID,
             {
-                originalUserMessageID: this.originalTriggerID,
-                originalResponseID:    this.originalResponseID
+                originals: {
+                    triggerID:  this.originals.triggerID,
+                    responseID: this.originals.responseID
+                }
             }
         );
     }
@@ -421,7 +432,7 @@ export class Message<T extends AnyTextableChannel> extends Base<string> {
      * (the one triggering the response, and the original response message)
      */
     async getOriginals(): Promise<MessageOriginals> {
-        if (!(this.originalResponseID) && !(this.originalTriggerID))
+        if (!(this.originals.responseID) && !(this.originals.triggerID))
             throw new Error(
                 "Couldn't get original messages from this Message, " +
             "as they either do not exist or have not been stored inside this component."
@@ -432,18 +443,20 @@ export class Message<T extends AnyTextableChannel> extends Base<string> {
               this.channelID,
               messageID,
               {
-                  originalUserMessageID: this.originalTriggerID,
-                  originalResponseID:    this.originalResponseID
+                  originals: {
+                      triggerID:  this.originals.triggerID,
+                      responseID: this.originals.responseID
+                  }
               });
 
         let originalUserMessage: Message<T> | null = null;
         let originalResponse: Message<T> | null = null;
 
-        if (this.originalTriggerID)
-            originalUserMessage = await request(this.originalTriggerID);
+        if (this.originals.triggerID)
+            originalUserMessage = await request(this.originals.triggerID);
 
-        if (this.originalResponseID)
-            originalResponse = await request(this.originalResponseID);
+        if (this.originals.responseID)
+            originalResponse = await request(this.originals.responseID);
 
         return {
             triggerMessage: originalUserMessage,
@@ -457,7 +470,7 @@ export class Message<T extends AnyTextableChannel> extends Base<string> {
     async editOriginal(
         newMessage: { content?: string; embeds?: Array<APIEmbedOptions>; }
     ): Promise<Message<T>>{
-        if (!this.originalResponseID || this.isOriginal)
+        if (!this.originals.responseID || this.isOriginal)
             throw new Error(
                 "Couldn't edit the original message from this Message, " +
               "as it either does not exist or has not been stored inside this component."
@@ -465,11 +478,13 @@ export class Message<T extends AnyTextableChannel> extends Base<string> {
 
         return this.client.rest.channels.editMessage<T>(
             this.channelID,
-            this.originalResponseID,
+            this.originals.responseID,
             newMessage,
             {
-                originalTriggerID:  this.originalTriggerID,
-                originalResponseID: this.originalResponseID
+                originals: {
+                    triggerID:  this.originals.triggerID,
+                    responseID: this.originals.responseID
+                }
             }
         );
     }
@@ -480,12 +495,12 @@ export class Message<T extends AnyTextableChannel> extends Base<string> {
     async deleteOriginal(target?: "trigger" | "response"): Promise<void>{
         const targetID =
           target === "trigger"
-              ? this.originalTriggerID
-              : (target === "response" ? this.originalResponseID : null);
+              ? this.originals.triggerID
+              : (target === "response" ? this.originals.responseID : null);
 
-        const messageID = targetID ?? this.originalResponseID ?? this.originalTriggerID;
+        const messageID = targetID ?? this.originals.responseID ?? this.originals.triggerID;
 
-        if (!(this.originalResponseID) && !(this.originalTriggerID)
+        if (!(this.originals.responseID) && !(this.originals.triggerID)
           || this.isOriginal || target && !targetID || !messageID
         ) throw new Error(
             "Couldn't delete original message from this Message, " +
