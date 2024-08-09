@@ -47,9 +47,7 @@ import {
     GETGuildMemberPermissionResponse,
     Permissions,
     PATCHGuildRoleUpdateResponse,
-    POSTBulkAwardXPBody,
     POSTBulkAwardXPResponse,
-    PUTBulkSetXPBody,
     PUTBulkSetXPResponse,
     POSTCreateCategoryBody,
     POSTCreateCategoryResponse,
@@ -71,7 +69,7 @@ import {
 } from "../Constants";
 import { AnyChannel, CreateChannelOptions, EditChannelOptions } from "../types/channel";
 import { EditWebhookOptions, WebhookExecuteOptions, WebhookMessageDetails } from "../types/webhooks";
-import { EditMemberOptions } from "../types/guilds";
+import { BulkXPOptions, EditMemberOptions } from "../types/guilds";
 import { BannedMember } from "../structures/BannedMember";
 import { GuildRole } from "../structures/GuildRole";
 import { GuildGroup } from "../structures/GuildGroup";
@@ -338,7 +336,10 @@ export class Guilds {
         return this.#manager.authRequest<PUTGuildWebhookResponse>({
             method: "PUT",
             path:   endpoints.GUILD_WEBHOOK(guildID, webhookID),
-            json:   options
+            json:   {
+                name:      options.name,
+                channelId: options.channelID
+            }
         }).then(data => new Webhook(data.webhook, this.#manager.client));
     }
 
@@ -687,7 +688,7 @@ export class Guilds {
      * @param guildID ID of the guild
      * @param options Members to award XP
      */
-    async bulkAwardXP(guildID: string, options: POSTBulkAwardXPBody): Promise<POSTBulkAwardXPResponse> {
+    async bulkAwardXP(guildID: string, options: BulkXPOptions): Promise<POSTBulkAwardXPResponse> {
         return this.#manager.authRequest<POSTBulkAwardXPResponse>({
             method: "POST",
             path:   endpoints.GUILD_MEMBER_BULK_XP(guildID),
@@ -700,7 +701,7 @@ export class Guilds {
      * @param guildID ID of the guild
      * @param options Members to set XP
      */
-    async bulkSetXP(guildID: string, options: PUTBulkSetXPBody): Promise<PUTBulkSetXPResponse> {
+    async bulkSetXP(guildID: string, options: BulkXPOptions): Promise<PUTBulkSetXPResponse> {
         return this.#manager.authRequest<PUTBulkSetXPResponse>({
             method: "PUT",
             path:   endpoints.GUILD_MEMBER_BULK_XP(guildID),

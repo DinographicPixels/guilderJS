@@ -112,6 +112,7 @@ import { Announcement } from "../structures/Announcement";
 import { AnnouncementComment } from "../structures/AnnouncementComment";
 import { Permission } from "../structures/Permission";
 import { MessageConstructorParams } from "../types/message";
+import { APIChatMessage, PUTChannelMessageResponse } from "guildedapi-types.ts/v1";
 
 export class Channels {
     #manager: RESTManager;
@@ -461,7 +462,14 @@ export class Channels {
         return this.#manager.authRequest<POSTChannelMessageResponse>({
             method: "POST",
             path:   endpoints.CHANNEL_MESSAGES(channelID),
-            json:   options
+            json:   {
+                content:               options.content,
+                embeds:                options.embeds ? this.#manager.client.util.embedsToRaw(options.embeds) : undefined,
+                isPrivate:             options.isPrivate,
+                isSilent:              options.isSilent,
+                replyMessageIds:       options.replyMessageIDs,
+                hiddenLinkPreviewUrls: options.hiddenLinkPreviewURLs
+            }
         }).then(data =>
             this.#manager.client.util.updateMessage(data.message, params)
         );
@@ -480,12 +488,19 @@ export class Channels {
         params?: MessageConstructorParams
     ): Promise<Message<T>> {
         if (typeof newMessage !== "object") throw new Error("newMessage should be an object.");
-        return this.#manager.authRequest<POSTChannelMessageResponse>({
+        return this.#manager.authRequest<PUTChannelMessageResponse>({
             method: "PUT",
             path:   endpoints.CHANNEL_MESSAGE(channelID, messageID),
-            json:   newMessage
+            json:   {
+                content:               newMessage.content,
+                embeds:                newMessage.embeds ? this.#manager.client.util.embedsToRaw(newMessage.embeds) : undefined,
+                hiddenLinkPreviewUrls: newMessage.hiddenLinkPreviewURLs
+            }
         }).then(data =>
-            this.#manager.client.util.updateMessage(data.message, params)
+            this.#manager.client.util.updateMessage(
+                data.message as APIChatMessage,
+                params
+            )
         );
     }
 
@@ -933,12 +948,27 @@ export class Channels {
             if (options.duration < 1000) throw new Error("The duration should be higher than 1000 ms.");
             options.duration = options.duration / 1000; // ms to min.
         }
-        const reqOptions: object = options;
+        const reqOptions = options;
         if (createSeries) Object.assign(reqOptions, { repeatInfo: createSeries });
+
         return this.#manager.authRequest<POSTCalendarEventResponse>({
             method: "POST",
             path:   endpoints.CHANNEL_EVENTS(channelID),
-            json:   options
+            json:   {
+                name:             reqOptions.name,
+                description:      reqOptions.description,
+                location:         reqOptions.location,
+                startsAt:         reqOptions.startsAt,
+                url:              reqOptions.url,
+                color:            reqOptions.color,
+                isAllDay:         reqOptions.isAllDay,
+                rsvpLimit:        reqOptions.rsvpLimit,
+                autofillWaitlist: reqOptions.autofillWaitlist,
+                duration:         reqOptions.duration,
+                isPrivate:        reqOptions.isPrivate,
+                roleIds:          reqOptions.roleIDs,
+                repeatInfo:       reqOptions["repeatInfo" as keyof object] ?? undefined
+            }
         }).then(data => new CalendarEvent(data.calendarEvent, this.#manager.client));
     }
 
@@ -960,7 +990,22 @@ export class Channels {
         return this.#manager.authRequest<PATCHCalendarEventResponse>({
             method: "PATCH",
             path:   endpoints.CHANNEL_EVENT(channelID, eventID),
-            json:   options
+            json:   {
+                name:             options.name,
+                description:      options.description,
+                location:         options.location,
+                startsAt:         options.startsAt,
+                url:              options.url,
+                color:            options.color,
+                isAllDay:         options.isAllDay,
+                rsvpLimit:        options.rsvpLimit,
+                autofillWaitlist: options.autofillWaitlist,
+                duration:         options.duration,
+                isPrivate:        options.isPrivate,
+                roleIds:          options.roleIDs,
+                repeatInfo:       options["repeatInfo" as keyof object] ?? undefined,
+                cancellation:     options.cancellation
+            }
         }).then(data => new CalendarEvent(data.calendarEvent, this.#manager.client));
     }
 

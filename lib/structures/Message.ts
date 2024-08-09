@@ -12,9 +12,9 @@ import { Guild } from "./Guild";
 import { Base } from "./Base";
 
 import { TextChannel } from "./TextChannel";
-import { APIChatMessage, APIEmbedOptions, APIMentions, APIMessageOptions } from "../Constants";
+import { APIChatMessage, APIEmbedOptions, APIMentions } from "../Constants";
 import { JSONMessage } from "../types/json";
-import { AnyTextableChannel, EditMessageOptions } from "../types/channel";
+import { AnyTextableChannel, CreateMessageOptions, EditMessageOptions } from "../types/channel";
 import { MessageAttachment, MessageConstructorParams, MessageOriginals } from "../types/message";
 import { fetch } from "undici";
 import { APIURLSignature } from "guildedapi-types.ts/typings/payloads/v1/URLSignature";
@@ -330,7 +330,7 @@ export class Message<T extends AnyTextableChannel> extends Base<string> {
      * use Client#createMessage to create an independent message.
      * @param options Message options.
      */
-    async createMessage(options: APIMessageOptions): Promise<Message<T>> {
+    async createMessage(options: CreateMessageOptions): Promise<Message<T>> {
         if (this.acknowledged
           && !(this.client.params.deprecations?.independentMessageBehavior)
         ) throw new Error(
@@ -340,10 +340,10 @@ export class Message<T extends AnyTextableChannel> extends Base<string> {
         if (!this.isOriginal && !(this.originals.triggerID)) this.originals.triggerID = this.id;
 
         if (!(this.client.params.deprecations?.independentMessageBehavior)) {
-            if (options.replyMessageIds)
-                options.replyMessageIds.push(this.originals.triggerID ?? this.id);
+            if (options.replyMessageIDs)
+                options.replyMessageIDs.push(this.originals.triggerID ?? this.id);
             else
-                options.replyMessageIds = [this.originals.triggerID ?? this.id];
+                options.replyMessageIDs = [this.originals.triggerID ?? this.id];
         }
 
         const response =
@@ -371,20 +371,20 @@ export class Message<T extends AnyTextableChannel> extends Base<string> {
      * use Client#createMessage to create an independent message.
      * @param options Message options.
      */
-    async createFollowup(options: APIMessageOptions): Promise<Message<T>> {
+    async createFollowup(options: CreateMessageOptions): Promise<Message<T>> {
         if (!this.acknowledged || !this.originals.responseID)
             throw new Error(
                 "Message has not been acknowledged, " +
               "please acknowledge the message using the createMessage method."
             );
 
-        if (options.replyMessageIds)
-            options.replyMessageIds.push(this.id);
+        if (options.replyMessageIDs)
+            options.replyMessageIDs.push(this.id);
         else
-            options.replyMessageIds = [this.id];
+            options.replyMessageIDs = [this.id];
 
-        if (options.replyMessageIds?.includes(this.originals.triggerID ?? " ")) {
-            options.replyMessageIds[options.replyMessageIds.length - 1] = this.originals.responseID;
+        if (options.replyMessageIDs?.includes(this.originals.triggerID ?? " ")) {
+            options.replyMessageIDs[options.replyMessageIDs.length - 1] = this.originals.responseID;
         }
         const response =
           await this.client.rest.channels.createMessage<T>(

@@ -7,7 +7,7 @@
 
 import { Client } from "../structures/Client";
 import { Member } from "../structures/Member";
-import { AnyChannel, AnyTextableChannel } from "../types/channel";
+import { AnyChannel, AnyTextableChannel, MessageEmbedOptions } from "../types/channel";
 import { Channel } from "../structures/Channel";
 import { ForumThread } from "../structures/ForumThread";
 import { ForumChannel } from "../structures/ForumChannel";
@@ -30,7 +30,8 @@ import {
     APIGuildSubscription,
     APIUser,
     APIGuildCategory,
-    APIChatMessage
+    APIChatMessage,
+    APIEmbedOptions
 } from "guildedapi-types.ts/v1";
 
 export class Util {
@@ -142,6 +143,61 @@ export class Util {
             return message as Message<T>;
         }
         return new Message<T>(data, this.#client, params);
+    }
+
+    embedsToParsed(embeds: Array<APIEmbedOptions>): Array<MessageEmbedOptions> {
+        return embeds.map(embed => ({
+            author: embed.author === undefined ? undefined : {
+                name:    embed.author.name,
+                iconURL: embed.author.icon_url
+            },
+            color:       embed.color,
+            description: embed.description,
+            fields:      embed.fields?.map(field => ({
+                inline: field.inline,
+                name:   field.name,
+                value:  field.value
+            })),
+            footer: embed.footer === undefined ? undefined : {
+                text:    embed.footer.text,
+                iconURL: embed.footer.icon_url
+            },
+            timestamp: embed.timestamp,
+            title:     embed.title,
+            image:     embed.image === undefined ? undefined : {
+                url: embed.image.url
+            },
+            thumbnail: embed.thumbnail === undefined ? undefined : {
+                url: embed.thumbnail.url
+            },
+            url: embed.url
+        }));
+    }
+
+    embedsToRaw(embeds: Array<MessageEmbedOptions>): Array<APIEmbedOptions> {
+        return embeds.map(embed => ({
+            author: embed.author === undefined ? undefined :  {
+                name:     embed.author.name,
+                icon_url: embed.author.iconURL,
+                url:      embed.author.url
+            },
+            color:       embed.color,
+            description: embed.description,
+            fields:      embed.fields?.map(field => ({
+                inline: field.inline,
+                name:   field.name,
+                value:  field.value
+            })),
+            footer: embed.footer === undefined ? undefined : {
+                text:     embed.footer.text,
+                icon_url: embed.footer.iconURL
+            },
+            timestamp: embed.timestamp,
+            title:     embed.title,
+            image:     embed.image === undefined ? undefined : { url: embed.image.url },
+            thumbnail: embed.thumbnail === undefined ? undefined : { url: embed.thumbnail.url },
+            url:       embed.url
+        }));
     }
 }
 

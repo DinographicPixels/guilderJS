@@ -10,14 +10,8 @@ import { Client } from "./Client";
 import { Message } from "./Message";
 import { GuildChannel } from "./GuildChannel";
 import { Permission } from "./Permission";
-import { AnyTextableChannel, EditMessageOptions } from "../types/channel";
-import type {
-    APIChatMessage,
-    APIGuildChannel,
-    APIMessageOptions,
-    PATCHChannelRolePermissionBody,
-    POSTChannelRolePermissionBody
-} from "../Constants";
+import { AnyTextableChannel, CreateMessageOptions, EditMessageOptions } from "../types/channel";
+import type { APIChatMessage, APIGuildChannel, PATCHChannelRolePermissionBody, POSTChannelRolePermissionBody } from "../Constants";
 import TypedCollection from "../util/TypedCollection";
 import { JSONTextChannel } from "../types/json";
 
@@ -42,7 +36,7 @@ export class TextChannel extends GuildChannel {
     /** Create a message in this channel.
      * @param options Message options.
      */
-    async createMessage(options: APIMessageOptions): Promise<Message<TextChannel>> {
+    async createMessage(options: CreateMessageOptions): Promise<Message<TextChannel>> {
         return this.client.rest.channels.createMessage<TextChannel>(this.id, options);
     }
 

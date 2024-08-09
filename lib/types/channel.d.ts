@@ -18,11 +18,11 @@ export interface CreateMessageOptions {
     content?: string;
     /** Links in content to prevent unfurling as a link preview when displaying in Guilded
      * (min items 1; must have unique items true) */
-    hiddenLinkPreviewUrls?: Array<string>;
+    hiddenLinkPreviewURLs?: Array<string>;
     /** Embeds */
     embeds?: Array<MessageEmbedOptions>;
     /** Message IDs to reply to (min items 1; max items 5) */
-    replyMessageIds?: Array<string>;
+    replyMessageIDs?: Array<string>;
     /** If set, this message will not notify any mentioned users or roles (default `false`) */
     isSilent?: boolean;
     /** If set, this message will only be seen by those mentioned or replied to */
@@ -34,7 +34,7 @@ export interface EditMessageOptions {
     content?: string;
     /** Links in content to prevent unfurling as a link preview when displaying in Guilded
      * (min items 1; must have unique items true) */
-    hiddenLinkPreviewUrls?: Array<string>;
+    hiddenLinkPreviewURLs?: Array<string>;
     /** Embeds */
     embeds?: Array<MessageEmbedOptions>;
     // /** Message IDs to reply to (min items 1; max items 5) */
@@ -61,7 +61,7 @@ export interface MessageEmbedOptions {
     /** A small section at the bottom of the embed */
     footer?: {
         /** URL of a small image to put in the footer (max length 1024) */
-        icon_url?: string;
+        iconURL?: string;
         /** Text of the footer (max length 2048) */
         text?: string;
     };
@@ -84,7 +84,7 @@ export interface MessageEmbedOptions {
         /** URL to linkify the author's name field (max length 1024; regex ^(?!attachment)) */
         url?: string;
         /** URL of a small image to display to the left of the author's name (max length 1024) */
-        icon_url?: string;
+        iconURL?: string;
     };
     /** Table-like cells to add to the embed (max items 25) */
     fields?: Array<APIEmbedField>;
@@ -156,9 +156,9 @@ export interface ChannelRolePermission {
     /** The ISO 8601 timestamp that the permission override was updated at, if relevant */
     updatedAt?: string;
     /** The ID of the role */
-    roleId: number;
+    roleID: number;
     /** The ID of the channel */
-    channelId: string;
+    channelID: string;
 }
 
 export interface ChannelUserPermission {
@@ -168,9 +168,9 @@ export interface ChannelUserPermission {
     /** The ISO 8601 timestamp that the permission override was updated at, if relevant */
     updatedAt?: string;
     /** The ID of the role */
-    userId: number;
+    userID: number;
     /** The ID of the channel */
-    channelId: string;
+    channelID: string;
 }
 
 export interface ChannelCategoryUserPermission {
@@ -180,9 +180,9 @@ export interface ChannelCategoryUserPermission {
     /** The ISO 8601 timestamp that the permission override was updated at, if relevant */
     updatedAt?: string;
     /** The ID of the role */
-    userId: number;
+    userID: number;
     /** The ID of the channel */
-    categoryId: string;
+    categoryID: string;
 }
 
 export interface ChannelCategoryRolePermission {
@@ -192,9 +192,9 @@ export interface ChannelCategoryRolePermission {
     /** The ISO 8601 timestamp that the permission override was updated at, if relevant */
     updatedAt?: string;
     /** The ID of the role */
-    roleId: number;
+    roleID: number;
     /** The ID of the channel */
-    categoryId: string;
+    categoryID: string;
 }
 
 export type AnyTextableChannel = TextChannel;

@@ -46,7 +46,6 @@ import { ClientEvents } from "../types/events";
 import { ClientOptions } from "../types/client";
 import {
     APIChannelCategories,
-    PUTGuildWebhookBody,
     POSTListItemBody,
     GATEWAY_EVENTS,
     ChannelReactionTypes,
@@ -104,7 +103,7 @@ import { EditMemberOptions } from "../types/guilds";
 import { Util } from "../util/Util";
 import { CreateDocCommentOptions, EditDocCommentOptions } from "../types/docComment";
 import { config } from "../../pkgconfig";
-import { WebhookExecuteOptions, WebhookMessageDetails } from "../types/webhooks";
+import { EditWebhookOptions, WebhookExecuteOptions, WebhookMessageDetails } from "../types/webhooks";
 import { fetch } from "undici";
 
 /** Represents the application client,
@@ -1375,7 +1374,7 @@ export class Client extends TypedEmitter<ClientEvents> {
      * @param webhookID ID of an existent webhook.
      * @param options Edit options.
      */
-    async editWebhook(guildID: string, webhookID: string, options: PUTGuildWebhookBody): Promise<Webhook> {
+    async editWebhook(guildID: string, webhookID: string, options: EditWebhookOptions): Promise<Webhook> {
         return this.rest.guilds.editWebhook(guildID, webhookID, options);
     }
 

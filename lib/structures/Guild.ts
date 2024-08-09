@@ -22,7 +22,6 @@ import {
     APIGuildGroup,
     APIGuildMember,
     APIGuildRole,
-    POSTBulkAwardXPBody,
     POSTBulkAwardXPResponse,
     POSTCreateCategoryBody,
     PATCHUpdateCategoryBody
@@ -30,6 +29,7 @@ import {
 import TypedCollection from "../util/TypedCollection";
 import { JSONGuild } from "../types/json";
 import { AnyChannel } from "../types/channel";
+import { BulkXPOptions } from "../types/guilds";
 
 /** Represents a Guild, also called server. */
 export class Guild extends Base<string> {
@@ -200,14 +200,14 @@ export class Guild extends Base<string> {
     /** Bulk Award XP Members
      * @param options Members to award XP and amount of XP to award.
      */
-    async bulkAwardXPMembers(options: POSTBulkAwardXPBody): Promise<POSTBulkAwardXPResponse> {
+    async bulkAwardXPMembers(options: BulkXPOptions): Promise<POSTBulkAwardXPResponse> {
         return this.client.rest.guilds.bulkAwardXP(this.id as string, options);
     }
 
     /** Bulk set XP Members
      * @param options Members to set XP and amount of XP to set.
      */
-    async bulkSetXPMembers(options: POSTBulkAwardXPBody): Promise<POSTBulkAwardXPResponse> {
+    async bulkSetXPMembers(options: BulkXPOptions): Promise<POSTBulkAwardXPResponse> {
         return this.client.rest.guilds.bulkSetXP(this.id as string, options);
     }
 
