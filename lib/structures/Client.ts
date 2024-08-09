@@ -104,6 +104,7 @@ import { EditMemberOptions } from "../types/guilds";
 import { Util } from "../util/Util";
 import { CreateDocCommentOptions, EditDocCommentOptions } from "../types/docComment";
 import { config } from "../../pkgconfig";
+import { WebhookExecuteOptions, WebhookMessageDetails } from "../types/webhooks";
 import { fetch } from "undici";
 
 /** Represents the application client,
@@ -1344,6 +1345,20 @@ export class Client extends TypedEmitter<ClientEvents> {
      */
     async removeBan(guildID: string, memberID: string): Promise<void> {
         return this.rest.guilds.removeBan(guildID, memberID);
+    }
+
+    /**
+     * Execute a webhook.
+     * @param webhookID ID of the webhook to execute.
+     * @param token Token of the webhook, needed to execute it.
+     * @param options Execute Options.
+     */
+    async executeWebhook(
+        webhookID: string,
+        token: string,
+        options: WebhookExecuteOptions
+    ): Promise<WebhookMessageDetails> {
+        return this.rest.guilds.executeWebhook(webhookID, token, options);
     }
 
     /** Create a webhook

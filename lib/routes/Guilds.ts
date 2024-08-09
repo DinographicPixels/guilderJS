@@ -70,7 +70,7 @@ import {
     GETChannelCategoryRoleManyPermissionResponse
 } from "../Constants";
 import { AnyChannel, CreateChannelOptions, EditChannelOptions } from "../types/channel";
-import { EditWebhookOptions } from "../types/webhooks";
+import { EditWebhookOptions, WebhookExecuteOptions, WebhookMessageDetails } from "../types/webhooks";
 import { EditMemberOptions } from "../types/guilds";
 import { BannedMember } from "../structures/BannedMember";
 import { GuildRole } from "../structures/GuildRole";
@@ -79,6 +79,7 @@ import { GuildSubscription } from "../structures/GuildSubscription";
 import { GuildCategory } from "../structures/GuildCategory";
 import { Permission } from "../structures/Permission";
 import { GETGuildMemberRolesResponse } from "guildedapi-types.ts/v1";
+import { POSTExecuteWebhookResponse } from "guildedapi-types.ts/typings/REST/v1/Webhooks";
 
 export class Guilds {
     #manager: RESTManager;
@@ -350,6 +351,39 @@ export class Guilds {
             method: "DELETE",
             path:   endpoints.GUILD_WEBHOOK(guildID, webhookID)
         });
+    }
+
+    /**
+     * Execute a webhook.
+     * @param webhookID ID of the webhook to execute.
+     * @param token Token of the webhook, needed to execute it.
+     * @param options Execute Options.
+     */
+    async executeWebhook(
+        webhookID: string,
+        token: string,
+        options: WebhookExecuteOptions
+    ): Promise<WebhookMessageDetails> {
+        return this.#manager.request<POSTExecuteWebhookResponse>({
+            method: "POST",
+            route:  "https://media.guilded.gg",
+            path:   `webhooks/${webhookID}/${token}`,
+            json:   {
+                content:    options.content,
+                username:   options.username,
+                avatar_url: options.avatarURL,
+                embeds:     options.embeds
+            }
+        }).then(data =>
+            ({
+                id:             data?.id,
+                channelID:      data?.channelId,
+                webhookProfile: data?.content?.document?.data?.profile,
+                type:           data?.type,
+                createdBy:      data?.createdBy,
+                createdAt:      data?.createdAt,
+                webhookID:      data?.webhookId
+            }));
     }
 
     /** Award a member using the built-in EXP system.

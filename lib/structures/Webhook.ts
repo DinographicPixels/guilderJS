@@ -10,6 +10,7 @@ import { Base } from "./Base";
 import { APIWebhook } from "../Constants";
 import { WebhookEditOptions } from "../types/webhook";
 import { JSONWebhook } from "../types/json";
+import { WebhookExecuteOptions, WebhookMessageDetails } from "../types/webhooks";
 
 /** Represents a Guild or channel webhook. */
 export class Webhook extends Base<string> {
@@ -84,7 +85,37 @@ export class Webhook extends Base<string> {
         }
     }
 
-    /** Update the webhook. */
+    /** Request Webhook Token if not provided.
+     * @note This method sets this Webhook's token property as well as returning its token.
+     */
+    async requestToken(): Promise<string> {
+        const webhook = await this.client.rest.guilds.getWebhook(this.guildID, this.id);
+        if (webhook.token) return this.token = webhook.token;
+        throw new Error("Guilded did not provide a token for this webhook.");
+    }
+
+    /**
+     * Execute this Webhook.
+     * @param options Execute Options.
+     */
+    async execute(
+        options: WebhookExecuteOptions
+    ): Promise<WebhookMessageDetails> {
+        if (!this.token)
+            throw new Error(
+                "Token has not been provided by Guilded, " +
+              "request it using Webhook#requestToken."
+            );
+        return this.client.rest.guilds.executeWebhook(
+            this.id,
+            this.token,
+            options
+        );
+    }
+
+    /** Update the webhook.
+     * @param options Edit Options.
+     */
     async edit(options: WebhookEditOptions): Promise<Webhook>{
         return this.client.rest.guilds.editWebhook(
             this.guildID,
