@@ -67,7 +67,9 @@ export class RequestHandler {
         if (!options.path.startsWith("/")) {
             options.path = `/${options.path}`;
         }
-        const route = options.route ?? `${pkgconfig.GuildedAPI.API_URL}/${options.path}`;
+        const route = options.route
+            ? options.route + "/" + options.path
+            : `${pkgconfig.GuildedAPI.API_URL}/${options.path}`;
         if (!this.ratelimits[route]) {
             this.ratelimits[route] = new SequentialBucket(1, this.latencyRef);
         }
@@ -131,7 +133,7 @@ export class RequestHandler {
                     }
 
                     const url =
-                      `${options.editBaseURL ?? this.options.baseURL}${options.path}${options.query && Array.from(options.query.keys()).length !== 0 ? `?${options.query.toString()}` : ""}`;
+                      `${route}${options.query && Array.from(options.query.keys()).length !== 0 ? `?${options.query.toString()}` : ""}`;
                     let latency = Date.now();
 
                     let timeout: NodeJS.Timeout | undefined;
