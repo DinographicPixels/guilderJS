@@ -66,9 +66,7 @@ import {
     PATCHGuildGroupBody,
     POSTGuildRoleBody,
     PATCHGuildRoleBody,
-    POSTBulkAwardXPBody,
     POSTBulkAwardXPResponse,
-    PUTBulkSetXPBody,
     PUTBulkSetXPResponse,
     POSTCreateCategoryBody,
     PATCHUpdateCategoryBody,
@@ -99,7 +97,7 @@ import {
     EditCalendarRSVPOptions,
     GetCalendarEventsFilter
 } from "../types/calendarEvent";
-import { EditMemberOptions } from "../types/guilds";
+import { BulkXPOptions, EditMemberOptions } from "../types/guilds";
 import { Util } from "../util/Util";
 import { CreateDocCommentOptions, EditDocCommentOptions } from "../types/docComment";
 import { config } from "../../pkgconfig";
@@ -1593,7 +1591,7 @@ export class Client extends TypedEmitter<ClientEvents> {
      * @param guildID ID of the guild.
      * @param options Bulk XP options.
      */
-    async bulkAwardXPMembers(guildID: string, options: POSTBulkAwardXPBody): Promise<POSTBulkAwardXPResponse> {
+    async bulkAwardXPMembers(guildID: string, options: BulkXPOptions): Promise<POSTBulkAwardXPResponse> {
         return this.rest.guilds.bulkAwardXP(guildID, options);
     }
 
@@ -1602,7 +1600,7 @@ export class Client extends TypedEmitter<ClientEvents> {
      * @param guildID ID of the guild.
      * @param options Bulk XP options.
      */
-    async bulkSetMembersXP(guildID: string, options: PUTBulkSetXPBody): Promise<PUTBulkSetXPResponse> {
+    async bulkSetMembersXP(guildID: string, options: BulkXPOptions): Promise<PUTBulkSetXPResponse> {
         return this.rest.guilds.bulkSetXP(guildID, options);
     }
 
