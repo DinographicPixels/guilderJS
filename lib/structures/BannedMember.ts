@@ -43,7 +43,7 @@ export class BannedMember extends Base<string> {
             createdAt: data.createdAt ? new Date(data.createdAt) : null,
             bannedBy:  data.createdBy
         };
-        this.user = client.users.update(data.user) ?? new User(data.user as APIUser, client);
+        this.user = client.users.update(data.user as Partial<APIUser>) ?? new User(data.user as APIUser, client);
         this.member = client.getGuild(guildID)?.members.get(data.user.id) ?? null;
         this.update(data);
     }
@@ -66,8 +66,8 @@ export class BannedMember extends Base<string> {
         if (data.reason !== undefined) {
             this.ban.reason = data.reason;
         }
-        if (data.user !== undefined && this.client.users.update(data.user)) {
-            this.user = this.client.users.update(data.user);
+        if (data.user !== undefined && this.client.users.update(data.user as Partial<APIUser>)) {
+            this.user = this.client.users.update(data.user as Partial<APIUser>);
         }
     }
 

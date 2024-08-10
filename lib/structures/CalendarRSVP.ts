@@ -7,8 +7,9 @@
 
 import { Client } from "./Client";
 import { Base } from "./Base";
-import { APICalendarEventRSVP, APICalendarEventRSVPStatuses, PUTCalendarEventRSVPBody } from "../Constants";
+import { APICalendarEventRSVP, APICalendarEventRSVPStatuses } from "../Constants";
 import { JSONCalendarEventRSVP } from "../types/json";
+import { EditCalendarRSVPOptions } from "../types/calendarEvent";
 
 /** CalendarEventRSVP represents a guild member's event RSVP.
  * It gives information about a member's set presence to an event.
@@ -96,7 +97,7 @@ export class CalendarEventRSVP extends Base<number> {
     }
 
     /** Edit this RSVP. */
-    async edit(options: PUTCalendarEventRSVPBody): Promise<CalendarEventRSVP>{
+    async edit(options: EditCalendarRSVPOptions): Promise<CalendarEventRSVP>{
         return this.client.rest.channels.editCalendarRsvp(
             this.channelID,
             this.id as number,

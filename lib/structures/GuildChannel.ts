@@ -54,7 +54,7 @@ export class GuildChannel extends Base<string> {
      * @param data raw data
      * @param client client
      */
-    constructor(data: APIGuildChannel, client: Client){
+    constructor(data: APIGuildChannel, client: Client) {
         super(data.id, client);
         this.type = data.type;
         this.name = data.name;
@@ -123,9 +123,6 @@ export class GuildChannel extends Base<string> {
         if (data.id !== undefined) {
             this.id = data.id;
         }
-        if (data.isPublic !== undefined) {
-            this.isPublic = data.isPublic;
-        }
         if (data.name !== undefined) {
             this.name = data.name;
         }
@@ -144,8 +141,9 @@ export class GuildChannel extends Base<string> {
         if (data.updatedAt !== undefined) {
             this.editedTimestamp = new Date(data.updatedAt);
         }
-        if (data.visibility !== undefined) {
+        if (data.visibility) {
             this.visibility = data.visibility;
+            this.isPublic = data.visibility === "public";
         }
     }
 

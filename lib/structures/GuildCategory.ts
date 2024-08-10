@@ -33,7 +33,7 @@ export class GuildCategory extends Base<number> {
         this.guildID = data.serverId;
         this.groupID = data.groupId;
         this.createdAt = new Date(data.createdAt);
-        this.updatedAt = data.updatedAt ?? null;
+        this.updatedAt = data.updatedAt ? new Date(data.updatedAt) : null;
         this.name = data.name;
         this.update(data);
     }
@@ -63,7 +63,7 @@ export class GuildCategory extends Base<number> {
             this.createdAt = new Date(data.createdAt);
         }
         if (data.updatedAt !== undefined) {
-            this.updatedAt = data.updatedAt ?? null;
+            this.updatedAt = new Date(data.updatedAt) ?? null;
         }
         if (data.name !== undefined) {
             this.name = data.name;

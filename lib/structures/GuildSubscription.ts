@@ -19,7 +19,7 @@ export class GuildSubscription extends Base<string> {
     /** Description of the subscription (optional) */
     description: string | null;
     /** ID of the role associated with the subscription (optional) */
-    roleID: number;
+    roleID: number | null;
     /** Cost of the subscription */
     cost: number;
     /** The ISO 8601 timestamp that the subscription was created at */
@@ -29,7 +29,7 @@ export class GuildSubscription extends Base<string> {
         super(data.serverId, client);
         this.type = data.type;
         this.guildID = data.serverId;
-        this.description = data.description !== "" ? data.description : null;
+        this.description = (data.description !== "" ? data.description : null) ?? null;
         this.roleID = data.roleId ?? null;
         this.cost = data.cost;
         this.createdAt = new Date(data.createdAt);

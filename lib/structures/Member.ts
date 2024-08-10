@@ -168,7 +168,7 @@ export class Member extends User {
     }
 
     /** Get member permission */
-    async getPermission(): Promise<Array<Permissions>>{
+    async getPermission(): Promise<Array<Permissions>> {
         return this.client.rest.guilds.getMemberPermission(this.guildID, this.id as string);
     }
 }

@@ -34,7 +34,7 @@ export class GuildRole extends Base<number> {
     /** The URL of the role icon */
     iconURL: string | null;
     /** The position the role will be in relation to the roles in the server */
-    position: number;
+    position: number | null;
     /** The default role users are given when joining the server.
      * Base roles are tied directly to the server and cannot be created or deleted */
     isBase: boolean;
@@ -50,10 +50,10 @@ export class GuildRole extends Base<number> {
         this.isDisplayedSeparately = data.isDisplayedSeparately ?? false;
         this.isSelfAssignable = data.isSelfAssignable ?? false;
         this.isMentionable = data.isMentionable ?? false;
-        this.permissions = data.permissions;
+        this.permissions = data.permissions as Array<Permissions>;
         this.colors = data.colors ?? null;
         this.iconURL = data.icon ?? null;
-        this.position = data.priority;
+        this.position = data.priority ?? null;
         this.isBase = data.isBase ?? false;
         this.botUserID = data.botUserId ?? null;
         this.update(data);
@@ -101,7 +101,7 @@ export class GuildRole extends Base<number> {
             this.isMentionable = data.isMentionable;
         }
         if (data.permissions !== undefined) {
-            this.permissions = data.permissions;
+            this.permissions = data.permissions as Array<Permissions>;
         }
         if (data.colors !== undefined) {
             this.colors = data.colors;

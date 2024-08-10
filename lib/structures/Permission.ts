@@ -40,7 +40,7 @@ export class Permission {
     ) {
         this.data = data;
         this.createdAt = new Date(data.createdAt);
-        this.updatedAt = data.updatedAt ?? null;
+        this.updatedAt = typeof data.updatedAt === "string" ? new Date(data.updatedAt) : data.updatedAt ?? null;
         this.target = data["userId" as keyof object] ? "user" : (data["roleId" as keyof object] ? "role" : "unknown");
         this.targetID = data["userId" as keyof object] ?? data["roleId" as keyof object] ?? null;
         this.parentID = data["channelId" as keyof object] ?? data["categoryId" as keyof object] ?? null;
@@ -76,7 +76,7 @@ export class Permission {
             this.createdAt = new Date(data.createdAt);
         }
         if (data.updatedAt !== undefined) {
-            this.updatedAt = data.updatedAt ?? null;
+            this.updatedAt = new Date(data.updatedAt) ?? null;
         }
     }
 }

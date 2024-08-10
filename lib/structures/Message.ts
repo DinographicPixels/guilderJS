@@ -14,7 +14,7 @@ import { Base } from "./Base";
 import { TextChannel } from "./TextChannel";
 import { APIChatMessage, APIEmbedOptions, APIMentions } from "../Constants";
 import { JSONMessage } from "../types/json";
-import { AnyTextableChannel, CreateMessageOptions, EditMessageOptions } from "../types/channel";
+import { AnyTextableChannel, CreateMessageOptions, EditMessageOptions, MessageEmbedOptions } from "../types/channel";
 import { MessageAttachment, MessageConstructorParams, MessageOriginals } from "../types/message";
 import { fetch } from "undici";
 import { APIURLSignature } from "guildedapi-types.ts/typings/payloads/v1/URLSignature";
@@ -441,7 +441,7 @@ export class Message<T extends AnyTextableChannel> extends Base<string> {
     /** Edit the last message sent with the message itself.
      * @param newMessage New message's options.
      */
-    async editLast(newMessage: {content?: string; embeds?: Array<APIEmbedOptions>;}): Promise<Message<T>>{
+    async editLast(newMessage: {content?: string; embeds?: Array<MessageEmbedOptions>;}): Promise<Message<T>>{
         if (!this._lastMessageID) throw new TypeError("Cannot edit last message if it does not exist.");
         return this.client.rest.channels.editMessage<T>(
             this.channelID,
@@ -529,7 +529,10 @@ export class Message<T extends AnyTextableChannel> extends Base<string> {
      * @param newMessage New message's options.
      */
     async editOriginal(
-        newMessage: { content?: string; embeds?: Array<APIEmbedOptions>; }
+        newMessage: {
+            content?: string;
+            embeds?: Array<MessageEmbedOptions>;
+        }
     ): Promise<Message<T>>{
         if (!this.originals.responseID || this.isOriginal)
             throw new Error(

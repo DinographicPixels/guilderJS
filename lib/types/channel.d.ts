@@ -63,7 +63,7 @@ export interface MessageEmbedOptions {
         /** URL of a small image to put in the footer (max length 1024) */
         iconURL?: string;
         /** Text of the footer (max length 2048) */
-        text?: string;
+        text: string;
     };
     /** A timestamp to put in the footer */
     timestamp?: string;

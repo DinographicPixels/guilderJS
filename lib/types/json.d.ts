@@ -483,7 +483,7 @@ export interface JSONGuildRole extends JSONBase<number> {
     /** The URL of the role icon */
     iconURL: string | null;
     /** The position the role will be in relation to the roles in the server */
-    position: number;
+    position: number | null;
     /** The default role users are given when joining the server. Base roles are tied directly to the server
      * and cannot be created or deleted */
     isBase: boolean;
