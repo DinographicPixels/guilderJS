@@ -572,7 +572,7 @@ export class Client extends TypedEmitter<ClientEvents> {
     async createChannel<T extends AnyChannel = AnyChannel>(
         guildID: string,
         name: string,
-        type: APIChannelCategories,
+        type: APIChannelCategories | `${APIChannelCategories}`,
         options?: CreateChannelOptions
     ): Promise<T> {
         return this.rest.guilds.createChannel<T>(guildID, name, type, options);
