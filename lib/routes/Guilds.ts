@@ -441,7 +441,7 @@ export class Guilds {
     async createChannel<T extends AnyChannel = AnyChannel>(
         guildID: string,
         name: string,
-        type: APIChannelCategories | `${APIChannelCategories}`,
+        type: APIChannelCategories,
         options?: CreateChannelOptions
     ): Promise<T> {
         if (!guildID) throw new Error("guildID is a required parameter.");
