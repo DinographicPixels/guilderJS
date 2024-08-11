@@ -12,7 +12,6 @@ import { Guild } from "./Guild";
 import { Base } from "./Base";
 
 import { TextChannel } from "./TextChannel";
-import { APIChatMessage, APIEmbedOptions, APIMentions } from "../Constants";
 import {
     JSONMessage,
     MessageAttachment,
@@ -21,17 +20,20 @@ import {
     AnyTextableChannel,
     CreateMessageOptions,
     EditMessageOptions,
-    MessageEmbedOptions
+    MessageEmbedOptions,
+    RawMessage,
+    RawEmbed,
+    RawMentions
 } from "../types";
 import { fetch } from "undici";
-import { APIURLSignature } from "guildedapi-types.ts/typings/payloads/v1/URLSignature";
+import { APIURLSignature } from "guildedapi-types.ts/v1";
 
 /** Represents a guild message. */
 export class Message<T extends AnyTextableChannel> extends Base<string> {
     private _cachedChannel!: T extends AnyTextableChannel ? T : undefined;
     private _cachedGuild?: T extends Guild ? Guild : Guild | null;
     /** Raw data. */
-    #data: APIChatMessage;
+    #data: RawMessage;
     /** Message type. */
     type: string;
     /** ID of the server on which the message was sent. */
@@ -44,7 +46,7 @@ export class Message<T extends AnyTextableChannel> extends Base<string> {
      * (min items 1; must have unique items true) */
     hiddenLinkPreviewUrls?: Array<string>;
     /** Array of message embed. */
-    embeds?: Array<APIEmbedOptions> | [];
+    embeds?: Array<RawEmbed> | [];
     /** The IDs of the message replied by the message. */
     replyMessageIds: Array<string>;
     /** If true, the message appears as private. */
@@ -52,7 +54,7 @@ export class Message<T extends AnyTextableChannel> extends Base<string> {
     /** If true, the message didn't mention anyone. */
     isSilent: boolean;
     /** object containing all mentioned users. */
-    mentions: APIMentions;
+    mentions: RawMentions;
     /** ID of the message author. */
     memberID: string;
     /** ID of the webhook used to send this message. (if sent by a webhook) */
@@ -76,7 +78,7 @@ export class Message<T extends AnyTextableChannel> extends Base<string> {
     acknowledged: boolean;
 
     constructor(
-        data: APIChatMessage,
+        data: RawMessage,
         client: Client,
         params?: MessageConstructorParams
     ) {
@@ -91,7 +93,7 @@ export class Message<T extends AnyTextableChannel> extends Base<string> {
         this.replyMessageIds = data.replyMessageIds ?? [];
         this.isPrivate = data.isPrivate ?? false;
         this.isSilent = data.isSilent ?? false;
-        this.mentions = data.mentions as APIMentions ?? null;
+        this.mentions = data.mentions as RawMentions ?? null;
         this.createdAt = new Date(data.createdAt);
         this.editedTimestamp = data.updatedAt ? new Date(data.updatedAt) : null;
         this.memberID = data.createdBy;
@@ -130,7 +132,7 @@ export class Message<T extends AnyTextableChannel> extends Base<string> {
         };
     }
 
-    protected override update(data: APIChatMessage): void {
+    protected override update(data: RawMessage): void {
         if (data.channelId !== undefined) {
             this.channelID = data.channelId;
         }

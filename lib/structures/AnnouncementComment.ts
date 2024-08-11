@@ -9,8 +9,8 @@ import { Client } from "./Client";
 import { Base } from "./Base";
 
 import { Member } from "./Member";
-import { APIAnnouncementComment, APIMentions, PATCHChannelAnnouncementCommentBody, POSTChannelAnnouncementCommentBody } from "../Constants";
-import { ConstructorCalendarEventCommentOptions, JSONAnnouncementComment } from "../types";
+import { PATCHChannelAnnouncementCommentBody, POSTChannelAnnouncementCommentBody } from "../Constants";
+import { ConstructorCalendarCommentOptions, JSONAnnouncementComment, RawAnnouncementComment, RawMentions } from "../types";
 
 /** AnnouncementComment represents a comment from an Announcement channel. */
 export class AnnouncementComment extends Base<number> {
@@ -27,7 +27,7 @@ export class AnnouncementComment extends Base<number> {
     /** ID of the parent announcement. */
     announcementID: string;
     /** Mentions */
-    mentions: APIMentions | null;
+    mentions: RawMentions | null;
     /** ID of the guild, if received. */
     guildID: string | null;
     /**
@@ -36,9 +36,9 @@ export class AnnouncementComment extends Base<number> {
      * @param options Optional parameters that can be added
      */
     constructor(
-        data: APIAnnouncementComment,
+        data: RawAnnouncementComment,
         client: Client,
-        options?: ConstructorCalendarEventCommentOptions
+        options?: ConstructorCalendarCommentOptions
     ) {
         super(data.id, client);
         this.content = data.content;
@@ -66,7 +66,7 @@ export class AnnouncementComment extends Base<number> {
         };
     }
 
-    protected override update(data: APIAnnouncementComment): void {
+    protected override update(data: RawAnnouncementComment): void {
         if (data.announcementId !== undefined) {
             this.announcementID = data.announcementId;
         }

@@ -11,15 +11,21 @@ import { Base } from "./Base";
 
 import { User } from "./User";
 import { CalendarEventRSVP } from "./CalendarRSVP";
-import { CalendarEventComment } from "./CalendarEventComment";
-import { APICalendarEvent, APICalendarEventComment, APICalendarEventRSVP, APIMentions } from "../Constants";
-import { EditCalendarEventOptions, JSONCalendarEvent } from "../types";
+import { CalendarComment } from "./CalendarComment";
+import {
+    EditCalendarEventOptions,
+    JSONCalendarEvent,
+    RawCalendarEvent,
+    RawCalendarComment,
+    RawCalendarRSVP,
+    RawMentions
+} from "../types";
 import TypedCollection from "../util/TypedCollection";
 
 /** CalendarEvent represents an event coming from a calendar channel. */
 export class CalendarEvent extends Base<number> {
     /** Raw data */
-    data: APICalendarEvent;
+    data: RawCalendarEvent;
     /** Guild/server ID */
     guildID: string;
     /** ID of the channel the event was created on. */
@@ -43,23 +49,23 @@ export class CalendarEvent extends Base<number> {
     /** If true, this event is private. */
     isPrivate: boolean;
     /** Mentions in this calendar event. */
-    mentions: APIMentions | null;
+    mentions: RawMentions | null;
     /** When the event was created. */
     createdAt: Date | null;
     /** ID of the owner of this event. */
     ownerID: string;
     /** Details about event cancellation (if canceled) */
-    cancellation: APICalendarEvent["cancellation"] | null;
+    cancellation: RawCalendarEvent["cancellation"] | null;
     /** Cached RSVPS. */
-    rsvps: TypedCollection<number, APICalendarEventRSVP, CalendarEventRSVP>;
+    rsvps: TypedCollection<number, RawCalendarRSVP, CalendarEventRSVP>;
     /** Cached Comments */
-    comments: TypedCollection<number, APICalendarEventComment, CalendarEventComment>;
+    comments: TypedCollection<number, RawCalendarComment, CalendarComment>;
 
     /**
      * @param data raw data.
      * @param client client.
      */
-    constructor(data: APICalendarEvent, client: Client){
+    constructor(data: RawCalendarEvent, client: Client){
         super(data.id, client);
         this.data = data;
         this.id = data.id;
@@ -84,7 +90,7 @@ export class CalendarEvent extends Base<number> {
             client.params.collectionLimits?.scheduledEventsRSVPS
         );
         this.comments = new TypedCollection(
-            CalendarEventComment,
+            CalendarComment,
             client,
             client.params.collectionLimits?.calendarComments
         );
@@ -115,7 +121,7 @@ export class CalendarEvent extends Base<number> {
         };
     }
 
-    protected override update(data: APICalendarEvent): void {
+    protected override update(data: RawCalendarEvent): void {
         if (data.cancellation !== undefined) {
             this.cancellation = data.cancellation;
         }

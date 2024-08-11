@@ -8,12 +8,12 @@
 import { Client } from "./Client";
 import { Base } from "./Base";
 import { Permission } from "./Permission";
-import { JSONGuildCategory } from "../types";
+import { JSONGuildCategory, RawCategory } from "../types";
 import { PATCHUpdateCategoryBody } from "../Constants";
-import { APIGuildCategory, PATCHChannelCategoryUserPermissionBody, POSTChannelCategoryUserPermissionBody } from "guildedapi-types.ts/v1";
+import { PATCHChannelCategoryUserPermissionBody, POSTChannelCategoryUserPermissionBody } from "guildedapi-types.ts/v1";
 
-/** Class representing a guild group. */
-export class GuildCategory extends Base<number> {
+/** Represents a Guild Category. */
+export class Category extends Base<number> {
     /** Type of the subscription */
     override id: number;
     /** The ID of the server */
@@ -27,7 +27,7 @@ export class GuildCategory extends Base<number> {
     /** Name of the category (min length 1; max length 100) */
     name: string;
 
-    constructor(data: APIGuildCategory, client: Client) {
+    constructor(data: RawCategory, client: Client) {
         super(data.id, client);
         this.id = data.id;
         this.guildID = data.serverId;
@@ -49,7 +49,7 @@ export class GuildCategory extends Base<number> {
         };
     }
 
-    protected override update(data: APIGuildCategory): void {
+    protected override update(data: RawCategory): void {
         if (data.id !== undefined) {
             this.id = data.id;
         }
@@ -74,7 +74,7 @@ export class GuildCategory extends Base<number> {
      * Update a guild category.
      * @param options Edit options.
      */
-    async editCategory(options: PATCHUpdateCategoryBody): Promise<GuildCategory> {
+    async editCategory(options: PATCHUpdateCategoryBody): Promise<Category> {
         return this.client.rest.guilds.editCategory(
             this.guildID as string,
             this.id as number,
@@ -85,7 +85,7 @@ export class GuildCategory extends Base<number> {
     /**
      * Delete a guild category.
      */
-    async deleteCategory(): Promise<GuildCategory> {
+    async deleteCategory(): Promise<Category> {
         return this.client.rest.guilds.deleteCategory(this.guildID as string, this.id as number);
     }
 

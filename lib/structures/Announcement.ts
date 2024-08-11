@@ -8,14 +8,8 @@
 import { Client } from "./Client";
 import { Base } from "./Base";
 import { AnnouncementComment } from "./AnnouncementComment";
-import {
-    APIAnnouncement,
-    APIAnnouncementComment,
-    APIMentions,
-    PATCHChannelAnnouncementBody,
-    POSTChannelAnnouncementBody
-} from "../Constants";
-import { JSONAnnouncement } from "../types";
+import { PATCHChannelAnnouncementBody, POSTChannelAnnouncementBody } from "../Constants";
+import { JSONAnnouncement, RawAnnouncement, RawAnnouncementComment, RawMentions } from "../types";
 import TypedCollection from "../util/TypedCollection";
 
 /** Represents a channel announcement. */
@@ -31,17 +25,17 @@ export class Announcement extends Base<string> {
     /** The announcement's content */
     content: string;
     /** Mentions. */
-    mentions: APIMentions | null;
+    mentions: RawMentions | null;
     /** The announcement's title. */
     title: string;
     /** Cached announcement's comments */
-    comments: TypedCollection<number, APIAnnouncementComment, AnnouncementComment>;
+    comments: TypedCollection<number, RawAnnouncementComment, AnnouncementComment>;
 
     /**
      * @param data raw data.
      * @param client client.
      */
-    constructor(data: APIAnnouncement, client: Client) {
+    constructor(data: RawAnnouncement, client: Client) {
         super(data.id, client);
         this.guildID = data.serverId;
         this.channelID = data.channelId;
@@ -71,7 +65,7 @@ export class Announcement extends Base<string> {
         };
     }
 
-    protected override update(data: APIAnnouncement): void {
+    protected override update(data: RawAnnouncement): void {
         if (data.channelId !== undefined) {
             this.channelID = data.channelId;
         }

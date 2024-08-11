@@ -10,19 +10,26 @@ import { Client } from "./Client";
 import { Message } from "./Message";
 import { GuildChannel } from "./GuildChannel";
 import { Permission } from "./Permission";
-import { AnyTextableChannel, CreateMessageOptions, EditMessageOptions, JSONTextChannel } from "../types";
-import type { APIChatMessage, APIGuildChannel, PATCHChannelRolePermissionBody, POSTChannelRolePermissionBody } from "../Constants";
+import {
+    AnyTextableChannel,
+    CreateMessageOptions,
+    EditMessageOptions,
+    JSONTextChannel,
+    RawChannel,
+    RawMessage
+} from "../types";
+import type { PATCHChannelRolePermissionBody, POSTChannelRolePermissionBody } from "../Constants";
 import TypedCollection from "../util/TypedCollection";
 
 /** Represents a guild channel where you can chat with others. */
 export class TextChannel extends GuildChannel {
     /** Cached messages. */
-    messages: TypedCollection<string, APIChatMessage, Message<AnyTextableChannel>>;
+    messages: TypedCollection<string, RawMessage, Message<AnyTextableChannel>>;
     /**
      * @param data raw data
      * @param client client
      */
-    constructor(data: APIGuildChannel, client: Client){
+    constructor(data: RawChannel, client: Client){
         super(data, client);
         this.messages = new TypedCollection(
             Message,

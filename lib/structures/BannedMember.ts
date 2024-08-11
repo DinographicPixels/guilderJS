@@ -10,8 +10,7 @@ import { User } from "./User";
 import { Guild } from "./Guild";
 import { Base } from "./Base";
 import { Member } from "./Member";
-import { APIGuildMemberBan, APIUser } from "../Constants";
-import { JSONBannedMember } from "../types";
+import { JSONBannedMember, RawMemberBan, RawUser } from "../types";
 
 /** BannedMember represents a banned guild member. */
 export class BannedMember extends Base<string> {
@@ -35,7 +34,7 @@ export class BannedMember extends Base<string> {
      * @param data raw data.
      * @param client client.
      */
-    constructor(guildID: string, data: APIGuildMemberBan, client: Client){
+    constructor(guildID: string, data: RawMemberBan, client: Client){
         super(data.user.id, client);
         this.guildID = guildID;
         this.ban = {
@@ -43,7 +42,7 @@ export class BannedMember extends Base<string> {
             createdAt: data.createdAt ? new Date(data.createdAt) : null,
             bannedBy:  data.createdBy
         };
-        this.user = client.users.update(data.user as Partial<APIUser>) ?? new User(data.user as APIUser, client);
+        this.user = client.users.update(data.user as Partial<RawUser>) ?? new User(data.user as RawUser, client);
         this.member = client.getGuild(guildID)?.members.get(data.user.id) ?? null;
         this.update(data);
     }
@@ -56,7 +55,7 @@ export class BannedMember extends Base<string> {
         };
     }
 
-    protected override update(data: APIGuildMemberBan): void {
+    protected override update(data: RawMemberBan): void {
         if (data.createdAt !== undefined) {
             this.ban.createdAt = new Date(data.createdAt);
         }
@@ -66,8 +65,8 @@ export class BannedMember extends Base<string> {
         if (data.reason !== undefined) {
             this.ban.reason = data.reason;
         }
-        if (data.user !== undefined && this.client.users.update(data.user as Partial<APIUser>)) {
-            this.user = this.client.users.update(data.user as Partial<APIUser>);
+        if (data.user !== undefined && this.client.users.update(data.user as Partial<RawUser>)) {
+            this.user = this.client.users.update(data.user as Partial<RawUser>);
         }
     }
 

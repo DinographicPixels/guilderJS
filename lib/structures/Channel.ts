@@ -14,8 +14,7 @@ import { DocChannel } from "./DocChannel";
 import { ForumChannel } from "./ForumChannel";
 import { TextChannel } from "./TextChannel";
 import { AnnouncementChannel } from "./AnnouncementChannel";
-import type { APIGuildChannel } from "../Constants";
-import { AnyChannel, EditChannelOptions, JSONChannel } from "../types";
+import { AnyChannel, EditChannelOptions, JSONChannel, RawChannel } from "../types";
 
 /** Represents a channel. */
 export class Channel extends Base<string> {
@@ -27,13 +26,13 @@ export class Channel extends Base<string> {
      * @param data raw data
      * @param client client
      */
-    constructor(data: APIGuildChannel, client: Client){
+    constructor(data: RawChannel, client: Client){
         super(data.id, client);
         this.type = data.type;
         this.name = data.name;
     }
 
-    static from<T extends AnyChannel = AnyChannel>(data: APIGuildChannel, client: Client): T {
+    static from<T extends AnyChannel = AnyChannel>(data: RawChannel, client: Client): T {
         switch (data.type) {
             case "announcements": {
                 return new AnnouncementChannel(data, client) as T;

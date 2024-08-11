@@ -9,13 +9,19 @@ import { Client } from "./Client";
 import { Base } from "./Base";
 
 import { Member } from "./Member";
-import { APICalendarEventComment } from "../Constants";
-import { CreateCalendarCommentOptions, EditCalendarCommentOptions, JSONCalendarEventComment, ConstructorCalendarEventCommentOptions } from "../types";
+
+import {
+    CreateCalendarCommentOptions,
+    EditCalendarCommentOptions,
+    JSONCalendarEventComment,
+    ConstructorCalendarCommentOptions,
+    RawCalendarComment
+} from "../types";
 
 /** CalendarEventComment represents an event comment coming from a calendar channel. */
-export class CalendarEventComment extends Base<number> {
+export class CalendarComment extends Base<number> {
     /** Raw data */
-    data: APICalendarEventComment;
+    data: RawCalendarComment;
     /** This property isn't always provided by the Guilded API, the value can be null,
      * which disable the ability to get member through this class. */
     guildID: string | null;
@@ -37,9 +43,9 @@ export class CalendarEventComment extends Base<number> {
      * @param options Additional properties that can be added.
      */
     constructor(
-        data: APICalendarEventComment,
+        data: RawCalendarComment,
         client: Client,
-        options?: ConstructorCalendarEventCommentOptions
+        options?: ConstructorCalendarCommentOptions
     ) {
         super(data.id, client);
         this.data = data;
@@ -66,7 +72,7 @@ export class CalendarEventComment extends Base<number> {
         };
     }
 
-    protected override update(data: APICalendarEventComment): void {
+    protected override update(data: RawCalendarComment): void {
         if (data.calendarEventId !== undefined) {
             this.eventID = Number(data.calendarEventId);
         }
@@ -104,7 +110,7 @@ export class CalendarEventComment extends Base<number> {
     /** Create a comment in the same event as this one.
      * @param options Create options.
      */
-    async createCalendarComment(options: CreateCalendarCommentOptions): Promise<CalendarEventComment> {
+    async createCalendarComment(options: CreateCalendarCommentOptions): Promise<CalendarComment> {
         return this.client.rest.channels.createCalendarComment(
             this.channelID,
             this.eventID,
@@ -139,7 +145,7 @@ export class CalendarEventComment extends Base<number> {
     }
 
     /** Edit this comment */
-    async edit(options: EditCalendarCommentOptions): Promise<CalendarEventComment>{
+    async edit(options: EditCalendarCommentOptions): Promise<CalendarComment>{
         return this.client.rest.channels.editCalendarComment(
             this.channelID,
             this.eventID,

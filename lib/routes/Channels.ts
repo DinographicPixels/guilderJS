@@ -15,7 +15,6 @@ import { Message } from "../structures/Message";
 import { ForumThreadComment } from "../structures/ForumThreadComment";
 import { ListItem } from "../structures/ListItem";
 import {
-    APIListItem,
     ChannelReactionTypeBulkDeleteSupported,
     ChannelReactionTypes,
     ChannelSubcategoryReactionTypes,
@@ -104,18 +103,20 @@ import {
     CreateForumCommentOptions,
     EditForumCommentOptions,
     EditDocOptions,
-    CreateDocOptions
+    CreateDocOptions,
+    RawMessage,
+    RawListItem
 } from "../types";
 import { DocChannel } from "../structures/DocChannel";
 import { ForumChannel } from "../structures/ForumChannel";
 import { CalendarChannel } from "../structures/CalendarChannel";
 import { TextChannel } from "../structures/TextChannel";
-import { CalendarEventComment } from "../structures/CalendarEventComment";
+import { CalendarComment } from "../structures/CalendarComment";
 import { DocComment } from "../structures/DocComment";
 import { Announcement } from "../structures/Announcement";
 import { AnnouncementComment } from "../structures/AnnouncementComment";
 import { Permission } from "../structures/Permission";
-import { APIChatMessage, PUTChannelMessageResponse } from "guildedapi-types.ts/v1";
+import { PUTChannelMessageResponse } from "guildedapi-types.ts/v1";
 
 export class Channels {
     #manager: RESTManager;
@@ -362,12 +363,12 @@ export class Channels {
      * @param eventID ID of an event containing the comment to get.
      * @param commentID ID of the comment to get.
      */
-    async getCalendarEventComment(channelID: string, eventID: number, commentID: number): Promise<CalendarEventComment> {
+    async getCalendarEventComment(channelID: string, eventID: number, commentID: number): Promise<CalendarComment> {
         return this.#manager.authRequest<GETCalendarEventCommentResponse>({
             method: "GET",
             path:   endpoints.CHANNEL_EVENT_COMMENT(channelID, eventID, commentID)
         }).then(data =>
-            new CalendarEventComment(data.calendarEventComment, this.#manager.client)
+            new CalendarComment(data.calendarEventComment, this.#manager.client)
         );
     }
 
@@ -376,13 +377,13 @@ export class Channels {
      * @param channelID ID of a "Calendar" channel.
      * @param eventID ID of the event containing comments.
      */
-    async getCalendarEventComments(channelID: string, eventID: number): Promise<Array<CalendarEventComment>> {
+    async getCalendarEventComments(channelID: string, eventID: number): Promise<Array<CalendarComment>> {
         return this.#manager.authRequest<GETCalendarEventCommentsResponse>({
             method: "GET",
             path:   endpoints.CHANNEL_EVENT_COMMENTS(channelID, eventID)
         }).then(data =>
             data.calendarEventComments.map(d =>
-                new CalendarEventComment(d, this.#manager.client)
+                new CalendarComment(d, this.#manager.client)
             )
         );
     }
@@ -445,7 +446,7 @@ export class Channels {
             path:   endpoints.LIST_ITEMS(channelID)
         }).then(data =>
             data.listItems.map(d =>
-                new ListItem(d as APIListItem, this.#manager.client)) as never
+                new ListItem(d as RawListItem, this.#manager.client)) as never
         );
     }
 
@@ -501,7 +502,7 @@ export class Channels {
             }
         }).then(data =>
             this.#manager.client.util.updateMessage(
-                data.message as APIChatMessage,
+                data.message as RawMessage,
                 params
             )
         );
@@ -1067,14 +1068,14 @@ export class Channels {
         channelID: string,
         eventID: number,
         options: CreateCalendarCommentOptions
-    ): Promise<CalendarEventComment> {
+    ): Promise<CalendarComment> {
         if (typeof options !== "object") throw new Error("comment options should be an object.");
         return this.#manager.authRequest<POSTCalendarEventCommentResponse>({
             method: "POST",
             path:   endpoints.CHANNEL_EVENT_COMMENTS(channelID, eventID),
             json:   options
         }).then(data =>
-            new CalendarEventComment(data.calendarEventComment, this.#manager.client)
+            new CalendarComment(data.calendarEventComment, this.#manager.client)
         );
     }
 
@@ -1089,14 +1090,14 @@ export class Channels {
         eventID: number,
         commentID: number,
         options: EditCalendarCommentOptions
-    ): Promise<CalendarEventComment> {
+    ): Promise<CalendarComment> {
         if (typeof options !== "object") throw new Error("comment options should be an object.");
         return this.#manager.authRequest<PATCHCalendarEventCommentResponse>({
             method: "PATCH",
             path:   endpoints.CHANNEL_EVENT_COMMENT(channelID, eventID, commentID),
             json:   options
         }).then(data =>
-            new CalendarEventComment(data.calendarEventComment, this.#manager.client)
+            new CalendarComment(data.calendarEventComment, this.#manager.client)
         );
     }
 

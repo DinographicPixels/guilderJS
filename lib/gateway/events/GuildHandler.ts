@@ -7,7 +7,7 @@
 
 import { GatewayEventHandler } from "./GatewayEventHandler";
 
-import { BannedMember, Guild, GuildRole, Member } from "../../index";
+import { BannedMember, Guild, Role, Member } from "../../index";
 
 import { GuildCreateInfo, GuildDeleteInfo } from "../../types";
 import {
@@ -32,8 +32,8 @@ import {
 } from "../../Constants";
 import { MemberUpdateInfo } from "../../structures/MemberUpdateInfo";
 import { MemberRemoveInfo } from "../../structures/MemberRemoveInfo";
-import { GuildGroup } from "../../structures/GuildGroup";
-import { GuildCategory } from "../../structures/GuildCategory";
+import { Group } from "../../structures/Group";
+import { Category } from "../../structures/Category";
 
 /** Internal component, emitting guild events. */
 export class GuildHandler extends GatewayEventHandler {
@@ -112,7 +112,7 @@ export class GuildHandler extends GatewayEventHandler {
     }
 
     guildGroupCreate(data: GatewayEvent_GroupCreated): void {
-        const GuildGroupComponent = new GuildGroup(data.group, this.client);
+        const GuildGroupComponent = new Group(data.group, this.client);
         this.client.guilds.get(data.serverId)?.groups.add(GuildGroupComponent);
         this.client.emit("guildGroupCreate", GuildGroupComponent);
     }
@@ -121,24 +121,24 @@ export class GuildHandler extends GatewayEventHandler {
         const guild = this.client.guilds.get(data.serverId);
         const CachedGroup = guild?.groups.get(data.group.id)?.toJSON() ?? null;
         const GuildGroupComponent =
-          guild?.groups.update(new GuildGroup(data.group, this.client))
-          ?? new GuildGroup(data.group, this.client);
+          guild?.groups.update(new Group(data.group, this.client))
+          ?? new Group(data.group, this.client);
         this.client.emit("guildGroupUpdate", GuildGroupComponent, CachedGroup);
     }
 
     guildGroupDelete(data: GatewayEvent_GroupDeleted): void {
         const guild = this.client.guilds.get(data.serverId);
         const GuildGroupComponent =
-          guild?.groups.update(new GuildGroup(data.group, this.client))
-          ?? new GuildGroup(data.group, this.client);
+          guild?.groups.update(new Group(data.group, this.client))
+          ?? new Group(data.group, this.client);
         this.client.emit("guildGroupDelete", GuildGroupComponent);
     }
 
     guildRoleCreate(data: GatewayEvent_RoleCreated): void {
         const guild = this.client.guilds.get(data.serverId);
         const role =
-          guild?.roles.add(new GuildRole(data.role, this.client))
-          ?? new GuildRole(data.role, this.client);
+          guild?.roles.add(new Role(data.role, this.client))
+          ?? new Role(data.role, this.client);
         this.client.emit("guildRoleCreate", role);
     }
 
@@ -146,32 +146,32 @@ export class GuildHandler extends GatewayEventHandler {
         const guild = this.client.guilds.get(data.serverId);
         const cachedRole = guild?.roles.get(data.role.id)?.toJSON() ?? null;
         const role =
-          guild?.roles.update(new GuildRole(data.role, this.client))
-          ?? new GuildRole(data.role, this.client);
+          guild?.roles.update(new Role(data.role, this.client))
+          ?? new Role(data.role, this.client);
         this.client.emit("guildRoleUpdate", role, cachedRole);
     }
 
     guildRoleDelete(data: GatewayEvent_RoleDeleted): void {
         const guild = this.client.guilds.get(data.serverId);
         const role =
-          guild?.roles.update(new GuildRole(data.role, this.client))
-          ?? new GuildRole(data.role, this.client);
+          guild?.roles.update(new Role(data.role, this.client))
+          ?? new Role(data.role, this.client);
         guild?.roles.delete(data.role.id);
         this.client.emit("guildRoleDelete", role);
     }
 
     guildCategoryCreate(data: GatewayEvent_CategoryCreated): void {
-        const category = new GuildCategory(data.category, this.client);
+        const category = new Category(data.category, this.client);
         this.client.emit("guildCategoryCreate", category);
     }
 
     guildCategoryUpdate(data: GatewayEvent_CategoryCreated): void {
-        const category = new GuildCategory(data.category, this.client);
+        const category = new Category(data.category, this.client);
         this.client.emit("guildCategoryUpdate", category);
     }
 
     guildCategoryDelete(data: GatewayEvent_CategoryCreated): void {
-        const category = new GuildCategory(data.category, this.client);
+        const category = new Category(data.category, this.client);
         this.client.emit("guildCategoryDelete", category);
     }
 }

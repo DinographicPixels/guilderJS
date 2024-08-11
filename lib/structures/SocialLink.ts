@@ -8,27 +8,15 @@
 import { Client } from "./Client";
 
 import { User } from "./User";
-import { JSONSocialLink } from "../types";
-import { APISocialLink } from "guildedapi-types.ts/typings/payloads/v1/Users";
+import { JSONSocialLink, RawSocialLink } from "../types";
+import { SocialLinkType } from "../types/misc";
 
 /** User's social link. */
 export class SocialLink {
     /** Client. */
     protected client: Client;
     /** Social media name `¯\_(ツ)_/¯`  */
-    type: "twitch"
-    | "bnet"
-    | "psn"
-    | "xbox"
-    | "steam"
-    | "origin"
-    | "youtube"
-    | "twitter"
-    | "facebook"
-    | "switch"
-    | "patreon"
-    | "roblox"
-    | "epic";
+    type: SocialLinkType;
     /** ID of the user having this social linked to their profile. */
     userID: string;
     /** The handle of the user within the external service */
@@ -42,7 +30,7 @@ export class SocialLink {
      * @param data raw data
      * @param client client
      */
-    constructor(data: APISocialLink, client: Client) {
+    constructor(data: RawSocialLink, client: Client) {
         this.client = client;
         this.type = data.type;
         this.userID = data.userId;
@@ -62,7 +50,7 @@ export class SocialLink {
         };
     }
 
-    protected update(data: APISocialLink): void {
+    protected update(data: RawSocialLink): void {
         if (data.createdAt !== undefined) {
             this.createdAt = new Date(data.createdAt);
         }

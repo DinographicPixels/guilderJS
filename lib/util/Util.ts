@@ -7,31 +7,34 @@
 
 import { Client } from "../structures/Client";
 import { Member } from "../structures/Member";
-import { AnyChannel, AnyTextableChannel, MessageEmbedOptions, MessageConstructorParams } from "../types";
+import {
+    AnyChannel,
+    AnyTextableChannel,
+    MessageEmbedOptions,
+    MessageConstructorParams,
+    RawUser,
+    RawMember,
+    RawForumThread,
+    RawPartialForumThread,
+    RawGuild,
+    RawRole,
+    RawGroup,
+    RawChannel,
+    RawSubscription,
+    RawCategory,
+    RawMessage,
+    RawEmbed
+} from "../types";
 import { Channel } from "../structures/Channel";
 import { ForumThread } from "../structures/ForumThread";
 import { ForumChannel } from "../structures/ForumChannel";
 import { Guild } from "../structures/Guild";
 import { User } from "../structures/User";
-import { GuildRole } from "../structures/GuildRole";
-import { GuildGroup } from "../structures/GuildGroup";
-import { GuildSubscription } from "../structures/GuildSubscription";
-import { GuildCategory } from "../structures/GuildCategory";
+import { Role } from "../structures/Role";
+import { Group } from "../structures/Group";
+import { Subscription } from "../structures/Subscription";
+import { Category } from "../structures/Category";
 import { Message } from "../structures/Message";
-import {
-    APIForumTopic,
-    APIForumTopicSummary,
-    APIGuild,
-    APIGuildChannel,
-    APIGuildGroup,
-    APIGuildMember,
-    APIGuildRole,
-    APIGuildSubscription,
-    APIUser,
-    APIGuildCategory,
-    APIChatMessage,
-    APIEmbedOptions
-} from "guildedapi-types.ts/v1";
 
 export class Util {
     #client: Client;
@@ -39,13 +42,13 @@ export class Util {
         this.#client = client;
     }
 
-    updateUser(user: APIUser): User {
+    updateUser(user: RawUser): User {
         return this.#client.users.has(user.id)
             ? this.#client.users.update(user)
             : this.#client.users.add(new User(user, this.#client));
     }
 
-    updateMember(guildID: string, memberID: string, member: APIGuildMember): Member {
+    updateMember(guildID: string, memberID: string, member: RawMember): Member {
         const guild = this.#client.guilds.get(guildID);
         if (guild && this.#client.user?.id === memberID) {
             if (guild["_clientMember"]) {
@@ -59,21 +62,21 @@ export class Util {
             : new Member({ ...member }, this.#client, guildID);
     }
 
-    updateForumThread(data: APIForumTopic | APIForumTopicSummary): ForumThread<ForumChannel> {
+    updateForumThread(data: RawForumThread | RawPartialForumThread): ForumThread<ForumChannel> {
         if (data.serverId) {
             const guild = this.#client.guilds.get(data.serverId);
             const channel = guild?.channels.get(data.channelId) as ForumChannel;
             if (guild && channel) {
                 const thread = channel.threads.has(data.id)
                     ? channel.threads.update(data)
-                    : channel.threads.add(new ForumThread(data as APIForumTopic, this.#client));
+                    : channel.threads.add(new ForumThread(data as RawForumThread, this.#client));
                 return thread;
             }
         }
-        return new ForumThread(data as APIForumTopic, this.#client);
+        return new ForumThread(data as RawForumThread, this.#client);
     }
 
-    updateGuild(data: APIGuild): Guild {
+    updateGuild(data: RawGuild): Guild {
         if (data.id) {
             return this.#client.guilds.has(data.id)
                 ? this.#client.guilds.update(data)
@@ -82,38 +85,38 @@ export class Util {
         return new Guild(data, this.#client);
     }
 
-    updateRole(data: APIGuildRole): GuildRole {
+    updateRole(data: RawRole): Role {
         if (data.serverId) {
             const guild = this.#client.guilds.get(data.serverId);
             if (guild) {
                 const role = guild.roles.has(data.id)
-                    ? guild.roles.update(data as APIGuildRole)
-                    : guild.roles.add(new GuildRole(data, this.#client));
+                    ? guild.roles.update(data as RawRole)
+                    : guild.roles.add(new Role(data, this.#client));
                 return role;
             }
         }
-        return new GuildRole(data, this.#client);
+        return new Role(data, this.#client);
     }
 
-    updateGuildGroup(data: APIGuildGroup): GuildGroup {
+    updateGuildGroup(data: RawGroup): Group {
         if (data.serverId) {
             const guild = this.#client.guilds.get(data.serverId);
             if (guild) {
                 const group = guild.groups.has(data.id)
-                    ? guild.groups.update(data as APIGuildGroup)
-                    : guild.groups.add(new GuildGroup(data, this.#client));
+                    ? guild.groups.update(data as RawGroup)
+                    : guild.groups.add(new Group(data, this.#client));
                 return group;
             }
         }
-        return new GuildGroup(data, this.#client);
+        return new Group(data, this.#client);
     }
 
-    updateChannel<T extends AnyChannel>(data: APIGuildChannel): T {
+    updateChannel<T extends AnyChannel>(data: RawChannel): T {
         if (data.serverId) {
             const guild = this.#client.guilds.get(data.serverId);
             if (guild) {
                 const channel = guild.channels.has(data.id)
-                    ? guild.channels.update(data as APIGuildChannel)
+                    ? guild.channels.update(data as RawChannel)
                     : guild.channels.add(Channel.from<AnyChannel>(data, this.#client));
                 return channel as T;
             }
@@ -121,16 +124,16 @@ export class Util {
         return Channel.from<T>(data, this.#client);
     }
 
-    updateGuildSubscription(data: APIGuildSubscription): GuildSubscription {
-        return new GuildSubscription(data, this.#client);
+    updateGuildSubscription(data: RawSubscription): Subscription {
+        return new Subscription(data, this.#client);
     }
 
-    updateGuildCategory(data: APIGuildCategory): GuildCategory {
-        return new GuildCategory(data, this.#client);
+    updateGuildCategory(data: RawCategory): Category {
+        return new Category(data, this.#client);
     }
 
     updateMessage<T extends AnyTextableChannel = AnyTextableChannel>(
-        data: APIChatMessage,
+        data: RawMessage,
         params?: MessageConstructorParams
     ): Message<T> {
         const channel = this.#client.getChannel<T>(data.serverId ?? "", data.channelId);
@@ -144,7 +147,7 @@ export class Util {
         return new Message<T>(data, this.#client, params);
     }
 
-    embedsToParsed(embeds: Array<APIEmbedOptions>): Array<MessageEmbedOptions> {
+    embedsToParsed(embeds: Array<RawEmbed>): Array<MessageEmbedOptions> {
         return embeds.map(embed => ({
             author: embed.author === undefined ? undefined : {
                 name:    embed.author.name,
@@ -173,7 +176,7 @@ export class Util {
         }));
     }
 
-    embedsToRaw(embeds: Array<MessageEmbedOptions>): Array<APIEmbedOptions> {
+    embedsToRaw(embeds: Array<MessageEmbedOptions>): Array<RawEmbed> {
         return embeds.map(embed => ({
             author: embed.author === undefined ? undefined :  {
                 name:     embed.author.name,

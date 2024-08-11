@@ -4,11 +4,20 @@
 // Copyright (c) 2024 DinographicPixels. All rights reserved.
 //
 
+import {
+    RawCalendarEvent,
+    RawCalendarComment,
+    RawDocComment,
+    RawEmbed,
+    RawMentions,
+    CalendarRSVPStatus
+} from "./channels";
 import { Member } from "../structures/Member";
 import { User } from "../structures/User";
 import { Guild } from "../structures/Guild";
 import { UserTypes } from "../Constants";
-import { APICalendarEvent, APICalendarEventComment, Permissions } from "guildedapi-types.ts/v1";
+import { Permissions } from "guildedapi-types.ts/v1";
+import { SocialLinkType } from "guildedapi-types.ts/typings/schemas/v1";
 
 export interface JSONBase<ID= string | number> {
     // createdAt: number;
@@ -28,7 +37,7 @@ export interface JSONMessage extends JSONBase<string> {
      * (min items 1; must have unique items true) */
     hiddenLinkPreviewUrls?: Array<string>;
     /** Array of message embed. */
-    embeds?: Array<APIEmbedOptions> | [];
+    embeds?: Array<RawEmbed> | [];
     /** The IDs of the message replied by the message. */
     replyMessageIds: Array<string>;
     /** If true, the message appears as private. */
@@ -36,7 +45,7 @@ export interface JSONMessage extends JSONBase<string> {
     /** If true, the message didn't mention anyone. */
     isSilent: boolean;
     /** object containing all mentioned users. */
-    mentions: APIMentions;
+    mentions: RawMentions;
     /** ID of the message author. */
     memberID: string;
     /** ID of the webhook used to send this message. (if sent by a webhook) */
@@ -65,7 +74,7 @@ export interface JSONForumThreadComment extends JSONBase<number> {
     /** ID of the forum channel containing this thread. */
     channelID: string;
     /** Mentions in this thread comment. */
-    mentions: APIMentions | null;
+    mentions: RawMentions | null;
 }
 
 export interface JSONDoc extends JSONBase<number> {
@@ -78,7 +87,7 @@ export interface JSONDoc extends JSONBase<number> {
     /** Content of the doc */
     content: string;
     /** Doc mentions  */
-    mentions: APIMentions;
+    mentions: RawMentions;
     /** When the doc has been created. */
     createdAt: Date;
     /** ID of the member who created this doc. */
@@ -155,7 +164,7 @@ export type AnyJSONChannel = JSONTextChannel | JSONDocChannel | JSONForumChannel
 
 export interface JSONCalendarEvent extends JSONBase<number> {
     /** Raw data */
-    data: APICalendarEvent;
+    data: RawCalendarEvent;
     /** Guild/server ID */
     guildID: string;
     /** ID of the channel the event was created on. */
@@ -179,13 +188,13 @@ export interface JSONCalendarEvent extends JSONBase<number> {
     /** If true, this event is private. */
     isPrivate: boolean;
     /** Mentions in this calendar event. */
-    mentions: APIMentions | null;
+    mentions: RawMentions | null;
     /** When the event was created. */
     createdAt: Date | null;
     /** ID of the owner of this event. */
     ownerID: string;
     /** Details about event cancelation (if canceled) */
-    cancellation: APICalendarEvent["cancellation"] | null;
+    cancellation: RawCalendarEvent["cancellation"] | null;
     /** Cached RSVPS. */
     rsvps: Array<JSONCalendarEventRSVP>;
 }
@@ -198,7 +207,7 @@ export interface JSONCalendarEventRSVP extends JSONBase<number> {
     /** ID of the entity assigned to this Event RSVP. */
     entityID: string;
     /** Status of the RSVP */
-    status: APICalendarEventRSVPStatuses;
+    status: CalendarRSVPStatus;
     /** When the RSVP was created. */
     createdAt: Date | null;
     /** ID of the user who created this RSVP. */
@@ -243,7 +252,7 @@ export interface JSONForumThread extends JSONBase<number> {
     /** Content of the thread */
     content: string;
     /** Thread mentions */
-    mentions: APIMentions | null;
+    mentions: RawMentions | null;
     /** Cached comments. */
     comments: Array<JSONForumThreadComment>;
     /** If true, the thread is locked. */
@@ -342,7 +351,7 @@ export interface JSONListItem extends JSONBase<string> {
     channelID: string;
     /** Content of the doc */
     content: string;
-    mentions: APIMentions | null;
+    mentions: RawMentions | null;
     /** When the item was created. */
     createdAt: Date | null;
     /** ID of the member who created the doc. */
@@ -363,7 +372,7 @@ export interface JSONListItem extends JSONBase<string> {
 
 export interface JSONCalendarEventComment extends JSONBase<number> {
     /** Raw data */
-    data: APICalendarEventComment;
+    data: RawCalendarComment;
     /** The content of the comment. */
     content: string;
     /** The ISO 8601 timestamp that this comment was created at. */
@@ -380,19 +389,7 @@ export interface JSONCalendarEventComment extends JSONBase<number> {
 
 export interface JSONSocialLink {
     /** Social media name. */
-    type: "twitch"
-    | "bnet"
-    | "psn"
-    | "xbox"
-    | "steam"
-    | "origin"
-    | "youtube"
-    | "twitter"
-    | "facebook"
-    | "switch"
-    | "patreon"
-    | "roblox"
-    | "epic";
+    type: SocialLinkType | `${SocialLinkType}`;
     /** ID of the user having this social linked to their profile. */
     userID: string;
     /** The handle of the user within the external service */
@@ -405,7 +402,7 @@ export interface JSONSocialLink {
 
 export interface JSONDocComment extends JSONBase<number> {
     /** Raw data */
-    raw: APIDocComment;
+    raw: RawDocComment;
     /** The content of the comment. */
     content: string;
     /** The date of the comment's creation. */
@@ -419,7 +416,7 @@ export interface JSONDocComment extends JSONBase<number> {
     /** The ID of the doc the comment is in. */
     docID: number;
     /** Mentions. */
-    mentions: APIMentions | null;
+    mentions: RawMentions | null;
     /** ID of the guild, if provided. */
     guildID: string | null;
 }
@@ -436,7 +433,7 @@ export interface JSONAnnouncement extends JSONBase<string> {
     /** The announcement's content */
     content: string;
     /** Mentions. */
-    mentions: APIMentions | null;
+    mentions: RawMentions | null;
     /** The announcement's title. */
     title: string;
 }
@@ -455,7 +452,7 @@ export interface JSONAnnouncementComment extends JSONBase<number> {
     /** ID of the parent announcement. */
     announcementID: string;
     /** Mentions */
-    mentions: APIMentions | null;
+    mentions: RawMentions | null;
     /** ID of the guild, if received. */
     guildID: string | null;
 }

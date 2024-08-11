@@ -50,7 +50,7 @@ export * from "./structures/ListItem";
 export * from "./structures/Webhook";
 export * from "./structures/DocComment";
 export * from "./structures/SocialLink";
-export * from "./structures/CalendarEventComment";
+export * from "./structures/CalendarComment";
 
 export * from "./structures/ReactionInfo";
 export * from "./structures/MessageReactionInfo";
@@ -60,10 +60,10 @@ export * from "./structures/DocReactionInfo";
 export * from "./structures/MemberRemoveInfo";
 export * from "./structures/MemberUpdateInfo";
 export * from "./structures/CalendarReactionInfo";
-export * from "./structures/GuildRole";
-export * from "./structures/GuildGroup";
-export * from "./structures/GuildCategory";
-export * from "./structures/GuildSubscription";
+export * from "./structures/Role";
+export * from "./structures/Group";
+export * from "./structures/Category";
+export * from "./structures/Subscription";
 export * from "./structures/Permission";
 
 export * from "./util/Collection";

@@ -13,7 +13,6 @@ import { Member } from "../structures/Member";
 import { Channel } from "../structures/Channel";
 import {
     APIChannelCategories,
-    APIGuildMember,
     DELETEDeleteCategoryResponse,
     GETChannelCategoryRoleManyPermissionResponse,
     GETChannelCategoryRolePermissionResponse,
@@ -75,13 +74,14 @@ import {
     WebhookExecuteOptions,
     WebhookMessageDetails,
     BulkXPOptions,
-    EditMemberOptions
+    EditMemberOptions,
+    RawMember
 } from "../types";
 import { BannedMember } from "../structures/BannedMember";
-import { GuildRole } from "../structures/GuildRole";
-import { GuildGroup } from "../structures/GuildGroup";
-import { GuildSubscription } from "../structures/GuildSubscription";
-import { GuildCategory } from "../structures/GuildCategory";
+import { Role } from "../structures/Role";
+import { Group } from "../structures/Group";
+import { Subscription } from "../structures/Subscription";
+import { Category } from "../structures/Category";
 import { Permission } from "../structures/Permission";
 import { GETGuildMemberRolesResponse } from "guildedapi-types.ts/v1";
 import { POSTExecuteWebhookResponse } from "guildedapi-types.ts/typings/REST/v1/Webhooks";
@@ -159,7 +159,7 @@ export class Guilds {
                 this.#manager.client.util.updateMember(
                     guildID,
                     d.user.id,
-                    d as APIGuildMember
+                    d as RawMember
                 )
             )
         );
@@ -506,7 +506,7 @@ export class Guilds {
      * Get every guild roles from a guild.
      * @param guildID ID of the guild where roles are.
      */
-    async getRoles(guildID: string): Promise<Array<GuildRole>> {
+    async getRoles(guildID: string): Promise<Array<Role>> {
         return this.#manager.authRequest<GETGuildRolesResponse>({
             method: "GET",
             path:   endpoints.GUILD_ROLES(guildID)
@@ -522,7 +522,7 @@ export class Guilds {
      * @param guildID ID of the guild where the role is.
      * @param roleID ID of the role to get.
      */
-    async getRole(guildID: string, roleID: number): Promise<GuildRole> {
+    async getRole(guildID: string, roleID: number): Promise<Role> {
         return this.#manager.authRequest<GETGuildRoleResponse>({
             method: "GET",
             path:   endpoints.GUILD_ROLE(guildID, roleID)
@@ -534,7 +534,7 @@ export class Guilds {
      * @param guildID ID of the server you want to create the role in.
      * @param options Create options
      */
-    async createRole(guildID: string, options: POSTGuildRoleBody): Promise<GuildRole> {
+    async createRole(guildID: string, options: POSTGuildRoleBody): Promise<Role> {
         return this.#manager.authRequest<POSTGuildRoleResponse>({
             method: "POST",
             path:   endpoints.GUILD_ROLES(guildID),
@@ -548,7 +548,7 @@ export class Guilds {
      * @param roleID ID of the role to edit
      * @param options Edit options
      */
-    async editRole(guildID: string, roleID: number, options: PATCHGuildRoleBody): Promise<GuildRole> {
+    async editRole(guildID: string, roleID: number, options: PATCHGuildRoleBody): Promise<Role> {
         return this.#manager.authRequest<POSTGuildRoleResponse>({
             method: "PATCH",
             path:   endpoints.GUILD_ROLE(guildID, roleID),
@@ -572,7 +572,7 @@ export class Guilds {
      * Get guild groups.
      * @param guildID ID of the guild.
      */
-    async getGroups(guildID: string): Promise<Array<GuildGroup>> {
+    async getGroups(guildID: string): Promise<Array<Group>> {
         return this.#manager.authRequest<GETGuildGroupsResponse>({
             method: "GET",
             path:   endpoints.GUILD_GROUPS(guildID)
@@ -588,7 +588,7 @@ export class Guilds {
      * @param guildID ID of the guild.
      * @param groupID ID of the group to get.
      */
-    async getGroup(guildID: string, groupID: string): Promise<GuildGroup> {
+    async getGroup(guildID: string, groupID: string): Promise<Group> {
         return this.#manager.authRequest<GETGuildGroupResponse>({
             method: "GET",
             path:   endpoints.GUILD_GROUP(guildID, groupID)
@@ -600,7 +600,7 @@ export class Guilds {
      * @param guildID The ID of the guild to create a group in.
      * @param options Create options
      */
-    async createGroup(guildID: string, options: POSTGuildGroupBody): Promise<GuildGroup> {
+    async createGroup(guildID: string, options: POSTGuildGroupBody): Promise<Group> {
         return this.#manager.authRequest<POSTGuildGroupResponse>({
             method: "POST",
             path:   endpoints.GUILD_GROUPS(guildID),
@@ -614,7 +614,7 @@ export class Guilds {
      * @param groupID The ID of the group to edit.
      * @param options Edit options
      */
-    async editGroup(guildID: string, groupID: string, options: PATCHGuildGroupBody): Promise<GuildGroup> {
+    async editGroup(guildID: string, groupID: string, options: PATCHGuildGroupBody): Promise<Group> {
         return this.#manager.authRequest<PATCHGuildGroupResponse>({
             method: "POST",
             path:   endpoints.GUILD_GROUP(guildID, groupID),
@@ -639,7 +639,7 @@ export class Guilds {
      * Get guild subscriptions.
      * @param guildID ID of the guild.
      */
-    async getSubscriptions(guildID: string): Promise<Array<GuildSubscription>> {
+    async getSubscriptions(guildID: string): Promise<Array<Subscription>> {
         return this.#manager.authRequest<GETGuildSubscriptionsResponse>({
             method: "GET",
             path:   endpoints.GUILD_SUBSCRIPTIONS(guildID)
@@ -655,7 +655,7 @@ export class Guilds {
      * @param guildID ID of the guild.
      * @param subscriptionID ID of the subscription to get.
      */
-    async getSubscription(guildID: string, subscriptionID: string): Promise<GuildSubscription> {
+    async getSubscription(guildID: string, subscriptionID: string): Promise<Subscription> {
         return this.#manager.authRequest<GETGuildSubscriptionResponse>({
             method: "GET",
             path:   endpoints.GUILD_SUBSCRIPTION(guildID, subscriptionID)
@@ -682,7 +682,7 @@ export class Guilds {
      * @param roleID ID of the role.
      * @param options Permission to edit.
      */
-    async editRolePermission(guildID: string, roleID: number, options: PATCHGuildRolePermissionUpdateBody): Promise<GuildRole> {
+    async editRolePermission(guildID: string, roleID: number, options: PATCHGuildRolePermissionUpdateBody): Promise<Role> {
         return this.#manager.authRequest<PATCHGuildRolePermissionUpdateResponse>({
             method: "PATCH",
             path:   endpoints.GUILD_ROLE_UPDATE_PERMISSION(guildID, roleID),
@@ -721,7 +721,7 @@ export class Guilds {
      * @param guildID ID of the guild to create a category in.
      * @param options Options to create a category.
      */
-    async createCategory(guildID: string, options: POSTCreateCategoryBody): Promise<GuildCategory> {
+    async createCategory(guildID: string, options: POSTCreateCategoryBody): Promise<Category> {
         return this.#manager.authRequest<POSTCreateCategoryResponse>({
             method: "POST",
             path:   endpoints.GUILD_CATEGORY_CREATE(guildID),
@@ -734,7 +734,7 @@ export class Guilds {
      * @param guildID ID of the guild to create a category in.
      * @param categoryID ID of the category you want to read.
      */
-    async getCategory(guildID: string, categoryID: number): Promise<GuildCategory> {
+    async getCategory(guildID: string, categoryID: number): Promise<Category> {
         return this.#manager.authRequest<GETReadCategoryResponse>({
             method: "GET",
             path:   endpoints.GUILD_CATEGORY(guildID, categoryID)
@@ -747,7 +747,7 @@ export class Guilds {
      * @param categoryID ID of the category you want to read.
      * @param options Options to update a category.
      */
-    async editCategory(guildID: string, categoryID: number, options: PATCHUpdateCategoryBody): Promise<GuildCategory> {
+    async editCategory(guildID: string, categoryID: number, options: PATCHUpdateCategoryBody): Promise<Category> {
         return this.#manager.authRequest<PATCHUpdateCategoryResponse>({
             method: "PATCH",
             path:   endpoints.GUILD_CATEGORY(guildID, categoryID),
@@ -760,7 +760,7 @@ export class Guilds {
      * @param guildID ID of the guild to create a category in.
      * @param categoryID ID of the category you want to read.
      */
-    async deleteCategory(guildID: string, categoryID: number): Promise<GuildCategory> {
+    async deleteCategory(guildID: string, categoryID: number): Promise<Category> {
         return this.#manager.authRequest<DELETEDeleteCategoryResponse>({
             method: "DELETE",
             path:   endpoints.GUILD_CATEGORY(guildID, categoryID)

@@ -7,11 +7,11 @@
 
 import { Base } from "./Base";
 import { Client } from "./Client";
-import { JSONGuildRole } from "../types";
-import { APIGuildRole, PATCHGuildRolePermissionUpdateBody, Permissions } from "guildedapi-types.ts/v1";
+import { JSONGuildRole, RawRole } from "../types";
+import { PATCHGuildRolePermissionUpdateBody, Permissions } from "guildedapi-types.ts/v1";
 
-/** Class representing a guild role. */
-export class GuildRole extends Base<number> {
+/** Represents a Guild Role. */
+export class Role extends Base<number> {
     /** ID of the guild */
     guildID: string;
     /** Date of when the role was created. */
@@ -41,7 +41,7 @@ export class GuildRole extends Base<number> {
     /** The bot user ID this role has been defined for.
      * Roles with this populated can only be deleted by kicking the bot */
     botUserID: string | null;
-    constructor(data: APIGuildRole, client: Client) {
+    constructor(data: RawRole, client: Client) {
         super(data.id, client);
         this.guildID = data.serverId;
         this.createdAt = new Date(data.createdAt);
@@ -78,7 +78,7 @@ export class GuildRole extends Base<number> {
         };
     }
 
-    protected override update(data: APIGuildRole): void {
+    protected override update(data: RawRole): void {
         if (data.serverId !== undefined) {
             this.guildID = data.serverId;
         }
@@ -118,7 +118,7 @@ export class GuildRole extends Base<number> {
     }
 
     /** Edit the role permission */
-    async editPermission(options: PATCHGuildRolePermissionUpdateBody): Promise<GuildRole>{
+    async editPermission(options: PATCHGuildRolePermissionUpdateBody): Promise<Role>{
         return this.client.rest.guilds.editRolePermission(
             this.guildID as string,
             this.id as number,

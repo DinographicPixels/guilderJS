@@ -12,8 +12,15 @@ import { Base } from "./Base";
 import { User } from "./User";
 import { ForumThreadComment } from "./ForumThreadComment";
 import { ForumChannel } from "./ForumChannel";
-import { APIForumTopic, APIForumTopicComment, APIMentions } from "../Constants";
-import { EditForumThreadOptions, JSONForumThread, AnyTextableChannel, CreateForumCommentOptions } from "../types";
+import {
+    EditForumThreadOptions,
+    JSONForumThread,
+    AnyTextableChannel,
+    CreateForumCommentOptions,
+    RawMentions,
+    RawForumThreadComment,
+    RawForumThread
+} from "../types";
 import TypedCollection from "../util/TypedCollection";
 
 
@@ -40,9 +47,9 @@ export class ForumThread<T extends ForumChannel> extends Base<number> {
     /** Content of the thread */
     content: string;
     /** Thread mentions */
-    mentions: APIMentions | null;
+    mentions: RawMentions | null;
     /** Cached comments. */
-    comments: TypedCollection<number, APIForumTopicComment, ForumThreadComment>;
+    comments: TypedCollection<number, RawForumThreadComment, ForumThreadComment>;
     /** If true, the thread is locked. */
     isLocked: boolean;
     /** If true, the thread is pinned. */
@@ -52,7 +59,7 @@ export class ForumThread<T extends ForumChannel> extends Base<number> {
      * @param data raw data
      * @param client client
      */
-    constructor(data: APIForumTopic, client: Client){
+    constructor(data: RawForumThread, client: Client){
         super(data.id, client);
         this.guildID = data.serverId;
         this.channelID = data.channelId;
@@ -98,7 +105,7 @@ export class ForumThread<T extends ForumChannel> extends Base<number> {
         };
     }
 
-    protected override update(data: APIForumTopic): void {
+    protected override update(data: RawForumThread): void {
         if (data.bumpedAt !== undefined) {
             this.bumpedAt = new Date(data.bumpedAt);
         }

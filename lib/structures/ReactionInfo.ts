@@ -8,7 +8,6 @@
 import { Member } from "./Member";
 import { Client } from "./Client";
 import {
-    APIEmote,
     GatewayEvent_AnnouncementCommentReactionCreated,
     GatewayEvent_AnnouncementCommentReactionDeleted,
     GatewayEvent_AnnouncementReactionCreated,
@@ -26,6 +25,7 @@ import {
     GatewayEvent_ForumTopicReactionCreated,
     GatewayEvent_ForumTopicReactionDeleted
 } from "../Constants";
+import { RawEmote } from "../types";
 
 /** Default information every other reaction has. */
 export class ReactionInfo {
@@ -51,7 +51,7 @@ export class ReactionInfo {
     /** ID of the user who added the reaction. */
     reactorID: string;
     /** Emote. */
-    emoji: APIEmote;
+    emoji: RawEmote;
     /**
      * @param data raw data.
      * @param client client.

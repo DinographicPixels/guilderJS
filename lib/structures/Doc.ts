@@ -4,8 +4,13 @@ import { Member } from "./Member";
 import { Base } from "./Base";
 
 import { DocComment } from "./DocComment";
-import { APIDoc, APIDocComment, APIMentions } from "../Constants";
-import { EditDocOptions, JSONDoc } from "../types";
+import {
+    EditDocOptions,
+    JSONDoc,
+    RawDoc,
+    RawDocComment,
+    RawMentions
+} from "../types";
 import TypedCollection from "../util/TypedCollection";
 
 //
@@ -24,7 +29,7 @@ export class Doc extends Base<number> {
     /** Content of the doc */
     content: string;
     /** Doc mentions  */
-    mentions: APIMentions;
+    mentions: RawMentions;
     /** When the doc has been created. */
     createdAt: Date;
     /** ID of the member who created this doc. */
@@ -33,13 +38,13 @@ export class Doc extends Base<number> {
     editedTimestamp: Date | null;
     /** ID of the member who updated the doc. */
     updatedBy: string | null;
-    comments: TypedCollection<number, APIDocComment, DocComment>;
+    comments: TypedCollection<number, RawDocComment, DocComment>;
 
     /**
      * @param data raw data
      * @param client client
      */
-    constructor(data: APIDoc, client: Client) {
+    constructor(data: RawDoc, client: Client) {
         super(data.id, client);
         this.guildID = data.serverId;
         this.channelID = data.channelId;
@@ -73,7 +78,7 @@ export class Doc extends Base<number> {
         };
     }
 
-    protected override update(data: APIDoc): void {
+    protected override update(data: RawDoc): void {
         if (data.channelId !== undefined) {
             this.channelID = data.channelId;
         }

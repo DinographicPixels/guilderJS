@@ -7,8 +7,8 @@
 
 import { Client } from "./Client";
 import { Base } from "./Base";
-import { UserTypes, APIUser, APIGuildMember, APIUserSummary } from "../Constants";
-import { JSONUser } from "../types";
+import { UserTypes } from "../Constants";
+import { JSONUser, RawMember, RawPartialUser, RawUser } from "../types";
 
 /** Represents a user. */
 export class User extends Base<string> {
@@ -22,23 +22,26 @@ export class User extends Base<string> {
     bannerURL: string | null;
     /** When the user account was created. */
     createdAt: Date; // user.
-    /** If true, the user is a bot. */
+    /** If true, the user is an app (aka: bot). */
+    app: boolean;
+    /** @deprecated */
     bot: boolean;
 
     /**
      * @param data raw data.
      * @param client client.
      */
-    constructor(data: APIUser, client: Client){
+    constructor(data: RawUser, client: Client) {
         super(data.id, client);
-        this.type = data.type ?? null;
+        this.type = data.type === "bot" ? "app" : (data.type === "user" ? "user" : null);
         this.username = data.name;
         this.createdAt = new Date(data.createdAt);
         this.avatarURL = data.avatar ?? null;
         this.bannerURL = data.banner ?? null;
 
-        if (!this.type) this.type = "user"; // as it is undefined when the user is a bot.
-        this.bot = this.type === "bot";
+        if (!this.type) this.type = "user"; // as it is undefined when the user is an app.
+        this.app = this.type === "app";
+        this.bot = this.type === "app"; // DEPRECATED (will be removed)
 
         this.update(data);
     }
@@ -51,16 +54,16 @@ export class User extends Base<string> {
             createdAt: this.createdAt,
             avatarURL: this.avatarURL,
             bannerURL: this.bannerURL,
-            bot:       this.bot
+            bot:       this.app
         };
     }
 
     protected override update(
-        d: APIUser
-        | APIGuildMember
-        | APIUserSummary
+        d: RawUser
+        | RawMember
+        | RawPartialUser
     ): void {
-        const data = d as APIUser;
+        const data = d as RawUser;
         if (data.avatar !== undefined) {
             this.avatarURL = data.avatar ?? null;
         }
@@ -77,7 +80,7 @@ export class User extends Base<string> {
             this.username = data.name;
         }
         if (data.type !== undefined) {
-            this.type = data.type ?? null;
+            this.type = data.type === "bot" ? "app" : (data.type === "user" ? "user" : null);
         }
     }
 }

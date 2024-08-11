@@ -9,19 +9,18 @@ import { Client } from "./Client";
 
 import { GuildChannel } from "./GuildChannel";
 import { Announcement } from "./Announcement";
-import type { APIAnnouncement, APIGuildChannel } from "../Constants";
 import TypedCollection from "../util/TypedCollection";
-import { JSONAnnouncementChannel } from "../types";
+import { JSONAnnouncementChannel, RawAnnouncement, RawChannel } from "../types";
 
 /** Represents a guild announcement channel. */
 export class AnnouncementChannel extends GuildChannel {
     /** Cached announcements. */
-    announcements: TypedCollection<string, APIAnnouncement, Announcement>;
+    announcements: TypedCollection<string, RawAnnouncement, Announcement>;
     /**
      * @param data raw data
      * @param client client
      */
-    constructor(data: APIGuildChannel, client: Client){
+    constructor(data: RawChannel, client: Client){
         super(data, client);
         this.announcements = new TypedCollection(
             Announcement,

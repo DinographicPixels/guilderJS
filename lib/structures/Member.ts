@@ -10,8 +10,8 @@ import { User } from "./User";
 import { Guild } from "./Guild";
 import { BannedMember } from "./BannedMember";
 import { SocialLink } from "./SocialLink";
-import { APIGuildMember, Permissions } from "../Constants";
-import { EditMemberOptions, JSONMember } from "../types";
+import { Permissions } from "../Constants";
+import { EditMemberOptions, JSONMember, RawMember } from "../types";
 
 /** Represents a guild user. */
 export class Member extends User {
@@ -25,13 +25,13 @@ export class Member extends User {
     isOwner: boolean;
     /** Server ID. */
     guildID: string; // member
-    private _data: APIGuildMember;
+    private _data: RawMember;
     /**
      * @param data raw data.
      * @param client client.
      * @param guildID ID of the guild.
      */
-    constructor(data: APIGuildMember, client: Client, guildID: string) {
+    constructor(data: RawMember, client: Client, guildID: string) {
         super(data.user, client);
         this._data = data;
         this.roles = data.roleIds ?? null;
@@ -53,7 +53,7 @@ export class Member extends User {
         };
     }
 
-    protected override update(data: APIGuildMember): void {
+    protected override update(data: RawMember): void {
         if (data.isOwner !== undefined) {
             this.isOwner = data.isOwner ?? false;
         }

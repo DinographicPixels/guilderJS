@@ -28,14 +28,14 @@ import { User } from "./User";
 import { BannedMember } from "./BannedMember";
 import { TextChannel } from "./TextChannel";
 import { ForumChannel } from "./ForumChannel";
-import { CalendarEventComment } from "./CalendarEventComment";
+import { CalendarComment } from "./CalendarComment";
 import { DocComment } from "./DocComment";
 import { AnnouncementComment } from "./AnnouncementComment";
 import { Announcement } from "./Announcement";
-import { GuildRole } from "./GuildRole";
-import { GuildGroup } from "./GuildGroup";
-import { GuildSubscription } from "./GuildSubscription";
-import { GuildCategory } from "./GuildCategory";
+import { Role } from "./Role";
+import { Group } from "./Group";
+import { Subscription } from "./Subscription";
+import { Category } from "./Category";
 import { Permission } from "./Permission";
 import { WSManager } from "../gateway/WSManager";
 import { GatewayHandler } from "../gateway/GatewayHandler";
@@ -47,8 +47,6 @@ import {
     POSTListItemBody,
     GATEWAY_EVENTS,
     ChannelReactionTypes,
-    APIGuild,
-    APIUser,
     ChannelSubcategoryReactionTypes,
     POSTCalendarEventBody,
     PATCHListItemBody,
@@ -105,7 +103,9 @@ import {
     EditDocCommentOptions,
     EditWebhookOptions,
     WebhookExecuteOptions,
-    WebhookMessageDetails
+    WebhookMessageDetails,
+    RawGuild,
+    RawUser
 } from "../types";
 import { Util } from "../util/Util";
 import { config } from "../../pkgconfig";
@@ -131,9 +131,9 @@ export class Client extends TypedEmitter<ClientEvents> {
     /** Gateway Handler. */
     #gateway: GatewayHandler;
     /** Cached guilds. */
-    guilds: TypedCollection<string, APIGuild, Guild>;
+    guilds: TypedCollection<string, RawGuild, Guild>;
     /** Cached users. */
-    users: TypedCollection<string, APIUser, User>;
+    users: TypedCollection<string, RawUser, User>;
     /** Utils */
     util: Util;
     /** Time at which the connection started in ms. */
@@ -503,7 +503,7 @@ export class Client extends TypedEmitter<ClientEvents> {
         channelID: string,
         eventID: number,
         commentID: number
-    ): Promise<CalendarEventComment> {
+    ): Promise<CalendarComment> {
         return this.rest.channels.getCalendarEventComment(channelID, eventID, commentID);
     }
 
@@ -512,7 +512,7 @@ export class Client extends TypedEmitter<ClientEvents> {
      * @param channelID ID of a "Calendar" channel.
      * @param eventID ID of the event containing comments.
      */
-    async getCalendarEventComments(channelID: string, eventID: number): Promise<Array<CalendarEventComment>> {
+    async getCalendarEventComments(channelID: string, eventID: number): Promise<Array<CalendarComment>> {
         return this.rest.channels.getCalendarEventComments(channelID, eventID);
     }
 
@@ -1004,7 +1004,7 @@ export class Client extends TypedEmitter<ClientEvents> {
         channelID: string,
         eventID: number,
         options: CreateCalendarCommentOptions
-    ): Promise<CalendarEventComment> {
+    ): Promise<CalendarComment> {
         return this.rest.channels.createCalendarComment(channelID, eventID, options);
     }
 
@@ -1019,7 +1019,7 @@ export class Client extends TypedEmitter<ClientEvents> {
         eventID: number,
         commentID: number,
         options: EditCalendarCommentOptions
-    ): Promise<CalendarEventComment> {
+    ): Promise<CalendarComment> {
         return this.rest.channels.editCalendarComment(
             channelID,
             eventID,
@@ -1424,7 +1424,7 @@ export class Client extends TypedEmitter<ClientEvents> {
      * Get every guild roles from a guild.
      * @param guildID ID of the guild where roles are.
      */
-    async getGuildRoles(guildID: string): Promise<Array<GuildRole>> {
+    async getGuildRoles(guildID: string): Promise<Array<Role>> {
         return this.rest.guilds.getRoles(guildID);
     }
 
@@ -1433,7 +1433,7 @@ export class Client extends TypedEmitter<ClientEvents> {
      * @param guildID ID of the guild where the role is.
      * @param roleID ID of the role to get.
      */
-    async getGuildRole(guildID: string, roleID: number): Promise<GuildRole> {
+    async getGuildRole(guildID: string, roleID: number): Promise<Role> {
         return this.rest.guilds.getRole(guildID, roleID);
     }
 
@@ -1442,7 +1442,7 @@ export class Client extends TypedEmitter<ClientEvents> {
      * @param guildID ID of the server you want to create the role in.
      * @param options Create options
      */
-    async createGuildRole(guildID: string, options: POSTGuildRoleBody): Promise<GuildRole> {
+    async createGuildRole(guildID: string, options: POSTGuildRoleBody): Promise<Role> {
         return this.rest.guilds.createRole(guildID, options);
     }
 
@@ -1452,7 +1452,7 @@ export class Client extends TypedEmitter<ClientEvents> {
      * @param roleID ID of the role to edit
      * @param options Edit options
      */
-    async editGuildRole(guildID: string, roleID: number, options: PATCHGuildRoleBody): Promise<GuildRole> {
+    async editGuildRole(guildID: string, roleID: number, options: PATCHGuildRoleBody): Promise<Role> {
         return this.rest.guilds.editRole(guildID, roleID, options);
     }
 
@@ -1466,7 +1466,7 @@ export class Client extends TypedEmitter<ClientEvents> {
         guildID: string,
         roleID: number,
         options: PATCHGuildRolePermissionUpdateBody
-    ): Promise<GuildRole> {
+    ): Promise<Role> {
         return this.rest.guilds.editRolePermission(guildID, roleID, options);
     }
 
@@ -1500,7 +1500,7 @@ export class Client extends TypedEmitter<ClientEvents> {
      * Get guild groups.
      * @param guildID ID of the guild.
      */
-    async getGuildGroups(guildID: string): Promise<Array<GuildGroup>> {
+    async getGuildGroups(guildID: string): Promise<Array<Group>> {
         return this.rest.guilds.getGroups(guildID);
     }
 
@@ -1509,7 +1509,7 @@ export class Client extends TypedEmitter<ClientEvents> {
      * @param guildID ID of the guild.
      * @param groupID ID of the group to get.
      */
-    async getGuildGroup(guildID: string, groupID: string): Promise<GuildGroup> {
+    async getGuildGroup(guildID: string, groupID: string): Promise<Group> {
         return this.rest.guilds.getGroup(guildID, groupID);
     }
 
@@ -1518,7 +1518,7 @@ export class Client extends TypedEmitter<ClientEvents> {
      * @param guildID The ID of the guild to create a group in.
      * @param options Create options
      */
-    async createGuildGroup(guildID: string, options: POSTGuildGroupBody): Promise<GuildGroup> {
+    async createGuildGroup(guildID: string, options: POSTGuildGroupBody): Promise<Group> {
         return this.rest.guilds.createGroup(guildID, options);
     }
 
@@ -1528,7 +1528,7 @@ export class Client extends TypedEmitter<ClientEvents> {
      * @param groupID The ID of the group to edit.
      * @param options Edit options
      */
-    async editGuildGroup(guildID: string, groupID: string, options: PATCHGuildGroupBody): Promise<GuildGroup> {
+    async editGuildGroup(guildID: string, groupID: string, options: PATCHGuildGroupBody): Promise<Group> {
         return this.rest.guilds.editGroup(guildID, groupID, options);
     }
 
@@ -1545,7 +1545,7 @@ export class Client extends TypedEmitter<ClientEvents> {
      * Get guild subscriptions.
      * @param guildID ID of the guild.
      */
-    async getGuildSubscriptions(guildID: string): Promise<Array<GuildSubscription>> {
+    async getGuildSubscriptions(guildID: string): Promise<Array<Subscription>> {
         return this.rest.guilds.getSubscriptions(guildID);
     }
 
@@ -1554,7 +1554,7 @@ export class Client extends TypedEmitter<ClientEvents> {
      * @param guildID ID of the guild.
      * @param subscriptionID ID of the subscription to get.
      */
-    async getGuildSubscription(guildID: string, subscriptionID: string): Promise<GuildSubscription> {
+    async getGuildSubscription(guildID: string, subscriptionID: string): Promise<Subscription> {
         return this.rest.guilds.getSubscription(guildID, subscriptionID);
     }
 
@@ -1616,7 +1616,7 @@ export class Client extends TypedEmitter<ClientEvents> {
      * @param guildID ID of the guild.
      * @param options Create options.
      */
-    async createGuildCategory(guildID: string, options: POSTCreateCategoryBody): Promise<GuildCategory> {
+    async createGuildCategory(guildID: string, options: POSTCreateCategoryBody): Promise<Category> {
         return this.rest.guilds.createCategory(guildID, options);
     }
     /**
@@ -1624,7 +1624,7 @@ export class Client extends TypedEmitter<ClientEvents> {
      * @param guildID ID of the guild to create a category in.
      * @param categoryID ID of the category you want to read.
      */
-    async getGuildCategory(guildID: string, categoryID: number): Promise<GuildCategory> {
+    async getGuildCategory(guildID: string, categoryID: number): Promise<Category> {
         return this.rest.guilds.getCategory(guildID, categoryID);
     }
     /**
@@ -1638,7 +1638,7 @@ export class Client extends TypedEmitter<ClientEvents> {
         categoryID: number,
         options: PATCHUpdateCategoryBody
 
-    ): Promise<GuildCategory> {
+    ): Promise<Category> {
         return this.rest.guilds.editCategory(guildID, categoryID, options);
     }
 
@@ -1647,7 +1647,7 @@ export class Client extends TypedEmitter<ClientEvents> {
      * @param guildID ID of the guild to create a category in.
      * @param categoryID ID of the category you want to read.
      */
-    async deleteGuildCategory(guildID: string, categoryID: number): Promise<GuildCategory> {
+    async deleteGuildCategory(guildID: string, categoryID: number): Promise<Category> {
         return this.rest.guilds.deleteCategory(guildID, categoryID);
     }
 

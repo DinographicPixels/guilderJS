@@ -13,7 +13,8 @@ export const RESTMethods = [
 ] as const;
 export type RESTMethod = typeof RESTMethods[number];
 
-export type UserTypes = "bot" | "user";
+export type UserTypes = "app" | "user";
+export type RawUserTypes = "bot" | "user";
 
 export * from "guildedapi-types.ts/v1"; // marks api typings as non-external (for docs).
 

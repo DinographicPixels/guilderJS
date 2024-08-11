@@ -9,19 +9,25 @@ import { Client } from "./Client";
 
 import { CalendarEvent } from "./CalendarEvent";
 import { GuildChannel } from "./GuildChannel";
-import type { APICalendarEvent, APIGuildChannel, POSTCalendarEventBody } from "../Constants";
+import type { POSTCalendarEventBody } from "../Constants";
 import TypedCollection from "../util/TypedCollection";
-import { JSONCalendarChannel, CreateCalendarEventOptions, EditCalendarEventOptions } from "../types";
+import {
+    JSONCalendarChannel,
+    CreateCalendarEventOptions,
+    EditCalendarEventOptions,
+    RawCalendarEvent,
+    RawChannel
+} from "../types";
 
 /** Represents a calendar channel. */
 export class CalendarChannel extends GuildChannel {
     /** Cached scheduled events. */
-    scheduledEvents: TypedCollection<number, APICalendarEvent, CalendarEvent>;
+    scheduledEvents: TypedCollection<number, RawCalendarEvent, CalendarEvent>;
     /**
      * @param data raw data
      * @param client client
      */
-    constructor(data: APIGuildChannel, client: Client){
+    constructor(data: RawChannel, client: Client){
         super(data, client);
         this.scheduledEvents = new TypedCollection(
             CalendarEvent,

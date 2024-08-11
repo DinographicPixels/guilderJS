@@ -3,9 +3,14 @@ import { Client } from "./Client";
 
 import { Doc } from "./Doc";
 import { GuildChannel } from "./GuildChannel";
-import type { APIDoc, APIGuildChannel } from "../Constants";
 import TypedCollection from "../util/TypedCollection";
-import { JSONDocChannel, CreateDocOptions, EditDocOptions } from "../types";
+import {
+    JSONDocChannel,
+    CreateDocOptions,
+    EditDocOptions,
+    RawDoc,
+    RawChannel
+} from "../types";
 
 //
 // Created by Wade (@pakkographic)
@@ -15,12 +20,12 @@ import { JSONDocChannel, CreateDocOptions, EditDocOptions } from "../types";
 /** Represents a "docs" channel. */
 export class DocChannel extends GuildChannel {
     /** Cached docs. */
-    docs: TypedCollection<number, APIDoc, Doc>;
+    docs: TypedCollection<number, RawDoc, Doc>;
     /**
      * @param data raw data
      * @param client client
      */
-    constructor(data: APIGuildChannel, client: Client){
+    constructor(data: RawChannel, client: Client){
         super(data, client);
         this.docs = new TypedCollection(Doc, client, client.params.collectionLimits?.docs);
         this.update(data);

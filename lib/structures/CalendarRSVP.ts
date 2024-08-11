@@ -7,15 +7,14 @@
 
 import { Client } from "./Client";
 import { Base } from "./Base";
-import { APICalendarEventRSVP, APICalendarEventRSVPStatuses } from "../Constants";
-import { JSONCalendarEventRSVP, EditCalendarRSVPOptions } from "../types";
+import { JSONCalendarEventRSVP, EditCalendarRSVPOptions, RawCalendarRSVP, CalendarRSVPStatus } from "../types";
 
 /** CalendarEventRSVP represents a guild member's event RSVP.
  * It gives information about a member's set presence to an event.
  */
 export class CalendarEventRSVP extends Base<number> {
     /** Raw data */
-    #data: APICalendarEventRSVP;
+    #data: RawCalendarRSVP;
     /** Guild/server ID. */
     guildID: string;
     /** Calendar channel id. */
@@ -23,7 +22,7 @@ export class CalendarEventRSVP extends Base<number> {
     /** ID of the entity assigned to this Event RSVP. */
     entityID: string;
     /** Status of the RSVP */
-    status: APICalendarEventRSVPStatuses;
+    status: CalendarRSVPStatus;
     /** When the RSVP was created. */
     createdAt: Date | null;
     /** ID of the user who created this RSVP. */
@@ -37,7 +36,7 @@ export class CalendarEventRSVP extends Base<number> {
      * @param data raw data.
      * @param client client.
      */
-    constructor(data: APICalendarEventRSVP, client: Client){
+    constructor(data: RawCalendarRSVP, client: Client){
         super(data.calendarEventId, client);
         this.#data = data;
         this.guildID = data.serverId;
@@ -65,7 +64,7 @@ export class CalendarEventRSVP extends Base<number> {
         };
     }
 
-    protected override update(data: APICalendarEventRSVP): void {
+    protected override update(data: RawCalendarRSVP): void {
         if (data.calendarEventId !== undefined) {
             this.id = data.calendarEventId;
         }

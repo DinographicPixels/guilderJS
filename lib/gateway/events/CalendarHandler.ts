@@ -25,7 +25,7 @@ import {
 } from "../../Constants";
 import { CalendarChannel } from "../../structures/CalendarChannel";
 import { CalendarReactionInfo } from "../../structures/CalendarReactionInfo";
-import { CalendarEventComment } from "../../structures/CalendarEventComment";
+import { CalendarComment } from "../../structures/CalendarComment";
 
 /** Internal component, emitting calendar events. */
 export class CalendarHandler extends GatewayEventHandler {
@@ -114,14 +114,14 @@ export class CalendarHandler extends GatewayEventHandler {
           );
         const CalendarEventComponent =
           channel?.scheduledEvents.get(Number(data.calendarEventComment.calendarEventId));
-        const CalendarComment =
+        const calendarComment =
           CalendarEventComponent?.comments.update(data.calendarEventComment)
-          ?? new CalendarEventComment(
+          ?? new CalendarComment(
               data.calendarEventComment,
               this.client,
               { guildID: data.serverId }
           );
-        this.client.emit("calendarCommentCreate", CalendarComment);
+        this.client.emit("calendarCommentCreate", calendarComment);
     }
 
     async calendarCommentUpdate(data: GatewayEvent_CalendarEventCommentUpdated): Promise<void> {
@@ -145,14 +145,14 @@ export class CalendarHandler extends GatewayEventHandler {
           channel?.scheduledEvents.get(Number(data.calendarEventComment.calendarEventId));
         const CachedComment =
           CalendarEventComponent?.comments.get(data.calendarEventComment.id)?.toJSON() ?? null;
-        const CalendarComment =
+        const calendarComment =
           CalendarEventComponent?.comments.update(data.calendarEventComment)
-          ?? new CalendarEventComment(
+          ?? new CalendarComment(
               data.calendarEventComment,
               this.client,
               { guildID: data.serverId }
           );
-        this.client.emit("calendarCommentUpdate", CalendarComment, CachedComment);
+        this.client.emit("calendarCommentUpdate", calendarComment, CachedComment);
     }
 
     async calendarCommentDelete(data: GatewayEvent_CalendarEventCommentDeleted): Promise<void> {
@@ -174,15 +174,15 @@ export class CalendarHandler extends GatewayEventHandler {
           );
         const CalendarEventComponent =
           channel?.scheduledEvents.get(Number(data.calendarEventComment.calendarEventId));
-        const CalendarComment =
+        const calendarComment =
           CalendarEventComponent?.comments.update(data.calendarEventComment)
-          ?? new CalendarEventComment(
+          ?? new CalendarComment(
               data.calendarEventComment,
               this.client,
               { guildID: data.serverId }
           );
         CalendarEventComponent?.comments.delete(data.calendarEventComment.id);
-        this.client.emit("calendarCommentDelete", CalendarComment);
+        this.client.emit("calendarCommentDelete", calendarComment);
     }
 
     async calendarCommentReactionAdd(data: GatewayEvent_CalendarEventCommentReactionCreated): Promise<void> {

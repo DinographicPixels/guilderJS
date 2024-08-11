@@ -7,8 +7,8 @@
 
 import GatewayError from "./GatewayError";
 import { Client } from "../structures/Client";
-import { APIBotUser, GatewayOPCodes } from "../Constants";
-import { WebsocketEvents, AnyPacket, WelcomePacket } from "../types";
+import { GatewayOPCodes } from "../Constants";
+import { WebsocketEvents, AnyPacket, WelcomePacket, RawAppUser } from "../types";
 import { config as pkgconfig } from "../../pkgconfig";
 import { is } from "../util/Util";
 import TypedEmitter from "../types/TypedEmitter";
@@ -261,7 +261,7 @@ export class WSManager extends TypedEmitter<WebsocketEvents> {
                       this.heartbeat(),
                   packet.d["heartbeatIntervalMs" as keyof object] as number
                   );
-                this.emit("GATEWAY_WELCOME", packet.d["user" as keyof object] as APIBotUser);
+                this.emit("GATEWAY_WELCOME", packet.d["user" as keyof object] as RawAppUser);
                 this.emit("GATEWAY_WELCOME_PACKET", packet as WelcomePacket);
                 this.connected = true;
                 break;

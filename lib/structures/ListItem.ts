@@ -8,20 +8,20 @@
 import { Client } from "./Client";
 import { Member } from "./Member";
 import { Base } from "./Base";
-import { ListItemNoteTypes, JSONListItem } from "../types";
-import { APIListItem, APIMentions, PATCHListItemBody } from "../Constants";
+import { ListItemNoteTypes, JSONListItem, RawMentions, RawListItem } from "../types";
+import { PATCHListItemBody } from "../Constants";
 
 /** Represents an item of a "Lists" channel. */
 export class ListItem extends Base<string> {
     /** Raw data */
-    _data: APIListItem;
+    _data: RawListItem;
     /** Guild id */
     guildID: string;
     /** ID of the 'docs' channel. */
     channelID: string;
     /** Content of the doc */
     content: string;
-    mentions: APIMentions | null;
+    mentions: RawMentions | null;
     /** When the item was created. */
     createdAt: Date | null;
     /** ID of the member who created the doc. */
@@ -43,7 +43,7 @@ export class ListItem extends Base<string> {
      * @param data raw data.
      * @param client client.
      */
-    constructor(data: APIListItem, client: Client){
+    constructor(data: RawListItem, client: Client){
         super(data.id, client);
         this._data = data;
         this.guildID = data.serverId;
@@ -79,7 +79,7 @@ export class ListItem extends Base<string> {
         };
     }
 
-    protected override update(data: APIListItem): void {
+    protected override update(data: RawListItem): void {
         if (data.channelId !== undefined) {
             this.channelID = data.channelId;
         }

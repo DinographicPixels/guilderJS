@@ -9,8 +9,7 @@ import { Client } from "./Client";
 
 import { Base } from "./Base";
 import { Channel } from "./Channel";
-import { EditChannelOptions, JSONGuildChannel } from "../types";
-import type { APIGuildChannel } from "../Constants";
+import { EditChannelOptions, JSONGuildChannel, RawChannel } from "../types";
 
 /** Represents a guild channel. */
 export class GuildChannel extends Base<string> {
@@ -53,7 +52,7 @@ export class GuildChannel extends Base<string> {
      * @param data raw data
      * @param client client
      */
-    constructor(data: APIGuildChannel, client: Client) {
+    constructor(data: RawChannel, client: Client) {
         super(data.id, client);
         this.type = data.type;
         this.name = data.name;
@@ -100,7 +99,7 @@ export class GuildChannel extends Base<string> {
         };
     }
 
-    protected override update(data: APIGuildChannel): void {
+    protected override update(data: RawChannel): void {
         if (data.archivedAt !== undefined) {
             this.archivedAt = new Date(data.archivedAt);
         }

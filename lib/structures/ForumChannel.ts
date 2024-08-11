@@ -9,19 +9,24 @@ import { Client } from "./Client";
 
 import { ForumThread } from "./ForumThread";
 import { GuildChannel } from "./GuildChannel";
-import type { APIForumTopic, APIGuildChannel } from "../Constants";
 import TypedCollection from "../util/TypedCollection";
-import { JSONForumChannel, CreateForumThreadOptions, EditForumThreadOptions } from "../types";
+import {
+    JSONForumChannel,
+    CreateForumThreadOptions,
+    EditForumThreadOptions,
+    RawForumThread,
+    RawChannel
+} from "../types";
 
 /** Represents a forum channel. */
 export class ForumChannel extends GuildChannel {
     /** Cached threads. */
-    threads: TypedCollection<number, APIForumTopic, ForumThread<ForumChannel>>;
+    threads: TypedCollection<number, RawForumThread, ForumThread<ForumChannel>>;
     /**
      * @param data raw data
      * @param client client
      */
-    constructor(data: APIGuildChannel, client: Client){
+    constructor(data: RawChannel, client: Client){
         super(data, client);
         this.threads = new TypedCollection(
             ForumThread,

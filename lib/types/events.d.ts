@@ -13,7 +13,13 @@ import type {
     UserStatusCreate,
     UserStatusDelete
 } from "./types";
-import { AnyChannel, AnyTextableChannel, ChannelMessageReactionBulkRemove, PossiblyUncachedMessage } from "./channel";
+import {
+    AnyChannel,
+    AnyTextableChannel,
+    ChannelMessageReactionBulkRemove,
+    PossiblyUncachedMessage,
+    RawAppUser
+} from "./channels";
 import type { AnyPacket, WelcomePacket } from "./gateway-raw";
 import {
     JSONAnnouncement,
@@ -53,14 +59,13 @@ import { CalendarChannel } from "../structures/CalendarChannel";
 import { DocChannel } from "../structures/DocChannel";
 import { GuildChannel } from "../structures/GuildChannel";
 import { Channel } from "../structures/Channel";
-import { CalendarEventComment } from "../structures/CalendarEventComment";
+import { CalendarComment } from "../structures/CalendarComment";
 import { DocComment } from "../structures/DocComment";
 import { Announcement } from "../structures/Announcement";
 import type { AnnouncementComment } from "../structures/AnnouncementComment";
-import { GuildGroup } from "../structures/GuildGroup";
-import { GuildRole } from "../structures/GuildRole";
-import { GuildCategory } from "../structures/GuildCategory";
-import type { APIBotUser } from "guildedapi-types.ts/v1";
+import { Group } from "../structures/Group";
+import { Role } from "../structures/Role";
+import { Category } from "../structures/Category";
 
 /** Every client events. */
 export interface ClientEvents {
@@ -165,17 +170,17 @@ export interface ClientEvents {
     /** @event Emitted when the client leaves a guild. */
     guildDelete: [GuildDeleteInfo: GuildDeleteInfo];
     /** @event Emitted when a guild group is created. */
-    guildGroupCreate: [guildGroup: GuildGroup];
+    guildGroupCreate: [guildGroup: Group];
     /** @event Emitted when a guild group is updated. */
-    guildGroupUpdate: [guildGroup: GuildGroup, oldGuildGroup: JSONGuildGroup | null];
+    guildGroupUpdate: [guildGroup: Group, oldGuildGroup: JSONGuildGroup | null];
     /** @event Emitted when a guild group is deleted. */
-    guildGroupDelete: [guildGroup: GuildGroup];
+    guildGroupDelete: [guildGroup: Group];
     /** @event Emitted when a guild role is created. */
-    guildRoleCreate: [role: GuildRole];
+    guildRoleCreate: [role: Role];
     /** @event Emitted when a guild role is updated. */
-    guildRoleUpdate: [role: GuildRole, oldRole: JSONGuildRole | null];
+    guildRoleUpdate: [role: Role, oldRole: JSONGuildRole | null];
     /** @event Emitted when a guild role is deleted. */
-    guildRoleDelete: [role: GuildRole];
+    guildRoleDelete: [role: Role];
     /** @event Emitted when a doc is created. */
     docCreate: [Doc: Doc];
     /** @event Emitted when a doc is edited. */
@@ -201,11 +206,11 @@ export interface ClientEvents {
     /** @event Emitted when an event RSVP is deleted. */
     calendarEventRsvpDelete: [CalendarRSVP: CalendarEventRSVP];
     /** @event Emitted when a calendar event comment is created. */
-    calendarCommentCreate: [comment: CalendarEventComment];
+    calendarCommentCreate: [comment: CalendarComment];
     /** @event Emitted when a calendar event comment is edited. */
-    calendarCommentUpdate: [comment: CalendarEventComment, oldComment: JSONCalendarEventComment | null];
+    calendarCommentUpdate: [comment: CalendarComment, oldComment: JSONCalendarEventComment | null];
     /** @event Emitted when a calendar event comment is deleted. */
-    calendarCommentDelete: [comment: CalendarEventComment];
+    calendarCommentDelete: [comment: CalendarComment];
     /** @event Emitted when a list item is created. */
     listItemCreate: [item: ListItem];
     /** @event Emitted when a list item is edited. */
@@ -237,11 +242,11 @@ export interface ClientEvents {
     /** @event Emitted when a user delete their user status. */
     userStatusDelete: [userStatus: UserStatusDelete];
     /** @event Emitted when a category is created. */
-    guildCategoryCreate: [category: GuildCategory];
+    guildCategoryCreate: [category: Category];
     /** @event Emitted when a category is updated. */
-    guildCategoryUpdate: [category: GuildCategory];
+    guildCategoryUpdate: [category: Category];
     /** @event Emitted when a category is deleted. */
-    guildCategoryDelete: [category: GuildCategory];
+    guildCategoryDelete: [category: Category];
     /** @event Emitted on process exit. */
     exit: [message: string];
 }
@@ -259,7 +264,7 @@ export interface WebsocketEvents {
     /** @event Emitted when a packet is sent. */
     GATEWAY_PACKET: [packet: AnyPacket];
     /** @event Emitted when connected to gateway. */
-    GATEWAY_WELCOME: [data: APIBotUser];
+    GATEWAY_WELCOME: [data: RawAppUser];
     /** @event Emitted when connected to gateway. */
     GATEWAY_WELCOME_PACKET: [packet: WelcomePacket];
     /** @event Emitted when a packet isn't recognized. */

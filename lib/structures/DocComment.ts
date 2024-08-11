@@ -9,13 +9,19 @@ import { Client } from "./Client";
 import { Base } from "./Base";
 
 import { Member } from "./Member";
-import { APIDocComment, APIMentions } from "../Constants";
-import { JSONDocComment, ConstructorDocCommentOptions, CreateDocCommentOptions, EditDocCommentOptions } from "../types";
+import {
+    JSONDocComment,
+    ConstructorDocCommentOptions,
+    CreateDocCommentOptions,
+    EditDocCommentOptions,
+    RawDocComment,
+    RawMentions
+} from "../types";
 
 /** DocComment represents a doc comment coming from a Docs channel. */
 export class DocComment extends Base<number> {
     /** Raw data */
-    raw: APIDocComment;
+    raw: RawDocComment;
     /** The content of the comment. */
     content: string;
     /** The date of the comment's creation. */
@@ -29,7 +35,7 @@ export class DocComment extends Base<number> {
     /** The ID of the doc the comment is in. */
     docID: number;
     /** Mentions. */
-    mentions: APIMentions | null;
+    mentions: RawMentions | null;
     /** ID of the guild, if provided. */
     guildID: string | null;
 
@@ -38,7 +44,7 @@ export class DocComment extends Base<number> {
      * @param client client.
      * @param options Additional properties that can be added.
      */
-    constructor(data: APIDocComment, client: Client, options?: ConstructorDocCommentOptions) {
+    constructor(data: RawDocComment, client: Client, options?: ConstructorDocCommentOptions) {
         super(data.id, client);
         this.raw = data;
         this.content = data.content;
@@ -67,7 +73,7 @@ export class DocComment extends Base<number> {
         };
     }
 
-    protected override update(data: APIDocComment): void {
+    protected override update(data: RawDocComment): void {
         if (data.channelId !== undefined) {
             this.channelID = data.channelId;
         }

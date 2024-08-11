@@ -7,11 +7,10 @@
 
 import { Client } from "./Client";
 import { Base } from "./Base";
-import { JSONGuildGroup } from "../types";
-import { APIGuildGroup } from "guildedapi-types.ts/v1";
+import { JSONGuildGroup, RawGroup } from "../types";
 
-/** Class representing a guild group. */
-export class GuildGroup extends Base<string> {
+/** Represents a Guild Group. */
+export class Group extends Base<string> {
     /** ID of the guild */
     guildID: string;
     /** The group's name (min length 1; max length 80)  */
@@ -38,7 +37,7 @@ export class GuildGroup extends Base<string> {
     archivedAt: Date | null;
     /** The ID of the user who archived this group, if archived. */
     archivedBy: string | null;
-    constructor(data: APIGuildGroup, client: Client) {
+    constructor(data: RawGroup, client: Client) {
         super(data.id, client);
         this.guildID = data.serverId;
         this.name = data.name;
@@ -75,7 +74,7 @@ export class GuildGroup extends Base<string> {
         };
     }
 
-    protected override update(data: APIGuildGroup): void {
+    protected override update(data: RawGroup): void {
         if (data.serverId !== undefined) {
             this.guildID = data.serverId;
         }

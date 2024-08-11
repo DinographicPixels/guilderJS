@@ -7,11 +7,10 @@
 
 import { Client } from "./Client";
 import { Base } from "./Base";
-import { JSONGuildSubscription } from "../types";
-import { APIGuildSubscription } from "guildedapi-types.ts/v1";
+import { JSONGuildSubscription, RawSubscription } from "../types";
 
-/** Class representing a guild group. */
-export class GuildSubscription extends Base<string> {
+/** Represents a Guild Subscription. */
+export class Subscription extends Base<string> {
     /** Type of the subscription */
     type: string;
     /** ID of the guild */
@@ -25,7 +24,7 @@ export class GuildSubscription extends Base<string> {
     /** The ISO 8601 timestamp that the subscription was created at */
     createdAt: Date;
 
-    constructor(data: APIGuildSubscription, client: Client) {
+    constructor(data: RawSubscription, client: Client) {
         super(data.serverId, client);
         this.type = data.type;
         this.guildID = data.serverId;
@@ -48,7 +47,7 @@ export class GuildSubscription extends Base<string> {
         };
     }
 
-    protected override update(data: APIGuildSubscription): void {
+    protected override update(data: RawSubscription): void {
         if (data.serverId !== undefined) {
             this.guildID = data.serverId;
         }

@@ -5,13 +5,13 @@
 // Copyright (c) 2024 DinographicPixels. All rights reserved.
 //
 
+import type { RawEmote, RawMentions } from "./channels";
 import { ForumThread } from "../structures/ForumThread";
 import { Guild } from "../structures/Guild";
 import { Member } from "../structures/Member";
 import { Message } from "../structures/Message";
 import type { MessageReactionInfo } from "../structures/MessageReactionInfo";
 import type { ForumThreadReactionInfo } from "../structures/ForumThreadReactionInfo";
-import type { APIEmote, APIMentions } from "../Constants";
 import { CalendarEvent } from "../structures/CalendarEvent";
 import { CalendarReactionInfo } from "../structures/CalendarReactionInfo";
 import { Doc } from "../structures/Doc";
@@ -27,7 +27,7 @@ export interface MessageReactionTypes {
         };
         channelID: string;
     };
-    emoji: APIEmote;
+    emoji: RawEmote;
     reactor: Member | {
         id: string;
     };
@@ -41,7 +41,7 @@ export interface ForumThreadReactionTypes {
         };
         channelID: string;
     };
-    emoji: APIEmote;
+    emoji: RawEmote;
     reactor: Member | {
         id: string;
     };
@@ -55,7 +55,7 @@ export interface CalendarReactionTypes {
         };
         channelID: string;
     };
-    emoji: APIEmote;
+    emoji: RawEmote;
     reactor: Member | {
         id: string;
     };
@@ -69,7 +69,7 @@ export interface DocReactionTypes {
         };
         channelID: string;
     };
-    emoji: APIEmote;
+    emoji: RawEmote;
     reactor: Member | {
         id: string;
     };
@@ -83,7 +83,7 @@ export interface AnnouncementReactionTypes {
         };
         channelID: string;
     };
-    emoji: APIEmote;
+    emoji: RawEmote;
     reactor: Member | {
         id: string;
     };
@@ -115,7 +115,7 @@ export interface ListItemNoteTypes {
     /** ID of the member who edited this note, if edited. */
     editedBy: null | string;
     /** The mentions in this note. */
-    mentions: null | APIMentions;
+    mentions: null | RawMentions;
     /** The content of the note. */
     content: string;
 }

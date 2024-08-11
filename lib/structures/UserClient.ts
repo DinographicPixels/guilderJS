@@ -7,8 +7,7 @@
 
 import { Client } from "./Client";
 import { User } from "./User";
-import { APIBotUser } from "../Constants";
-import { JSONUserClient } from "../types";
+import { RawAppUser, JSONUserClient } from "../types";
 
 /** UserClient represents the logged bot's user. */
 export class UserClient extends User {
@@ -20,16 +19,16 @@ export class UserClient extends User {
     /** Boolean that shows if the user is a bot or not.
      * @defaultValue true
      */
-    override bot: true;
+    override app: true;
     /**
      * @param data raw data.
      * @param client client.
      */
-    constructor(data: APIBotUser, client: Client) {
+    constructor(data: RawAppUser, client: Client) {
         super(data, client);
         this.botID = data.botId;
-        this.type = "bot";
-        this.bot = true;
+        this.type = "app";
+        this.app = true;
         this.ownerID = data.createdBy;
         this.update(data);
     }
@@ -43,7 +42,7 @@ export class UserClient extends User {
         };
     }
 
-    protected override update(data: APIBotUser): void {
+    protected override update(data: RawAppUser): void {
         if (data.botId !== undefined) {
             this.botID = data.botId;
         }
@@ -66,7 +65,7 @@ export class UserClient extends User {
             this.bannerURL = data.banner;
         }
         if (data.type !== undefined) {
-            this.type = data.type;
+            this.type = data.type === "bot" ? "app" : (data.type === "user" ? "user" : null);
         }
     }
 }

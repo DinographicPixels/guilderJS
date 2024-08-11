@@ -11,23 +11,23 @@ import { Channel } from "./Channel";
 import { Member } from "./Member";
 import { User } from "./User";
 import { BannedMember } from "./BannedMember";
-import { GuildSubscription } from "./GuildSubscription";
+import { Subscription } from "./Subscription";
 import { GuildChannel } from "./GuildChannel";
-import { GuildGroup } from "./GuildGroup";
-import { GuildRole } from "./GuildRole";
-import { GuildCategory } from "./GuildCategory";
-import {
-    APIGuild,
-    APIGuildChannel,
-    APIGuildGroup,
-    APIGuildMember,
-    APIGuildRole,
-    POSTBulkAwardXPResponse,
-    POSTCreateCategoryBody,
-    PATCHUpdateCategoryBody
-} from "../Constants";
+import { Group } from "./Group";
+import { Role } from "./Role";
+import { Category } from "./Category";
+import { POSTBulkAwardXPResponse, POSTCreateCategoryBody, PATCHUpdateCategoryBody } from "../Constants";
 import TypedCollection from "../util/TypedCollection";
-import { JSONGuild, AnyChannel, BulkXPOptions } from "../types";
+import {
+    JSONGuild,
+    AnyChannel,
+    BulkXPOptions,
+    RawGroup,
+    RawChannel,
+    RawMember,
+    RawRole,
+    RawGuild
+} from "../types";
 
 /** Represents a Guild, also called server. */
 export class Guild extends Base<string> {
@@ -55,19 +55,19 @@ export class Guild extends Base<string> {
     /** If true, the guild is verified. */
     verified: boolean;
     /** Cached guild groups */
-    groups: TypedCollection<string, APIGuildGroup, GuildGroup>;
+    groups: TypedCollection<string, RawGroup, Group>;
     /** Cached guild channels. */
-    channels: TypedCollection<string, APIGuildChannel, AnyChannel>;
+    channels: TypedCollection<string, RawChannel, AnyChannel>;
     /** Cached guild members. */
-    members: TypedCollection<string, APIGuildMember, Member, [guildID: string]>;
+    members: TypedCollection<string, RawMember, Member, [guildID: string]>;
     /** Cached guild roles. */
-    roles: TypedCollection<number, APIGuildRole, GuildRole>;
+    roles: TypedCollection<number, RawRole, Role>;
 
     /**
      * @param data raw data.
      * @param client client.
      */
-    constructor(data: APIGuild, client: Client){
+    constructor(data: RawGuild, client: Client){
         super(data.id, client);
         this.ownerID = data.ownerId;
         this.type = data.type;
@@ -80,10 +80,10 @@ export class Guild extends Base<string> {
         this.defaultChannelID = data.defaultChannelId;
         this.createdAt = new Date(data.createdAt);
         this.verified = data.isVerified ?? false;
-        this.groups = new TypedCollection(GuildGroup, client);
+        this.groups = new TypedCollection(Group, client);
         this.channels = new TypedCollection(GuildChannel, client);
         this.members = new TypedCollection(Member, client);
-        this.roles = new TypedCollection(GuildRole, client);
+        this.roles = new TypedCollection(Role, client);
         this.update(data);
     }
 
@@ -106,7 +106,7 @@ export class Guild extends Base<string> {
         };
     }
 
-    protected override update(data: APIGuild): void {
+    protected override update(data: RawGuild): void {
         if (data.about !== undefined) {
             this.description = data.about;
         }
@@ -186,12 +186,12 @@ export class Guild extends Base<string> {
     /** Get Subscription
      * @param subscriptionID ID of the subscription to get.
      */
-    async getSubscription(subscriptionID: string): Promise<GuildSubscription> {
+    async getSubscription(subscriptionID: string): Promise<Subscription> {
         return this.client.rest.guilds.getSubscription(this.id as string, subscriptionID);
     }
 
     /** Get Subscriptions */
-    async getSubscriptions(): Promise<Array<GuildSubscription>> {
+    async getSubscriptions(): Promise<Array<Subscription>> {
         return this.client.rest.guilds.getSubscriptions(this.id as string);
     }
 
@@ -213,14 +213,14 @@ export class Guild extends Base<string> {
      * Create a category
      * @param options Create options.
      */
-    async createCategory(options: POSTCreateCategoryBody): Promise<GuildCategory> {
+    async createCategory(options: POSTCreateCategoryBody): Promise<Category> {
         return this.client.rest.guilds.createCategory(this.id as string, options);
     }
     /**
      * Read a guild category.
      * @param categoryID ID of the category you want to read.
      */
-    async getCategory(categoryID: number): Promise<GuildCategory> {
+    async getCategory(categoryID: number): Promise<Category> {
         return this.client.rest.guilds.getCategory(this.id as string, categoryID);
     }
     /**
@@ -228,7 +228,7 @@ export class Guild extends Base<string> {
      * @param categoryID ID of the category you want to read.
      * @param options Options to update a category.
      */
-    async editCategory(categoryID: number, options: PATCHUpdateCategoryBody): Promise<GuildCategory> {
+    async editCategory(categoryID: number, options: PATCHUpdateCategoryBody): Promise<Category> {
         return this.client.rest.guilds.editCategory(this.id as string, categoryID, options);
     }
 
@@ -236,7 +236,7 @@ export class Guild extends Base<string> {
      * Delete a category.
      * @param categoryID ID of the category you want to read.
      */
-    async deleteCategory(categoryID: number): Promise<GuildCategory> {
+    async deleteCategory(categoryID: number): Promise<Category> {
         return this.client.rest.guilds.deleteCategory(this.id as string, categoryID);
     }
 

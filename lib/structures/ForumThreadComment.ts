@@ -8,8 +8,14 @@
 import { Client } from "./Client";
 import { Base } from "./Base";
 import { Member } from "./Member";
-import { APIForumTopicComment, APIMentions } from "../Constants";
-import { CreateForumCommentOptions, EditForumCommentOptions, ConstructorForumThreadOptions, JSONForumThreadComment } from "../types";
+import {
+    CreateForumCommentOptions,
+    EditForumCommentOptions,
+    ConstructorForumThreadOptions,
+    JSONForumThreadComment,
+    RawMentions,
+    RawForumThreadComment
+} from "../types";
 
 /** Represents a comment coming from a ForumThread. */
 export class ForumThreadComment extends Base<number> {
@@ -28,10 +34,10 @@ export class ForumThreadComment extends Base<number> {
     /** ID of the forum channel containing this thread. */
     channelID: string;
     /** Mentions in this thread comment. */
-    mentions: APIMentions | null;
+    mentions: RawMentions | null;
 
     constructor(
-        data: APIForumTopicComment,
+        data: RawForumThreadComment,
         client: Client,
         options?: ConstructorForumThreadOptions
     ){
@@ -61,7 +67,7 @@ export class ForumThreadComment extends Base<number> {
         };
     }
 
-    protected override update(data: APIForumTopicComment): void {
+    protected override update(data: RawForumThreadComment): void {
         if (data.channelId !== undefined) {
             this.channelID = data.channelId;
         }
