@@ -73,7 +73,7 @@ import {
     POSTChannelRolePermissionBody,
     POSTChannelUserPermissionBody,
     PATCHChannelRolePermissionBody,
-    PATCHGuildRoleUpdateBody,
+    PATCHGuildRolePermissionUpdateBody,
     Permissions,
     POSTChannelCategoryUserPermissionBody,
     PATCHChannelCategoryUserPermissionBody
@@ -1458,7 +1458,7 @@ export class Client extends TypedEmitter<ClientEvents> {
     async editGuildRolePermission(
         guildID: string,
         roleID: number,
-        options: PATCHGuildRoleUpdateBody
+        options: PATCHGuildRolePermissionUpdateBody
     ): Promise<GuildRole> {
         return this.rest.guilds.editRolePermission(guildID, roleID, options);
     }

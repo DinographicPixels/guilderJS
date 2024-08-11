@@ -8,7 +8,7 @@
 import { Base } from "./Base";
 import { Client } from "./Client";
 import { JSONGuildRole } from "../types/json";
-import { APIGuildRole, PATCHGuildRoleUpdateBody, Permissions } from "guildedapi-types.ts/v1";
+import { APIGuildRole, PATCHGuildRolePermissionUpdateBody, Permissions } from "guildedapi-types.ts/v1";
 
 /** Class representing a guild role. */
 export class GuildRole extends Base<number> {
@@ -118,7 +118,7 @@ export class GuildRole extends Base<number> {
     }
 
     /** Edit the role permission */
-    async editPermission(options: PATCHGuildRoleUpdateBody): Promise<GuildRole>{
+    async editPermission(options: PATCHGuildRolePermissionUpdateBody): Promise<GuildRole>{
         return this.client.rest.guilds.editRolePermission(
             this.guildID as string,
             this.id as number,

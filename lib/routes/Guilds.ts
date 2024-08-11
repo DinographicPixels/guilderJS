@@ -41,8 +41,8 @@ import {
     PATCHGuildGroupBody,
     PATCHGuildGroupResponse,
     PATCHGuildRoleBody,
-    PATCHGuildRoleUpdateBody,
-    PATCHGuildRoleUpdateResponse,
+    PATCHGuildRolePermissionUpdateBody,
+    PATCHGuildRolePermissionUpdateResponse,
     PATCHUpdateCategoryBody,
     PATCHUpdateCategoryResponse,
     Permissions,
@@ -56,15 +56,15 @@ import {
     POSTGuildBanResponse,
     POSTGuildGroupBody,
     POSTGuildGroupResponse,
-    POSTGuildMemberXPBody,
-    POSTGuildMemberXPResponse,
+    POSTAwardGuildMemberXPBody,
+    POSTAwardGuildMemberXPResponse,
     POSTGuildRoleBody,
     POSTGuildRoleResponse,
-    POSTGuildRoleXPBody,
+    POSTAwardGuildRoleXPBody,
     POSTGuildWebhookResponse,
     PUTBulkSetXPResponse,
-    PUTGuildMemberXPBody,
-    PUTGuildMemberXPResponse,
+    PUTAwardGuildMemberXPBody,
+    PUTAwardGuildMemberXPResponse,
     PUTGuildWebhookResponse
 } from "../Constants";
 import { AnyChannel, CreateChannelOptions, EditChannelOptions } from "../types/channel";
@@ -392,10 +392,10 @@ export class Guilds {
      * @param memberID ID of a member.
      * @param amount Amount of experience.
      */
-    async awardMember(guildID: string, memberID: string, amount: POSTGuildMemberXPBody["amount"]): Promise<number>{
+    async awardMember(guildID: string, memberID: string, amount: POSTAwardGuildMemberXPBody["amount"]): Promise<number>{
         if (typeof amount !== "number") // check for JS
             throw new TypeError("amount must be an integer/number.");
-        return this.#manager.authRequest<POSTGuildMemberXPResponse>({
+        return this.#manager.authRequest<POSTAwardGuildMemberXPResponse>({
             method: "POST",
             path:   endpoints.GUILD_MEMBER_XP(guildID, memberID),
             json:   { amount }
@@ -407,10 +407,10 @@ export class Guilds {
      * @param memberID ID of a member.
      * @param amount Total amount of experience.
      */
-    async setMemberXP(guildID: string, memberID: string, amount: PUTGuildMemberXPBody["total"]): Promise<number>{
+    async setMemberXP(guildID: string, memberID: string, amount: PUTAwardGuildMemberXPBody["total"]): Promise<number>{
         if (typeof amount !== "number") // check for JS
             throw new TypeError("amount must be an integer/number.");
-        return this.#manager.authRequest<PUTGuildMemberXPResponse>({
+        return this.#manager.authRequest<PUTAwardGuildMemberXPResponse>({
             method: "PUT",
             path:   endpoints.GUILD_MEMBER_XP(guildID, memberID),
             json:   { total: amount }
@@ -422,7 +422,7 @@ export class Guilds {
      * @param roleID ID of a role.
      * @param amount Amount of experience.
      */
-    async awardRole(guildID: string, roleID: number, amount: POSTGuildRoleXPBody["amount"]): Promise<void>{
+    async awardRole(guildID: string, roleID: number, amount: POSTAwardGuildRoleXPBody["amount"]): Promise<void>{
         if (typeof amount !== "number") // check for JS
             throw new TypeError("amount must be an integer/number.");
         return this.#manager.authRequest<void>({
@@ -666,7 +666,7 @@ export class Guilds {
         return this.#manager.authRequest<GETGuildMemberPermissionResponse>({
             method: "GET",
             path:   endpoints.GUILD_MEMBER_PERMISSION(guildID, memberID)
-        }).then(data => data.permissions);
+        }).then(data => data.permissions as Array<Permissions>);
     }
 
     /**
@@ -675,8 +675,8 @@ export class Guilds {
      * @param roleID ID of the role.
      * @param options Permission to edit.
      */
-    async editRolePermission(guildID: string, roleID: number, options: PATCHGuildRoleUpdateBody): Promise<GuildRole> {
-        return this.#manager.authRequest<PATCHGuildRoleUpdateResponse>({
+    async editRolePermission(guildID: string, roleID: number, options: PATCHGuildRolePermissionUpdateBody): Promise<GuildRole> {
+        return this.#manager.authRequest<PATCHGuildRolePermissionUpdateResponse>({
             method: "PATCH",
             path:   endpoints.GUILD_ROLE_UPDATE_PERMISSION(guildID, roleID),
             json:   options
