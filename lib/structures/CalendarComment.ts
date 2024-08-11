@@ -13,7 +13,7 @@ import { Member } from "./Member";
 import {
     CreateCalendarCommentOptions,
     EditCalendarCommentOptions,
-    JSONCalendarEventComment,
+    JSONCalendarComment,
     ConstructorCalendarCommentOptions,
     RawCalendarComment
 } from "../types";
@@ -59,7 +59,7 @@ export class CalendarComment extends Base<number> {
         this.update(data);
     }
 
-    override toJSON(): JSONCalendarEventComment {
+    override toJSON(): JSONCalendarComment {
         return {
             ...super.toJSON(),
             data:      this.data,

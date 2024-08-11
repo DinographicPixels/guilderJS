@@ -7,7 +7,7 @@
 
 import { Base } from "./Base";
 import { Client } from "./Client";
-import { JSONGuildRole, RawRole } from "../types";
+import { JSONRole, RawRole } from "../types";
 import { PATCHGuildRolePermissionUpdateBody, Permissions } from "guildedapi-types.ts/v1";
 
 /** Represents a Guild Role. */
@@ -38,8 +38,10 @@ export class Role extends Base<number> {
     /** The default role users are given when joining the server.
      * Base roles are tied directly to the server and cannot be created or deleted */
     isBase: boolean;
-    /** The bot user ID this role has been defined for.
-     * Roles with this populated can only be deleted by kicking the bot */
+    /** The app user ID this role has been defined for.
+     * Roles with this populated can only be deleted by kicking the app */
+    appUserID: string | null;
+    /** @deprecated, Use Role#appUserID. */
     botUserID: string | null;
     constructor(data: RawRole, client: Client) {
         super(data.id, client);
@@ -55,11 +57,12 @@ export class Role extends Base<number> {
         this.iconURL = data.icon ?? null;
         this.position = data.priority ?? null;
         this.isBase = data.isBase ?? false;
+        this.appUserID = data.botUserId ?? null;
         this.botUserID = data.botUserId ?? null;
         this.update(data);
     }
 
-    override toJSON(): JSONGuildRole {
+    override toJSON(): JSONRole {
         return {
             ...super.toJSON(),
             guildID:               this.guildID,
@@ -74,7 +77,7 @@ export class Role extends Base<number> {
             iconURL:               this.iconURL,
             position:              this.position,
             isBase:                this.isBase,
-            botUserID:             this.botUserID
+            appUserID:             this.appUserID
         };
     }
 

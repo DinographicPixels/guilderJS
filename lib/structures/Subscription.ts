@@ -7,7 +7,7 @@
 
 import { Client } from "./Client";
 import { Base } from "./Base";
-import { JSONGuildSubscription, RawSubscription } from "../types";
+import { JSONSubscription, RawSubscription } from "../types";
 
 /** Represents a Guild Subscription. */
 export class Subscription extends Base<string> {
@@ -35,7 +35,7 @@ export class Subscription extends Base<string> {
         this.update(data);
     }
 
-    override toJSON(): JSONGuildSubscription {
+    override toJSON(): JSONSubscription {
         return {
             ...super.toJSON(),
             type:        this.type,

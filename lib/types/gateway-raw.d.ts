@@ -4,7 +4,8 @@
 // Copyright (c) 2024 DinographicPixels. All rights reserved.
 //
 
-import { GatewayOPCodes, APIBotUser } from "../Constants";
+import { RawAppUser } from "./channels";
+import { GatewayOPCodes } from "../Constants";
 
 export type AnyPacket = RawPacket | WelcomePacket;
 
@@ -16,7 +17,7 @@ export interface RawPacket {
 }
 
 export interface WelcomePacket {
-    d: APIBotUser;
+    d: RawAppUser;
     op: GatewayOPCodes;
     s: string | null;
     t: string | null;

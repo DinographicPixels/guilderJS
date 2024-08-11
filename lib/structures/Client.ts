@@ -120,7 +120,7 @@ import { fetch } from "undici";
  *
  * That's where everything begins.*/
 export class Client extends TypedEmitter<ClientEvents> {
-    /** Client's params, including bot's token & rest options. */
+    /** Client's params, including app's token & rest options. */
     params: ClientOptions;
     /** Websocket Manager. */
     ws: WSManager;
@@ -138,7 +138,7 @@ export class Client extends TypedEmitter<ClientEvents> {
     util: Util;
     /** Time at which the connection started in ms. */
     startTime: number;
-    /** @param params Client's parameters, this includes bot's token & rest options. */
+    /** @param params Client's parameters, this includes app's token & rest options. */
     constructor(params: ClientOptions) {
         if (typeof params !== "object") throw new Error("The token isn't provided in an object.");
         if (!params?.token) throw new Error("Cannot create client without token, no token is provided.");
@@ -383,8 +383,8 @@ export class Client extends TypedEmitter<ClientEvents> {
     /**
      * Get a user.
      *
-     * Note: when getting the bot's user, only the information specific to 'User' will be returned.
-     * If you'd like to get the UserClient (the bot itself), use Client#user.
+     * Note: when getting the app's user, only the information specific to 'User' will be returned.
+     * If you'd like to get the UserClient (the app itself), use Client#user.
      * @param userID The ID of the user to get.
      */
     async getUser(userID: string): Promise<User> {
@@ -1480,7 +1480,7 @@ export class Client extends TypedEmitter<ClientEvents> {
     }
 
     /**
-     * Change a user's status, this includes the bot's one.
+     * Change a user's status, this includes the app's one.
      * @param userID User ID (@me can be used).
      * @param options Status options
      */
@@ -1489,7 +1489,7 @@ export class Client extends TypedEmitter<ClientEvents> {
     }
 
     /**
-     * Delete a user's status, this includes the bot's one.
+     * Delete a user's status, this includes the app's one.
      * @param userID User ID (@me can be used).
      */
     async deleteUserStatus(userID: string | "@me"): Promise<void> {

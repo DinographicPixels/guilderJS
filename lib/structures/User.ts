@@ -24,7 +24,7 @@ export class User extends Base<string> {
     createdAt: Date; // user.
     /** If true, the user is an app (aka: bot). */
     app: boolean;
-    /** @deprecated */
+    /** @deprecated Use User#app. */
     bot: boolean;
 
     /**
@@ -54,7 +54,7 @@ export class User extends Base<string> {
             createdAt: this.createdAt,
             avatarURL: this.avatarURL,
             bannerURL: this.bannerURL,
-            bot:       this.app
+            app:       this.app
         };
     }
 
@@ -81,6 +81,8 @@ export class User extends Base<string> {
         }
         if (data.type !== undefined) {
             this.type = data.type === "bot" ? "app" : (data.type === "user" ? "user" : null);
+            this.app = this.type === "app";
+            this.bot = this.type === "app";
         }
     }
 }

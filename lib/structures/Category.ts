@@ -8,7 +8,7 @@
 import { Client } from "./Client";
 import { Base } from "./Base";
 import { Permission } from "./Permission";
-import { JSONGuildCategory, RawCategory } from "../types";
+import { JSONCategory, RawCategory } from "../types";
 import { PATCHUpdateCategoryBody } from "../Constants";
 import { PATCHChannelCategoryUserPermissionBody, POSTChannelCategoryUserPermissionBody } from "guildedapi-types.ts/v1";
 
@@ -38,7 +38,7 @@ export class Category extends Base<number> {
         this.update(data);
     }
 
-    override toJSON(): JSONGuildCategory {
+    override toJSON(): JSONCategory {
         return {
             ...super.toJSON(),
             guildID:   this.guildID,

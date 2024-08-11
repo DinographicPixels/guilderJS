@@ -4,7 +4,7 @@ const client = new Client({ token: process.env.TOKEN as string});
 client.on("ready", async () => {
     console.log(`Logged as ${client.user?.username}`);
     console.log("📧 Sending Message")
-    var message = await client.createMessage("74a7bc35-21ea-465d-9554-c82ccba067b7", { content: "We love Pizza 🍕" });
+    let message = await client.createMessage("74a7bc35-21ea-465d-9554-c82ccba067b7", { content: "We love Pizza 🍕" });
     console.log("📧 The Message was sent")
     await message.pin();
     console.log("📌 The Message was pinned")
@@ -35,14 +35,14 @@ client.on("ready", async () => {
     console.log("👍 The Reactions were deleted")
     await message.delete();
     console.log("🗑️ The Message was deleted")
-    var cache = await client.getMessage("NEa5J8GE", message.channelID, message.id)
+    let cache = await client.getMessage("NEa5J8GE", message.channelID, message.id)
     if (!cache) console.log("❌ The Message was not cached")
     if (cache) console.log("✅ The Message was cached")
     console.log("--------------------")
     console.log("📧 Sending Announcement")
-    var announcement = await client.createAnnouncement("4a922fbf-f009-4db9-b017-bfff2ac22944", {title: "Pizza",content: "We love Pizza 🍕",});
-    await console.log("📧 The Announcement was sent")
-    var comment = await client.createAnnouncementComment(announcement.channelID, announcement.id, {content: "With Pineapple"});
+    let announcement = await client.createAnnouncement("4a922fbf-f009-4db9-b017-bfff2ac22944", {title: "Pizza",content: "We love Pizza 🍕",});
+    console.log("📧 The Announcement was sent")
+    let comment = await client.createAnnouncementComment(announcement.channelID, announcement.id, {content: "With Pineapple"});
     console.log("📧 The Announcement Comment was sent")
     await announcement.createReaction(90002573)
     console.log("👍 The Reaction was created")
@@ -57,7 +57,7 @@ client.on("ready", async () => {
     console.log("🗑️ The Announcement was deleted")
     console.log("--------------------")
     console.log("📧 Sending Calendar Event")
-    var event = await client.createCalendarEvent("76adcbea-ed87-47f2-8225-f6396613eeb4", {
+    let event = await client.createCalendarEvent("76adcbea-ed87-47f2-8225-f6396613eeb4", {
         name: "Pizza Party",
         description: "We love Pizza 🍕",
         color: 0xFFE933,
@@ -70,7 +70,7 @@ client.on("ready", async () => {
         url: "https://www.google.com/search?q=pizza",
     });
     console.log("📧 The Calendar Event was created")
-    var Comment = await client.createCalendarComment(event.channelID, event.id, {content: "With Pineapple it's better"});
+    let Comment = await client.createCalendarComment(event.channelID, event.id, {content: "With Pineapple it's better"});
     console.log("📧 The Calendar Comment was sent")
     await Comment.createReaction(90002573)
     console.log("👍 The Reaction was created")
@@ -96,9 +96,9 @@ client.on("ready", async () => {
     console.log("🗑️ The Calendar Event was deleted")
     console.log("--------------------")
     console.log("📧 Sending Docs")
-    var doc = await client.createDoc("a7bca3fe-d04e-4fc4-9967-cdc53d154d80", {"title":"The 5 Reasons Why You Should Eat Pizza (The 6th Will Shock You)","content":"So, this is the 5 reasons why you should eat pizza:\n1 » It's good\n2» It's good\n3» It's good\n4» It's good\n5» It's good"});
+    let doc = await client.createDoc("a7bca3fe-d04e-4fc4-9967-cdc53d154d80", {"title":"The 5 Reasons Why You Should Eat Pizza (The 6th Will Shock You)","content":"So, this is the 5 reasons why you should eat pizza:\n1 » It's good\n2» It's good\n3» It's good\n4» It's good\n5» It's good"});
     console.log("📧 The Doc was sent")
-    var CommentDoc = await client.createDocComment(doc.channelID, doc.id, {content: "With Pineapple it's better"});
+    let CommentDoc = await client.createDocComment(doc.channelID, doc.id, {content: "With Pineapple it's better"});
     console.log("📧 The Doc Comment was sent")
     await CommentDoc.createReaction(90002573)
     console.log("👍 The Reaction was created")
@@ -113,9 +113,9 @@ client.on("ready", async () => {
     console.log("🗑️ The Doc was deleted")
     console.log("--------------------")
     console.log("📧 Sending Forum Topic")
-    var Thread = await client.createForumThread("478dcf19-fe2f-4fae-b7ee-c54d50ec9bee", {title: "Pizza",content: "We love Pizza 🍕",});
+    let Thread = await client.createForumThread("478dcf19-fe2f-4fae-b7ee-c54d50ec9bee", {title: "Pizza",content: "We love Pizza 🍕",});
     console.log("📧 The Forum Thread was sent")
-    var CommentThread = await client.createForumComment(Thread.channelID, Thread.id, {content: "With Pineapple it's better"});
+    let CommentThread = await client.createForumComment(Thread.channelID, Thread.id, {content: "With Pineapple it's better"});
     console.log("📧 The Forum Comment was sent")
     await CommentThread.createReaction(90002573)
     console.log("👍 The Reaction was created")
@@ -130,7 +130,7 @@ client.on("ready", async () => {
     console.log("🗑️ The Forum Thread was deleted")
     console.log("--------------------")
     console.log("📧 Sending List Item")
-    var Item = await client.createListItem("df5a00d1-709e-4b6c-b918-eddfdb1035f5", "Eat some Pizza", {content:"With Pineapple it's better",});
+    let Item = await client.createListItem("df5a00d1-709e-4b6c-b918-eddfdb1035f5", "Eat some Pizza", {content:"With Pineapple it's better",});
     console.log("📧 The List Item was sent")
     await client.completeListItem(Item.channelID, Item.id);
     console.log("📧 The List Item was completed")

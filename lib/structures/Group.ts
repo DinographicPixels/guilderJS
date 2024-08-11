@@ -7,7 +7,7 @@
 
 import { Client } from "./Client";
 import { Base } from "./Base";
-import { JSONGuildGroup, RawGroup } from "../types";
+import { JSONGroup, RawGroup } from "../types";
 
 /** Represents a Guild Group. */
 export class Group extends Base<string> {
@@ -55,7 +55,7 @@ export class Group extends Base<string> {
         this.update(data);
     }
 
-    override toJSON(): JSONGuildGroup {
+    override toJSON(): JSONGroup {
         return {
             ...super.toJSON(),
             guildID:         this.guildID,

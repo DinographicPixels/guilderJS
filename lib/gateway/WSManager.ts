@@ -460,7 +460,7 @@ export class WSManager extends TypedEmitter<WebsocketEvents> {
 
 
 export interface WSManagerParams {
-    /** Bot's token */
+    /** App token */
     token: string;
     /** Guilded API URL */
     proxyURL?: string;

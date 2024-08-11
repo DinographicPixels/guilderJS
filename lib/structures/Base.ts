@@ -11,7 +11,7 @@ import { inspect } from "node:util";
 
 /** Default information that every other structure has. */
 export abstract class Base<ID= string | number> {
-    /** Bot's client. */
+    /** App's client. */
     client!: Client;
     /** Item ID */
     id: ID;

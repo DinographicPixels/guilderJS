@@ -9,23 +9,21 @@ import { Client } from "./Client";
 import { User } from "./User";
 import { RawAppUser, JSONUserClient } from "../types";
 
-/** UserClient represents the logged bot's user. */
+/** UserClient represents the logged app's user. */
 export class UserClient extends User {
-    /** Client User Bot ID */
-    botID: string;
-    /** ID of the bot's owner. */
+    /** Client User App ID (aka botID) */
+    appID: string;
+    /** ID of the app owner. */
     ownerID: string;
-
-    /** Boolean that shows if the user is a bot or not.
-     * @defaultValue true
-     */
-    override app: true;
+    /** @deprecated Use UserClient#appID */
+    botID: string; // DEPRECATED
     /**
      * @param data raw data.
      * @param client client.
      */
     constructor(data: RawAppUser, client: Client) {
         super(data, client);
+        this.appID = data.botId;
         this.botID = data.botId;
         this.type = "app";
         this.app = true;
@@ -36,7 +34,7 @@ export class UserClient extends User {
     override toJSON(): JSONUserClient {
         return {
             ...super.toJSON(),
-            botID:     this.botID,
+            appID:     this.appID,
             createdAt: this.createdAt,
             ownerID:   this.ownerID
         };
@@ -44,6 +42,7 @@ export class UserClient extends User {
 
     protected override update(data: RawAppUser): void {
         if (data.botId !== undefined) {
+            this.appID = data.botId;
             this.botID = data.botId;
         }
         if (data.createdAt !== undefined) {
@@ -66,6 +65,8 @@ export class UserClient extends User {
         }
         if (data.type !== undefined) {
             this.type = data.type === "bot" ? "app" : (data.type === "user" ? "user" : null);
+            this.app = this.type === "app";
+            this.bot = this.type === "app";
         }
     }
 }

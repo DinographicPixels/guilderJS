@@ -196,10 +196,10 @@ export interface JSONCalendarEvent extends JSONBase<number> {
     /** Details about event cancelation (if canceled) */
     cancellation: RawCalendarEvent["cancellation"] | null;
     /** Cached RSVPS. */
-    rsvps: Array<JSONCalendarEventRSVP>;
+    rsvps: Array<JSONCalendarRSVP>;
 }
 
-export interface JSONCalendarEventRSVP extends JSONBase<number> {
+export interface JSONCalendarRSVP extends JSONBase<number> {
     /** Guild/server ID. */
     guildID: string;
     /** Calendar channel id. */
@@ -272,8 +272,8 @@ export interface JSONUser extends JSONBase<string> {
     bannerURL: string | null;
     /** When the user account was created. */
     createdAt: Date; // user
-    /** If true, the user is a bot. */
-    bot: boolean;
+    /** If true, the user is an app. */
+    app: boolean;
 }
 
 export interface JSONMember extends JSONUser {
@@ -319,11 +319,11 @@ export interface JSONGuild extends JSONBase<string> {
 }
 
 export interface JSONUserClient extends JSONUser {
-    /** Client User Bot ID */
-    botID: string;
-    /** When the bot client was created. */
+    /** Client User App ID */
+    appID: string;
+    /** When the app client was created. */
     createdAt: Date;
-    /** ID of the bot's owner. */
+    /** ID of the app's owner. */
     ownerID: string;
 }
 
@@ -370,7 +370,7 @@ export interface JSONListItem extends JSONBase<string> {
     completedBy: string | null;
 }
 
-export interface JSONCalendarEventComment extends JSONBase<number> {
+export interface JSONCalendarComment extends JSONBase<number> {
     /** Raw data */
     data: RawCalendarComment;
     /** The content of the comment. */
@@ -457,7 +457,7 @@ export interface JSONAnnouncementComment extends JSONBase<number> {
     guildID: string | null;
 }
 
-export interface JSONGuildRole extends JSONBase<number> {
+export interface JSONRole extends JSONBase<number> {
     /** ID of the guild */
     guildID: string;
     /** Date of when the role was created. */
@@ -484,11 +484,11 @@ export interface JSONGuildRole extends JSONBase<number> {
     /** The default role users are given when joining the server. Base roles are tied directly to the server
      * and cannot be created or deleted */
     isBase: boolean;
-    /** The bot user ID this role has been defined for. Roles with this populated can only be deleted by kicking the bot */
-    botUserID: string | null;
+    /** The app user ID this role has been defined for. Roles with this populated can only be deleted by kicking the app */
+    appUserID: string | null;
 }
 
-export interface JSONGuildGroup extends JSONBase<string> {
+export interface JSONGroup extends JSONBase<string> {
     /** ID of the guild */
     guildID: string;
     /** The group's name (min length 1; max length 80)  */
@@ -517,7 +517,7 @@ export interface JSONGuildGroup extends JSONBase<string> {
     archivedBy: string | null;
 }
 
-export interface JSONGuildSubscription extends JSONBase<string> {
+export interface JSONSubscription extends JSONBase<string> {
     /** Type of the subscription */
     type: string;
     /** ID of the guild */
@@ -532,7 +532,7 @@ export interface JSONGuildSubscription extends JSONBase<string> {
     createdAt: Date;
 }
 
-export interface JSONGuildCategory extends JSONBase<number> {
+export interface JSONCategory extends JSONBase<number> {
     /** The ID of the server */
     guildID: string;
     /** The ID of the group */

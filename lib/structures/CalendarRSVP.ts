@@ -7,7 +7,7 @@
 
 import { Client } from "./Client";
 import { Base } from "./Base";
-import { JSONCalendarEventRSVP, EditCalendarRSVPOptions, RawCalendarRSVP, CalendarRSVPStatus } from "../types";
+import { JSONCalendarRSVP, EditCalendarRSVPOptions, RawCalendarRSVP, CalendarRSVPStatus } from "../types";
 
 /** CalendarEventRSVP represents a guild member's event RSVP.
  * It gives information about a member's set presence to an event.
@@ -50,7 +50,7 @@ export class CalendarEventRSVP extends Base<number> {
         this.update(data);
     }
 
-    override toJSON(): JSONCalendarEventRSVP {
+    override toJSON(): JSONCalendarRSVP {
         return {
             ...super.toJSON(),
             guildID:   this.guildID,

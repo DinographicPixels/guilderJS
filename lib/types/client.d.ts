@@ -8,7 +8,7 @@ import type { Agent } from "undici";
 
 export interface ClientOptions {
     /**
-     * The bot's bearer token, needed to connect to the bot.
+     * The app's bearer token, required to connect to the API.
      */
     token: string;
     /**

@@ -26,8 +26,8 @@ import {
     JSONAnnouncementComment,
     JSONCalendarChannel,
     JSONCalendarEvent,
-    JSONCalendarEventComment,
-    JSONCalendarEventRSVP,
+    JSONCalendarComment,
+    JSONCalendarRSVP,
     JSONChannel,
     JSONDoc,
     JSONDocChannel,
@@ -36,8 +36,8 @@ import {
     JSONForumThread,
     JSONForumThreadComment,
     JSONGuildChannel,
-    JSONGuildGroup,
-    JSONGuildRole,
+    JSONGroup,
+    JSONRole,
     JSONMessage,
     JSONTextChannel
 } from "./json";
@@ -76,7 +76,7 @@ export interface ClientEvents {
     warn: [message: string];
     /** @event Emitted when things needs to be debugged. */
     debug: [message: string | object];
-    /** @event Emitted when the bot is ready. */
+    /** @event Emitted when the app is ready. */
     ready: [];
     /** @event Emitted when a message is created in a "chat" channel. */
     messageCreate: [message: Message<AnyTextableChannel>];
@@ -172,13 +172,13 @@ export interface ClientEvents {
     /** @event Emitted when a guild group is created. */
     guildGroupCreate: [guildGroup: Group];
     /** @event Emitted when a guild group is updated. */
-    guildGroupUpdate: [guildGroup: Group, oldGuildGroup: JSONGuildGroup | null];
+    guildGroupUpdate: [guildGroup: Group, oldGuildGroup: JSONGroup | null];
     /** @event Emitted when a guild group is deleted. */
     guildGroupDelete: [guildGroup: Group];
     /** @event Emitted when a guild role is created. */
     guildRoleCreate: [role: Role];
     /** @event Emitted when a guild role is updated. */
-    guildRoleUpdate: [role: Role, oldRole: JSONGuildRole | null];
+    guildRoleUpdate: [role: Role, oldRole: JSONRole | null];
     /** @event Emitted when a guild role is deleted. */
     guildRoleDelete: [role: Role];
     /** @event Emitted when a doc is created. */
@@ -200,15 +200,15 @@ export interface ClientEvents {
     /** @event Emitted when a calendar event is deleted. */
     calendarEventDelete: [CalendarEvent: CalendarEvent];
     /** @event Emitted when an event RSVP is updated. */
-    calendarEventRsvpUpdate: [CalendarRSVP: CalendarEventRSVP, oldRSVP: JSONCalendarEventRSVP | null];
+    calendarEventRsvpUpdate: [CalendarRSVP: CalendarEventRSVP, oldRSVP: JSONCalendarRSVP | null];
     /** @event Emitted when multiple event RSVPs are updated. */
-    calendarEventRsvpBulkUpdate: [CalendarRSVPs: Array<CalendarEventRSVP>, oldRSVPs: Array<JSONCalendarEventRSVP | null>];
+    calendarEventRsvpBulkUpdate: [CalendarRSVPs: Array<CalendarEventRSVP>, oldRSVPs: Array<JSONCalendarRSVP | null>];
     /** @event Emitted when an event RSVP is deleted. */
     calendarEventRsvpDelete: [CalendarRSVP: CalendarEventRSVP];
     /** @event Emitted when a calendar event comment is created. */
     calendarCommentCreate: [comment: CalendarComment];
     /** @event Emitted when a calendar event comment is edited. */
-    calendarCommentUpdate: [comment: CalendarComment, oldComment: JSONCalendarEventComment | null];
+    calendarCommentUpdate: [comment: CalendarComment, oldComment: JSONCalendarComment | null];
     /** @event Emitted when a calendar event comment is deleted. */
     calendarCommentDelete: [comment: CalendarComment];
     /** @event Emitted when a list item is created. */

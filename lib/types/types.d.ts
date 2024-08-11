@@ -89,13 +89,14 @@ export interface AnnouncementReactionTypes {
     };
 }
 
+/** @deprecated No longer used. */
 export interface UserClientTypes {
     /** Client's user. */
     user: {
         /** The ID of this user. */
         id: string;
         /** The Bot ID of this user. */
-        botID: string;
+        appID: string;
         /** The user */
         username: string;
         /** When the user was created. */
