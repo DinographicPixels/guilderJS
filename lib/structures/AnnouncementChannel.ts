@@ -11,7 +11,7 @@ import { GuildChannel } from "./GuildChannel";
 import { Announcement } from "./Announcement";
 import type { APIAnnouncement, APIGuildChannel } from "../Constants";
 import TypedCollection from "../util/TypedCollection";
-import { JSONAnnouncementChannel } from "../types/json";
+import { JSONAnnouncementChannel } from "../types";
 
 /** Represents a guild announcement channel. */
 export class AnnouncementChannel extends GuildChannel {

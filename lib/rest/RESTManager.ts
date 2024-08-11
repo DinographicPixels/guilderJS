@@ -7,11 +7,10 @@
 
 import { RequestHandler } from "./RequestHandler";
 import type { Client } from "../structures/Client";
-import type { RequestOptions } from "../types/request-handler";
+import type { RequestOptions, RESTOptions } from "../types";
 import { Guilds } from "../routes/Guilds";
 import { Channels } from "../routes/Channels";
 import { Miscellaneous } from "../routes/Misc";
-import { RESTOptions } from "../types/client";
 
 export class RESTManager {
     client: Client;

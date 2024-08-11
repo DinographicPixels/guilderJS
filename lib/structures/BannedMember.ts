@@ -11,7 +11,7 @@ import { Guild } from "./Guild";
 import { Base } from "./Base";
 import { Member } from "./Member";
 import { APIGuildMemberBan, APIUser } from "../Constants";
-import { JSONBannedMember } from "../types/json";
+import { JSONBannedMember } from "../types";
 
 /** BannedMember represents a banned guild member. */
 export class BannedMember extends Base<string> {

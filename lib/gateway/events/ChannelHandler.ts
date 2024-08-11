@@ -19,7 +19,7 @@ import {
     GatewayEvent_ServerChannelDeleted,
     GatewayEvent_ServerChannelUpdated
 } from "../../Constants";
-import { AnyChannel } from "../../types/channel";
+import { AnyChannel } from "../../types";
 
 /** Internal component, emitting channel events. */
 export class ChannelHandler extends GatewayEventHandler{

@@ -42,8 +42,6 @@ import { GatewayHandler } from "../gateway/GatewayHandler";
 import { RESTManager } from "../rest/RESTManager";
 import TypedCollection from "../util/TypedCollection";
 import TypedEmitter from "../types/TypedEmitter";
-import { ClientEvents } from "../types/events";
-import { ClientOptions } from "../types/client";
 import {
     APIChannelCategories,
     POSTListItemBody,
@@ -79,29 +77,38 @@ import {
     PATCHChannelCategoryUserPermissionBody
 } from "../Constants";
 import {
+    ClientEvents,
+    ClientOptions,
     AnyChannel,
     AnyTextableChannel,
     CreateChannelOptions,
     CreateMessageOptions,
     EditChannelOptions,
-    EditMessageOptions
-} from "../types/channel";
-import { CreateForumThreadOptions, EditForumThreadOptions, GetForumThreadsFilter } from "../types/forumThread";
-import { CreateForumCommentOptions, EditForumCommentOptions } from "../types/forumThreadComment";
-import { CreateDocOptions, EditDocOptions, GetDocsFilter } from "../types/doc";
-import {
+    EditMessageOptions,
     CreateCalendarCommentOptions,
     CreateCalendarEventOptions,
     EditCalendarCommentOptions,
     EditCalendarEventOptions,
     EditCalendarRSVPOptions,
-    GetCalendarEventsFilter
-} from "../types/calendarEvent";
-import { BulkXPOptions, EditMemberOptions } from "../types/guilds";
+    GetCalendarEventsFilter,
+    CreateForumThreadOptions,
+    EditForumThreadOptions,
+    GetForumThreadsFilter,
+    CreateForumCommentOptions,
+    EditForumCommentOptions,
+    CreateDocOptions,
+    EditDocOptions,
+    GetDocsFilter,
+    BulkXPOptions,
+    EditMemberOptions,
+    CreateDocCommentOptions,
+    EditDocCommentOptions,
+    EditWebhookOptions,
+    WebhookExecuteOptions,
+    WebhookMessageDetails
+} from "../types";
 import { Util } from "../util/Util";
-import { CreateDocCommentOptions, EditDocCommentOptions } from "../types/docComment";
 import { config } from "../../pkgconfig";
-import { EditWebhookOptions, WebhookExecuteOptions, WebhookMessageDetails } from "../types/webhooks";
 import { fetch } from "undici";
 
 /** Represents the application client,

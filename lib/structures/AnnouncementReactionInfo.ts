@@ -8,7 +8,7 @@
 import { ReactionInfo } from "./ReactionInfo";
 import { Client } from "./Client";
 import { AnnouncementChannel } from "./AnnouncementChannel";
-import { AnnouncementReactionTypes } from "../types/types";
+import { AnnouncementReactionTypes } from "../types";
 import { GatewayEvent_AnnouncementCommentReactionCreated, GatewayEvent_AnnouncementCommentReactionDeleted, GatewayEvent_AnnouncementReactionCreated, GatewayEvent_AnnouncementReactionDeleted } from "../Constants";
 
 /** Information about a Announcement's reaction. */

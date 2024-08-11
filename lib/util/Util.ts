@@ -7,7 +7,7 @@
 
 import { Client } from "../structures/Client";
 import { Member } from "../structures/Member";
-import { AnyChannel, AnyTextableChannel, MessageEmbedOptions } from "../types/channel";
+import { AnyChannel, AnyTextableChannel, MessageEmbedOptions, MessageConstructorParams } from "../types";
 import { Channel } from "../structures/Channel";
 import { ForumThread } from "../structures/ForumThread";
 import { ForumChannel } from "../structures/ForumChannel";
@@ -18,7 +18,6 @@ import { GuildGroup } from "../structures/GuildGroup";
 import { GuildSubscription } from "../structures/GuildSubscription";
 import { GuildCategory } from "../structures/GuildCategory";
 import { Message } from "../structures/Message";
-import { MessageConstructorParams } from "../types/message";
 import {
     APIForumTopic,
     APIForumTopicSummary,

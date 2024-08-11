@@ -10,9 +10,7 @@ import { Base } from "./Base";
 
 import { Member } from "./Member";
 import { APICalendarEventComment } from "../Constants";
-import { CreateCalendarCommentOptions, EditCalendarCommentOptions } from "../types/calendarEvent";
-import { JSONCalendarEventComment } from "../types/json";
-import { ConstructorCalendarEventCommentOptions } from "../types/calendarEventComment";
+import { CreateCalendarCommentOptions, EditCalendarCommentOptions, JSONCalendarEventComment, ConstructorCalendarEventCommentOptions } from "../types";
 
 /** CalendarEventComment represents an event comment coming from a calendar channel. */
 export class CalendarEventComment extends Base<number> {

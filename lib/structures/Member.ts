@@ -11,8 +11,7 @@ import { Guild } from "./Guild";
 import { BannedMember } from "./BannedMember";
 import { SocialLink } from "./SocialLink";
 import { APIGuildMember, Permissions } from "../Constants";
-import { EditMemberOptions } from "../types/guilds";
-import { JSONMember } from "../types/json";
+import { EditMemberOptions, JSONMember } from "../types";
 
 /** Represents a guild user. */
 export class Member extends User {

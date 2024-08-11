@@ -14,9 +14,8 @@ import { DocChannel } from "./DocChannel";
 import { ForumChannel } from "./ForumChannel";
 import { TextChannel } from "./TextChannel";
 import { AnnouncementChannel } from "./AnnouncementChannel";
-import { JSONChannel } from "../types/json";
 import type { APIGuildChannel } from "../Constants";
-import { AnyChannel, EditChannelOptions } from "../types/channel";
+import { AnyChannel, EditChannelOptions, JSONChannel } from "../types";
 
 /** Represents a channel. */
 export class Channel extends Base<string> {

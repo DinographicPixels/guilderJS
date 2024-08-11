@@ -5,7 +5,7 @@
  * https://github.com/abalabahaha/eris/blob/dev/lib/util/SequentialBucket.js
  */
 
-import type { LatencyRef } from "../types/request-handler";
+import type { LatencyRef } from "../types";
 
 /** A ratelimit bucket. */
 export default class SequentialBucket {

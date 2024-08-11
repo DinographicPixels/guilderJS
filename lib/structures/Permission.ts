@@ -5,7 +5,7 @@
 // Copyright (c) 2024 DinographicPixels. All rights reserved.
 //
 
-import { JSONPermission } from "../types/json";
+import { JSONPermission } from "../types";
 import {
     APIGuildCategoryRolePermission,
     APIGuildCategoryUserPermission,

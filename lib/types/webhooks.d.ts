@@ -6,6 +6,13 @@
 
 import { MessageEmbedOptions } from "./channel";
 
+export interface WebhookEditOptions {
+    /** New name of the webhook. */
+    name: string;
+    /** New webhook's parent channel. */
+    channelID?: string;
+}
+
 export interface EditWebhookOptions {
     /** The name of the webhook (min length `1`; max length `128`) */
     name: string;

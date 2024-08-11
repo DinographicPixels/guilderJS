@@ -7,7 +7,7 @@
 
 import { Client } from "./Client";
 import { Base } from "./Base";
-import { JSONGuildSubscription } from "../types/json";
+import { JSONGuildSubscription } from "../types";
 import { APIGuildSubscription } from "guildedapi-types.ts/v1";
 
 /** Class representing a guild group. */

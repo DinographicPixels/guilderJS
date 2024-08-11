@@ -15,7 +15,7 @@ import {
     PATCHChannelAnnouncementBody,
     POSTChannelAnnouncementBody
 } from "../Constants";
-import { JSONAnnouncement } from "../types/json";
+import { JSONAnnouncement } from "../types";
 import TypedCollection from "../util/TypedCollection";
 
 /** Represents a channel announcement. */

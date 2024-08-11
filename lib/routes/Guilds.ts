@@ -67,9 +67,16 @@ import {
     PUTAwardGuildMemberXPResponse,
     PUTGuildWebhookResponse
 } from "../Constants";
-import { AnyChannel, CreateChannelOptions, EditChannelOptions } from "../types/channel";
-import { EditWebhookOptions, WebhookExecuteOptions, WebhookMessageDetails } from "../types/webhooks";
-import { BulkXPOptions, EditMemberOptions } from "../types/guilds";
+import {
+    AnyChannel,
+    CreateChannelOptions,
+    EditChannelOptions,
+    EditWebhookOptions,
+    WebhookExecuteOptions,
+    WebhookMessageDetails,
+    BulkXPOptions,
+    EditMemberOptions
+} from "../types";
 import { BannedMember } from "../structures/BannedMember";
 import { GuildRole } from "../structures/GuildRole";
 import { GuildGroup } from "../structures/GuildGroup";

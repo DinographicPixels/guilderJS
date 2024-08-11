@@ -9,8 +9,7 @@ import { Client } from "./Client";
 import { Base } from "./Base";
 import { Member } from "./Member";
 import { APIForumTopicComment, APIMentions } from "../Constants";
-import { CreateForumCommentOptions, EditForumCommentOptions, ConstructorForumThreadOptions } from "../types/forumThreadComment";
-import { JSONForumThreadComment } from "../types/json";
+import { CreateForumCommentOptions, EditForumCommentOptions, ConstructorForumThreadOptions, JSONForumThreadComment } from "../types";
 
 /** Represents a comment coming from a ForumThread. */
 export class ForumThreadComment extends Base<number> {

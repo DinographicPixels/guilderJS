@@ -11,8 +11,7 @@ import { CalendarEvent } from "./CalendarEvent";
 import { GuildChannel } from "./GuildChannel";
 import type { APICalendarEvent, APIGuildChannel, POSTCalendarEventBody } from "../Constants";
 import TypedCollection from "../util/TypedCollection";
-import { JSONCalendarChannel } from "../types/json";
-import { CreateCalendarEventOptions, EditCalendarEventOptions } from "../types/calendarEvent";
+import { JSONCalendarChannel, CreateCalendarEventOptions, EditCalendarEventOptions } from "../types";
 
 /** Represents a calendar channel. */
 export class CalendarChannel extends GuildChannel {

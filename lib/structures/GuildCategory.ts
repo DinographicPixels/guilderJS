@@ -8,7 +8,7 @@
 import { Client } from "./Client";
 import { Base } from "./Base";
 import { Permission } from "./Permission";
-import { JSONGuildCategory } from "../types/json";
+import { JSONGuildCategory } from "../types";
 import { PATCHUpdateCategoryBody } from "../Constants";
 import { APIGuildCategory, PATCHChannelCategoryUserPermissionBody, POSTChannelCategoryUserPermissionBody } from "guildedapi-types.ts/v1";
 

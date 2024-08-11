@@ -10,8 +10,7 @@ import { Base } from "./Base";
 
 import { Member } from "./Member";
 import { APIAnnouncementComment, APIMentions, PATCHChannelAnnouncementCommentBody, POSTChannelAnnouncementCommentBody } from "../Constants";
-import { ConstructorCalendarEventCommentOptions } from "../types/calendarEventComment";
-import { JSONAnnouncementComment } from "../types/json";
+import { ConstructorCalendarEventCommentOptions, JSONAnnouncementComment } from "../types";
 
 /** AnnouncementComment represents a comment from an Announcement channel. */
 export class AnnouncementComment extends Base<number> {

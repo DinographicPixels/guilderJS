@@ -13,11 +13,9 @@ import { User } from "./User";
 import { ForumThreadComment } from "./ForumThreadComment";
 import { ForumChannel } from "./ForumChannel";
 import { APIForumTopic, APIForumTopicComment, APIMentions } from "../Constants";
-import { EditForumThreadOptions } from "../types/forumThread";
-import { CreateForumCommentOptions } from "../types/forumThreadComment";
+import { EditForumThreadOptions, JSONForumThread, AnyTextableChannel, CreateForumCommentOptions } from "../types";
 import TypedCollection from "../util/TypedCollection";
-import { JSONForumThread } from "../types/json";
-import { AnyTextableChannel } from "../types/channel";
+
 
 /** Represents a thread/topic coming from a "Forums" channel. */
 export class ForumThread<T extends ForumChannel> extends Base<number> {

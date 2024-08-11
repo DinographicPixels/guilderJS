@@ -8,7 +8,7 @@
 import { Client } from "./Client";
 import { Base } from "./Base";
 import { UserTypes, APIUser, APIGuildMember, APIUserSummary } from "../Constants";
-import { JSONUser } from "../types/json";
+import { JSONUser } from "../types";
 
 /** Represents a user. */
 export class User extends Base<string> {

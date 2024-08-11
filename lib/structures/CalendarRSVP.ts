@@ -8,8 +8,7 @@
 import { Client } from "./Client";
 import { Base } from "./Base";
 import { APICalendarEventRSVP, APICalendarEventRSVPStatuses } from "../Constants";
-import { JSONCalendarEventRSVP } from "../types/json";
-import { EditCalendarRSVPOptions } from "../types/calendarEvent";
+import { JSONCalendarEventRSVP, EditCalendarRSVPOptions } from "../types";
 
 /** CalendarEventRSVP represents a guild member's event RSVP.
  * It gives information about a member's set presence to an event.

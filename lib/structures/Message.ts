@@ -13,9 +13,16 @@ import { Base } from "./Base";
 
 import { TextChannel } from "./TextChannel";
 import { APIChatMessage, APIEmbedOptions, APIMentions } from "../Constants";
-import { JSONMessage } from "../types/json";
-import { AnyTextableChannel, CreateMessageOptions, EditMessageOptions, MessageEmbedOptions } from "../types/channel";
-import { MessageAttachment, MessageConstructorParams, MessageOriginals } from "../types/message";
+import {
+    JSONMessage,
+    MessageAttachment,
+    MessageConstructorParams,
+    MessageOriginals,
+    AnyTextableChannel,
+    CreateMessageOptions,
+    EditMessageOptions,
+    MessageEmbedOptions
+} from "../types";
 import { fetch } from "undici";
 import { APIURLSignature } from "guildedapi-types.ts/typings/payloads/v1/URLSignature";
 

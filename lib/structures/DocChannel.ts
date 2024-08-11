@@ -5,8 +5,7 @@ import { Doc } from "./Doc";
 import { GuildChannel } from "./GuildChannel";
 import type { APIDoc, APIGuildChannel } from "../Constants";
 import TypedCollection from "../util/TypedCollection";
-import { JSONDocChannel } from "../types/json";
-import { CreateDocOptions, EditDocOptions } from "../types/doc";
+import { JSONDocChannel, CreateDocOptions, EditDocOptions } from "../types";
 
 //
 // Created by Wade (@pakkographic)

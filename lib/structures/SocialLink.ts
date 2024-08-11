@@ -8,7 +8,7 @@
 import { Client } from "./Client";
 
 import { User } from "./User";
-import { JSONSocialLink } from "../types/json";
+import { JSONSocialLink } from "../types";
 import { APISocialLink } from "guildedapi-types.ts/typings/payloads/v1/Users";
 
 /** User's social link. */

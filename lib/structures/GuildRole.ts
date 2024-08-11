@@ -7,7 +7,7 @@
 
 import { Base } from "./Base";
 import { Client } from "./Client";
-import { JSONGuildRole } from "../types/json";
+import { JSONGuildRole } from "../types";
 import { APIGuildRole, PATCHGuildRolePermissionUpdateBody, Permissions } from "guildedapi-types.ts/v1";
 
 /** Class representing a guild role. */

@@ -10,8 +10,7 @@ import { Base } from "./Base";
 
 import { Member } from "./Member";
 import { APIDocComment, APIMentions } from "../Constants";
-import { JSONDocComment } from "../types/json";
-import { ConstructorDocCommentOptions, CreateDocCommentOptions, EditDocCommentOptions } from "../types/docComment";
+import { JSONDocComment, ConstructorDocCommentOptions, CreateDocCommentOptions, EditDocCommentOptions } from "../types";
 
 /** DocComment represents a doc comment coming from a Docs channel. */
 export class DocComment extends Base<number> {

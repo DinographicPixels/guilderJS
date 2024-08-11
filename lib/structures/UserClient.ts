@@ -8,7 +8,7 @@
 import { Client } from "./Client";
 import { User } from "./User";
 import { APIBotUser } from "../Constants";
-import { JSONUserClient } from "../types/json";
+import { JSONUserClient } from "../types";
 
 /** UserClient represents the logged bot's user. */
 export class UserClient extends User {

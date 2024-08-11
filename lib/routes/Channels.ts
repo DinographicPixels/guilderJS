@@ -88,30 +88,33 @@ import {
     AnyTextableChannel,
     CreateMessageOptions,
     EditMessageOptions,
-    GetChannelMessagesFilter
-} from "../types/channel";
-import { CreateForumThreadOptions, EditForumThreadOptions, GetForumThreadsFilter } from "../types/forumThread";
-import { CreateForumCommentOptions, EditForumCommentOptions } from "../types/forumThreadComment";
-import { CreateDocOptions, EditDocOptions } from "../types/doc";
-import {
+    GetChannelMessagesFilter,
     CreateCalendarCommentOptions,
     CreateCalendarEventOptions,
     EditCalendarCommentOptions,
     EditCalendarEventOptions,
     EditCalendarRSVPOptions,
-    GetCalendarEventsFilter
-} from "../types/calendarEvent";
+    GetCalendarEventsFilter,
+    MessageConstructorParams,
+    CreateDocCommentOptions,
+    EditDocCommentOptions,
+    CreateForumThreadOptions,
+    EditForumThreadOptions,
+    GetForumThreadsFilter,
+    CreateForumCommentOptions,
+    EditForumCommentOptions,
+    EditDocOptions,
+    CreateDocOptions
+} from "../types";
 import { DocChannel } from "../structures/DocChannel";
 import { ForumChannel } from "../structures/ForumChannel";
 import { CalendarChannel } from "../structures/CalendarChannel";
 import { TextChannel } from "../structures/TextChannel";
 import { CalendarEventComment } from "../structures/CalendarEventComment";
-import { CreateDocCommentOptions, EditDocCommentOptions } from "../types/docComment";
 import { DocComment } from "../structures/DocComment";
 import { Announcement } from "../structures/Announcement";
 import { AnnouncementComment } from "../structures/AnnouncementComment";
 import { Permission } from "../structures/Permission";
-import { MessageConstructorParams } from "../types/message";
 import { APIChatMessage, PUTChannelMessageResponse } from "guildedapi-types.ts/v1";
 
 export class Channels {

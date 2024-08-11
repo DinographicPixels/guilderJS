@@ -19,7 +19,7 @@ import {
     GatewayEvent_ChatMessageUpdated
 } from "../../Constants";
 import { TextChannel } from "../../structures/TextChannel";
-import { ChannelMessageReactionBulkRemove } from "../../types/channel";
+import { ChannelMessageReactionBulkRemove } from "../../types/";
 
 /** Internal component, emitting message events. */
 export class MessageHandler extends GatewayEventHandler {

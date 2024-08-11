@@ -9,7 +9,7 @@ import { GatewayEventHandler } from "./GatewayEventHandler";
 
 import { BannedMember, Guild, GuildRole, Member } from "../../index";
 
-import { GuildCreateInfo, GuildDeleteInfo } from "../../types/types";
+import { GuildCreateInfo, GuildDeleteInfo } from "../../types";
 import {
     GatewayEvent_BotServerMembershipCreated,
     GatewayEvent_BotServerMembershipDeleted,

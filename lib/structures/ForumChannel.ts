@@ -11,8 +11,7 @@ import { ForumThread } from "./ForumThread";
 import { GuildChannel } from "./GuildChannel";
 import type { APIForumTopic, APIGuildChannel } from "../Constants";
 import TypedCollection from "../util/TypedCollection";
-import { JSONForumChannel } from "../types/json";
-import { CreateForumThreadOptions, EditForumThreadOptions } from "../types/forumThread";
+import { JSONForumChannel, CreateForumThreadOptions, EditForumThreadOptions } from "../types";
 
 /** Represents a forum channel. */
 export class ForumChannel extends GuildChannel {

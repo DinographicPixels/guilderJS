@@ -10,9 +10,8 @@ import GuildedHTTPError from "./GuildedHTTPError";
 import GuildedRESTError from "./GuildedRESTError";
 import SequentialBucket from "./SequentialBucket";
 import { RESTMethod, RESTMethods } from "../Constants";
-import { LatencyRef, RequestOptions } from "../types/request-handler";
+import { LatencyRef, RequestOptions, RESTOptions } from "../types";
 import { config as pkgconfig } from "../../pkgconfig";
-import { RESTOptions } from "../types/client";
 import { fetch, File, FormData } from "undici";
 
 export class RequestHandler {

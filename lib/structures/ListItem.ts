@@ -8,9 +8,8 @@
 import { Client } from "./Client";
 import { Member } from "./Member";
 import { Base } from "./Base";
-import { ListItemNoteTypes } from "../types/types";
+import { ListItemNoteTypes, JSONListItem } from "../types";
 import { APIListItem, APIMentions, PATCHListItemBody } from "../Constants";
-import { JSONListItem } from "../types/json";
 
 /** Represents an item of a "Lists" channel. */
 export class ListItem extends Base<string> {

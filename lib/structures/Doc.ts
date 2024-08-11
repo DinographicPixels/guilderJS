@@ -5,8 +5,7 @@ import { Base } from "./Base";
 
 import { DocComment } from "./DocComment";
 import { APIDoc, APIDocComment, APIMentions } from "../Constants";
-import { EditDocOptions } from "../types/doc";
-import { JSONDoc } from "../types/json";
+import { EditDocOptions, JSONDoc } from "../types";
 import TypedCollection from "../util/TypedCollection";
 
 //

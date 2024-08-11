@@ -9,9 +9,8 @@ import { Client } from "./Client";
 
 import { Base } from "./Base";
 import { Channel } from "./Channel";
-import { EditChannelOptions } from "../types/channel";
+import { EditChannelOptions, JSONGuildChannel } from "../types";
 import type { APIGuildChannel } from "../Constants";
-import { JSONGuildChannel } from "../types/json";
 
 /** Represents a guild channel. */
 export class GuildChannel extends Base<string> {

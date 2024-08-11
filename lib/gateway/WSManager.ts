@@ -8,11 +8,10 @@
 import GatewayError from "./GatewayError";
 import { Client } from "../structures/Client";
 import { APIBotUser, GatewayOPCodes } from "../Constants";
-import TypedEmitter from "../types/TypedEmitter";
-import { WebsocketEvents } from "../types/events";
+import { WebsocketEvents, AnyPacket, WelcomePacket } from "../types";
 import { config as pkgconfig } from "../../pkgconfig";
 import { is } from "../util/Util";
-import { AnyPacket, WelcomePacket } from "../types/gateway-raw";
+import TypedEmitter from "../types/TypedEmitter";
 import WebSocket, { Data } from "ws";
 import type Pako from "pako";
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment

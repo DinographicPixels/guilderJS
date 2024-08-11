@@ -27,9 +27,7 @@ import {
     PATCHUpdateCategoryBody
 } from "../Constants";
 import TypedCollection from "../util/TypedCollection";
-import { JSONGuild } from "../types/json";
-import { AnyChannel } from "../types/channel";
-import { BulkXPOptions } from "../types/guilds";
+import { JSONGuild, AnyChannel, BulkXPOptions } from "../types";
 
 /** Represents a Guild, also called server. */
 export class Guild extends Base<string> {

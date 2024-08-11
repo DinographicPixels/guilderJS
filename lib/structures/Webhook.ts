@@ -8,9 +8,9 @@
 import { Client } from "./Client";
 import { Base } from "./Base";
 import { APIWebhook } from "../Constants";
-import { WebhookEditOptions } from "../types/webhook";
-import { JSONWebhook } from "../types/json";
-import { WebhookExecuteOptions, WebhookMessageDetails } from "../types/webhooks";
+import { WebhookEditOptions } from "../types";
+import { JSONWebhook } from "../types";
+import { WebhookExecuteOptions, WebhookMessageDetails } from "../types";
 
 /** Represents a Guild or channel webhook. */
 export class Webhook extends Base<string> {

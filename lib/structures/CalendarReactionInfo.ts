@@ -8,7 +8,7 @@
 import { ReactionInfo } from "./ReactionInfo";
 import { Client } from "./Client";
 import { CalendarChannel } from "./CalendarChannel";
-import { CalendarReactionTypes } from "../types/types";
+import { CalendarReactionTypes } from "../types";
 import { GatewayEvent_CalendarEventCommentReactionCreated, GatewayEvent_CalendarEventCommentReactionDeleted, GatewayEvent_CalendarEventReactionCreated, GatewayEvent_CalendarEventReactionDeleted } from "../Constants";
 
 /** Information about a CalendarEvent's reaction. */

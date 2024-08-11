@@ -13,9 +13,8 @@ import { User } from "./User";
 import { CalendarEventRSVP } from "./CalendarRSVP";
 import { CalendarEventComment } from "./CalendarEventComment";
 import { APICalendarEvent, APICalendarEventComment, APICalendarEventRSVP, APIMentions } from "../Constants";
-import { EditCalendarEventOptions } from "../types/calendarEvent";
+import { EditCalendarEventOptions, JSONCalendarEvent } from "../types";
 import TypedCollection from "../util/TypedCollection";
-import { JSONCalendarEvent } from "../types/json";
 
 /** CalendarEvent represents an event coming from a calendar channel. */
 export class CalendarEvent extends Base<number> {

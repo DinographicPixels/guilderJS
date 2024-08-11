@@ -8,7 +8,7 @@
 import { ReactionInfo } from "./ReactionInfo";
 import { TextChannel } from "./TextChannel";
 import { Client } from "./Client";
-import { MessageReactionTypes } from "../types/types";
+import { MessageReactionTypes } from "../types";
 import { GatewayEvent_ChannelMessageReactionCreated, GatewayEvent_ChannelMessageReactionDeleted } from "../Constants";
 
 /** Information about a Message's reaction. */
