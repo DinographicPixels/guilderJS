@@ -4,6 +4,8 @@ on:
     secrets:
       NPM_TOKEN:
         required: true
+      TEST_APP_TOKEN:
+        required: true
   workflow_dispatch:
 
 jobs:
