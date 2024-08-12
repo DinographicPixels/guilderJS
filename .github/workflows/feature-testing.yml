@@ -15,8 +15,8 @@ jobs:
     - name: Channel Features
       run: ts-node ./scripts/tests/channel.ts
       env:
-        TOKEN: ${{ secrets.TEST_BOT_TOKEN }}
+        TOKEN: ${{ secrets.TEST_APP_TOKEN }}
     - name: Message Features
       run: ts-node ./scripts/tests/message.ts
       env:
-        TOKEN: ${{ secrets.TEST_BOT_TOKEN }}
+        TOKEN: ${{ secrets.TEST_APP_TOKEN }}

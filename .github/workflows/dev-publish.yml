@@ -14,7 +14,7 @@ jobs:
     name: Feature Testing
     uses: ./.github/workflows/feature-testing.yml
     secrets:
-      TEST_BOT_TOKEN: ${{ secrets.TEST_BOT_TOKEN }}
+      TEST_APP_TOKEN: ${{ secrets.TEST_APP_TOKEN }}
   publish:
     runs-on: ubuntu-latest
     needs: [lint, testing]
