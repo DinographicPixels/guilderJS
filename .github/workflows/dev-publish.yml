@@ -13,7 +13,7 @@ jobs:
     name: ESLint
     uses: ./.github/workflows/lint.yml
   testing:
-    name: ESLint
+    name: Feature Testing
     uses: ./.github/workflows/feature-testing.yml
     secrets: inherit
   publish:
