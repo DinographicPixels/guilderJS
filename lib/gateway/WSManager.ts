@@ -453,8 +453,6 @@ export class WSManager extends TypedEmitter<WebsocketEvents> {
         this.connectionTimeout = 30000;
         this.#connectTimeout = null;
     }
-
-
 }
 
 

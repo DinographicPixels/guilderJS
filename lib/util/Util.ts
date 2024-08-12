@@ -131,29 +131,6 @@ export class Util {
     updateGuildCategory(data: RawCategory): Category {
         return new Category(data, this.#client);
     }
-updateMember(guildID: string, memberID: string, member: RawMember): Member {
-        const guild = this.#client.guilds.get(guildID);
-        if (guild && this.#client.user?.id === memberID) {
-            if (guild["_clientMember"]) {
-                guild["_clientMember"]["update"](member);
-            } else {
-                guild["_clientMember"] = guild.members.update({ ...member, id: memberID }, guildID);
-            }
-            return guild["_clientMember"];
-        }
-        return guild ? guild.members.update({ ...member, id: memberID }, guildID)
-            : new Member({ ...member }, this.#client, guildID);
-    }
-
-    
-    updateUser(user: RawUser): User {
-        return this.#client.users.has(user.id)
-            ? this.#client.users.update(user)
-            : this.#client.users.add(new User(user, this.#client));
-    }
-
-
-
     updateGuildGroup(data: RawGroup): Group {
         if (data.serverId) {
             const guild = this.#client.guilds.get(data.serverId);
@@ -169,6 +146,21 @@ updateMember(guildID: string, memberID: string, member: RawMember): Member {
     updateGuildSubscription(data: RawSubscription): Subscription {
         return new Subscription(data, this.#client);
     }
+    updateMember(guildID: string, memberID: string, member: RawMember): Member {
+        const guild = this.#client.guilds.get(guildID);
+        if (guild && this.#client.user?.id === memberID) {
+            if (guild["_clientMember"]) {
+                guild["_clientMember"]["update"](member);
+            } else {
+                guild["_clientMember"] = guild.members.update({ ...member, id: memberID }, guildID);
+            }
+            return guild["_clientMember"];
+        }
+        return guild ? guild.members.update({ ...member, id: memberID }, guildID)
+            : new Member({ ...member }, this.#client, guildID);
+    }
+
+
     updateMessage<T extends AnyTextableChannel = AnyTextableChannel>(
         data: RawMessage,
         params?: MessageConstructorParams
@@ -194,6 +186,11 @@ updateMember(guildID: string, memberID: string, member: RawMember): Member {
             }
         }
         return new Role(data, this.#client);
+    }
+    updateUser(user: RawUser): User {
+        return this.#client.users.has(user.id)
+            ? this.#client.users.update(user)
+            : this.#client.users.add(new User(user, this.#client));
     }
 
 
