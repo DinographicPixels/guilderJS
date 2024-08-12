@@ -26,4 +26,5 @@ jobs:
     if: needs.should-publish.outputs.check == 'true'
     uses: ./.github/workflows/dev-publish.yml
     with:
-      secrets: ${{ secrets }}
+      NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+      TEST_APP_TOKEN: ${{ secrets.TEST_APP_TOKEN }}
