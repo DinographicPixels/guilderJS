@@ -15,7 +15,7 @@ jobs:
     uses: ./.github/workflows/feature-testing.yml
   publish:
     runs-on: ubuntu-latest
-    needs: [lint]
+    needs: [lint, testing]
     steps:
       - uses: actions/checkout@v3
       - uses: actions/checkout@v3
