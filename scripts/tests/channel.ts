@@ -61,4 +61,4 @@ client.on("ready", async () => {
     client.disconnect();
 });
 
-client.connect()
+client.connect();
