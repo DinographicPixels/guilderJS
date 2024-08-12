@@ -10,6 +10,9 @@ jobs:
   lint:
     name: ESLint
     uses: ./.github/workflows/lint.yml
+  testing:
+    name: Feature Testing
+    uses: ./.github/workflows/feature-testing.yml
   publish:
     runs-on: ubuntu-latest
     needs: [lint]
