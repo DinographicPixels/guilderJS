@@ -172,18 +172,6 @@ export class CalendarEvent extends Base<number> {
         }
     }
 
-    /** Delete this event */
-    async delete(): Promise<void>{
-        return this.client.rest.channels.deleteCalendarEvent(this.channelID, this.id as number);
-    }
-    /** Edit this event */
-    async edit(options: EditCalendarEventOptions): Promise<CalendarEvent>{
-        return this.client.rest.channels.editCalendarEvent(
-            this.channelID,
-            this.id as number,
-            options
-        );
-    }
     /** Retrieve the event's owner, if cached.
      *
      * Note: this getter can output: Member, User, Promise<Member> or undefined.
@@ -198,4 +186,18 @@ export class CalendarEvent extends Base<number> {
             return this.client.rest.guilds.getMember(this.guildID, this.ownerID);
         }
     }
+    /** Delete this event */
+    async delete(): Promise<void>{
+        return this.client.rest.channels.deleteCalendarEvent(this.channelID, this.id as number);
+    }
+    /** Edit this event */
+    async edit(options: EditCalendarEventOptions): Promise<CalendarEvent>{
+        return this.client.rest.channels.editCalendarEvent(
+            this.channelID,
+            this.id as number,
+            options
+        );
+    }
+
+
 }

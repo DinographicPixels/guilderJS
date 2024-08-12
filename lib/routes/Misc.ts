@@ -23,6 +23,16 @@ export class Miscellaneous {
         this.#manager = manager;
     }
 
+    /**
+     * Delete a user's status, this includes the app's one.
+     * @param userID User ID (@me can be used).
+     */
+    async deleteUserStatus(userID: string | "@me"): Promise<void> {
+        return this.#manager.authRequest<void>({
+            method: "DELETE",
+            path:   endpoints.USER_STATUS(userID)
+        });
+    }
     /** Get a specified social link from the member, if member is connected to them through Guilded.
      * @param guildID The ID of the guild the member is in.
      * @param memberID The ID of the member to get their social link.
@@ -65,30 +75,6 @@ export class Miscellaneous {
     }
 
     /**
-     * Change a user's status, this includes the app's one.
-     * @param userID User ID (@me can be used).
-     * @param options Status options
-     */
-    async updateUserStatus(userID: string | "@me", options: PUTUserStatusBody): Promise<void> {
-        return this.#manager.authRequest<void>({
-            method: "PUT",
-            path:   endpoints.USER_STATUS(userID),
-            json:   options
-        });
-    }
-
-    /**
-     * Delete a user's status, this includes the app's one.
-     * @param userID User ID (@me can be used).
-     */
-    async deleteUserStatus(userID: string | "@me"): Promise<void> {
-        return this.#manager.authRequest<void>({
-            method: "DELETE",
-            path:   endpoints.USER_STATUS(userID)
-        });
-    }
-
-    /**
      * Create a URL Signature from a Guilded CDN URL. (RAW API RESPONSE)
      *
      * Due to restrictions imposed by the Guilded API CDN,
@@ -109,4 +95,18 @@ export class Miscellaneous {
             json:   options
         });
     }
+    /**
+     * Change a user's status, this includes the app's one.
+     * @param userID User ID (@me can be used).
+     * @param options Status options
+     */
+    async updateUserStatus(userID: string | "@me", options: PUTUserStatusBody): Promise<void> {
+        return this.#manager.authRequest<void>({
+            method: "PUT",
+            path:   endpoints.USER_STATUS(userID),
+            json:   options
+        });
+    }
+
+
 }

@@ -42,111 +42,6 @@ export class Util {
         this.#client = client;
     }
 
-    updateUser(user: RawUser): User {
-        return this.#client.users.has(user.id)
-            ? this.#client.users.update(user)
-            : this.#client.users.add(new User(user, this.#client));
-    }
-
-    updateMember(guildID: string, memberID: string, member: RawMember): Member {
-        const guild = this.#client.guilds.get(guildID);
-        if (guild && this.#client.user?.id === memberID) {
-            if (guild["_clientMember"]) {
-                guild["_clientMember"]["update"](member);
-            } else {
-                guild["_clientMember"] = guild.members.update({ ...member, id: memberID }, guildID);
-            }
-            return guild["_clientMember"];
-        }
-        return guild ? guild.members.update({ ...member, id: memberID }, guildID)
-            : new Member({ ...member }, this.#client, guildID);
-    }
-
-    updateForumThread(data: RawForumThread | RawPartialForumThread): ForumThread<ForumChannel> {
-        if (data.serverId) {
-            const guild = this.#client.guilds.get(data.serverId);
-            const channel = guild?.channels.get(data.channelId) as ForumChannel;
-            if (guild && channel) {
-                const thread = channel.threads.has(data.id)
-                    ? channel.threads.update(data)
-                    : channel.threads.add(new ForumThread(data as RawForumThread, this.#client));
-                return thread;
-            }
-        }
-        return new ForumThread(data as RawForumThread, this.#client);
-    }
-
-    updateGuild(data: RawGuild): Guild {
-        if (data.id) {
-            return this.#client.guilds.has(data.id)
-                ? this.#client.guilds.update(data)
-                : this.#client.guilds.add(new Guild(data, this.#client));
-        }
-        return new Guild(data, this.#client);
-    }
-
-    updateRole(data: RawRole): Role {
-        if (data.serverId) {
-            const guild = this.#client.guilds.get(data.serverId);
-            if (guild) {
-                const role = guild.roles.has(data.id)
-                    ? guild.roles.update(data as RawRole)
-                    : guild.roles.add(new Role(data, this.#client));
-                return role;
-            }
-        }
-        return new Role(data, this.#client);
-    }
-
-    updateGuildGroup(data: RawGroup): Group {
-        if (data.serverId) {
-            const guild = this.#client.guilds.get(data.serverId);
-            if (guild) {
-                const group = guild.groups.has(data.id)
-                    ? guild.groups.update(data as RawGroup)
-                    : guild.groups.add(new Group(data, this.#client));
-                return group;
-            }
-        }
-        return new Group(data, this.#client);
-    }
-
-    updateChannel<T extends AnyChannel>(data: RawChannel): T {
-        if (data.serverId) {
-            const guild = this.#client.guilds.get(data.serverId);
-            if (guild) {
-                const channel = guild.channels.has(data.id)
-                    ? guild.channels.update(data as RawChannel)
-                    : guild.channels.add(Channel.from<AnyChannel>(data, this.#client));
-                return channel as T;
-            }
-        }
-        return Channel.from<T>(data, this.#client);
-    }
-
-    updateGuildSubscription(data: RawSubscription): Subscription {
-        return new Subscription(data, this.#client);
-    }
-
-    updateGuildCategory(data: RawCategory): Category {
-        return new Category(data, this.#client);
-    }
-
-    updateMessage<T extends AnyTextableChannel = AnyTextableChannel>(
-        data: RawMessage,
-        params?: MessageConstructorParams
-    ): Message<T> {
-        const channel = this.#client.getChannel<T>(data.serverId ?? "", data.channelId);
-        if (channel) {
-            const message =
-              channel.messages.has(data.id)
-                  ? channel.messages.update(data)
-                  : channel.messages.add(new Message<T>(data, this.#client, params));
-            return message as Message<T>;
-        }
-        return new Message<T>(data, this.#client, params);
-    }
-
     embedsToParsed(embeds: Array<RawEmbed>): Array<MessageEmbedOptions> {
         return embeds.map(embed => ({
             author: embed.author === undefined ? undefined : {
@@ -175,7 +70,6 @@ export class Util {
             url: embed.url
         }));
     }
-
     embedsToRaw(embeds: Array<MessageEmbedOptions>): Array<RawEmbed> {
         return embeds.map(embed => ({
             author: embed.author === undefined ? undefined :  {
@@ -201,6 +95,108 @@ export class Util {
             url:       embed.url
         }));
     }
+    updateChannel<T extends AnyChannel>(data: RawChannel): T {
+        if (data.serverId) {
+            const guild = this.#client.guilds.get(data.serverId);
+            if (guild) {
+                const channel = guild.channels.has(data.id)
+                    ? guild.channels.update(data as RawChannel)
+                    : guild.channels.add(Channel.from<AnyChannel>(data, this.#client));
+                return channel as T;
+            }
+        }
+        return Channel.from<T>(data, this.#client);
+    }
+    updateForumThread(data: RawForumThread | RawPartialForumThread): ForumThread<ForumChannel> {
+        if (data.serverId) {
+            const guild = this.#client.guilds.get(data.serverId);
+            const channel = guild?.channels.get(data.channelId) as ForumChannel;
+            if (guild && channel) {
+                const thread = channel.threads.has(data.id)
+                    ? channel.threads.update(data)
+                    : channel.threads.add(new ForumThread(data as RawForumThread, this.#client));
+                return thread;
+            }
+        }
+        return new ForumThread(data as RawForumThread, this.#client);
+    }
+    updateGuild(data: RawGuild): Guild {
+        if (data.id) {
+            return this.#client.guilds.has(data.id)
+                ? this.#client.guilds.update(data)
+                : this.#client.guilds.add(new Guild(data, this.#client));
+        }
+        return new Guild(data, this.#client);
+    }
+    updateGuildCategory(data: RawCategory): Category {
+        return new Category(data, this.#client);
+    }
+updateMember(guildID: string, memberID: string, member: RawMember): Member {
+        const guild = this.#client.guilds.get(guildID);
+        if (guild && this.#client.user?.id === memberID) {
+            if (guild["_clientMember"]) {
+                guild["_clientMember"]["update"](member);
+            } else {
+                guild["_clientMember"] = guild.members.update({ ...member, id: memberID }, guildID);
+            }
+            return guild["_clientMember"];
+        }
+        return guild ? guild.members.update({ ...member, id: memberID }, guildID)
+            : new Member({ ...member }, this.#client, guildID);
+    }
+
+    
+    updateUser(user: RawUser): User {
+        return this.#client.users.has(user.id)
+            ? this.#client.users.update(user)
+            : this.#client.users.add(new User(user, this.#client));
+    }
+
+
+
+    updateGuildGroup(data: RawGroup): Group {
+        if (data.serverId) {
+            const guild = this.#client.guilds.get(data.serverId);
+            if (guild) {
+                const group = guild.groups.has(data.id)
+                    ? guild.groups.update(data as RawGroup)
+                    : guild.groups.add(new Group(data, this.#client));
+                return group;
+            }
+        }
+        return new Group(data, this.#client);
+    }
+    updateGuildSubscription(data: RawSubscription): Subscription {
+        return new Subscription(data, this.#client);
+    }
+    updateMessage<T extends AnyTextableChannel = AnyTextableChannel>(
+        data: RawMessage,
+        params?: MessageConstructorParams
+    ): Message<T> {
+        const channel = this.#client.getChannel<T>(data.serverId ?? "", data.channelId);
+        if (channel) {
+            const message =
+              channel.messages.has(data.id)
+                  ? channel.messages.update(data)
+                  : channel.messages.add(new Message<T>(data, this.#client, params));
+            return message as Message<T>;
+        }
+        return new Message<T>(data, this.#client, params);
+    }
+    updateRole(data: RawRole): Role {
+        if (data.serverId) {
+            const guild = this.#client.guilds.get(data.serverId);
+            if (guild) {
+                const role = guild.roles.has(data.id)
+                    ? guild.roles.update(data as RawRole)
+                    : guild.roles.add(new Role(data, this.#client));
+                return role;
+            }
+        }
+        return new Role(data, this.#client);
+    }
+
+
 }
 
 export function is<T>(input: unknown): input is T {

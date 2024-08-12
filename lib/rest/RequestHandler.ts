@@ -42,6 +42,12 @@ export class RequestHandler {
         };
     }
 
+    async authRequest<T = unknown>(options: Omit<RequestOptions, "auth">): Promise<T> {
+        return this.request<T>({
+            ...options,
+            auth: true
+        });
+    }
     private globalUnblock(): void {
         this.globalBlock = false;
         while (this.readyQueue.length !== 0) {
@@ -49,12 +55,6 @@ export class RequestHandler {
         }
     }
 
-    async authRequest<T = unknown>(options: Omit<RequestOptions, "auth">): Promise<T> {
-        return this.request<T>({
-            ...options,
-            auth: true
-        });
-    }
 
     async request<T = unknown>(options: RequestOptions): Promise<T> {
         options.method = options.method.toUpperCase() as RESTMethod;

@@ -117,6 +117,9 @@ export class WSManager extends TypedEmitter<WebsocketEvents> {
         this.isOfficialMarkdownEnabled = client.params.isOfficialMarkdownEnabled ?? params.isOfficialMarkdownEnabled ?? true;
     }
 
+    get replayEventsCondition(): boolean {
+        return this.replayMissedEvents === true && this.lastMessageID !== undefined;
+    }
     // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 
     get vAPI(): number {
@@ -127,9 +130,6 @@ export class WSManager extends TypedEmitter<WebsocketEvents> {
         return this.emit("debug", `[TouchGuild DEBUG]: ${message.toString()}`);
     }
 
-    get replayEventsCondition(): boolean {
-        return this.replayMissedEvents === true && this.lastMessageID !== undefined;
-    }
 
     connect(): void | Error {
         if (this.ws && this.ws.readyState !== WebSocket.CLOSED) {
@@ -141,203 +141,6 @@ export class WSManager extends TypedEmitter<WebsocketEvents> {
         }
         this.currReconnectAttempt++;
         this.initialize();
-    }
-
-    private initialize(): void {
-        if (!this.token) return this.disconnect(false, new Error("Invalid Token."));
-
-        if (this.compression) {
-            if (!ZlibSync) {
-                throw new Error("Cannot use compression without the pako or zlib-sync module.");
-            }
-            this.client.emit("debug", "Initializing compression.");
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
-            this.#sharedZLib = new ZlibSync.Inflate({ chunkSize: 128 * 1024 });
-        }
-
-        const wsOptions = {
-            headers: {
-                "Authorization": `Bearer ${this.params.token}`,
-                "User-Agent":
-                  `TouchGuild ${pkgconfig.branch} (${pkgconfig.version}) Node.JS ${pkgconfig.NodeJSVersion}`,
-                "X-Library-Details":
-                  `TouchGuild ${pkgconfig.branch} (${pkgconfig.version}) Node.JS ${pkgconfig.NodeJSVersion}`
-            }, protocol: "HTTPS"
-        };
-        Object.assign(
-            wsOptions.headers,
-            { "x-guilded-bot-api-use-official-markdown": this.isOfficialMarkdownEnabled }
-        ); // temporary header
-        if (this.replayEventsCondition)
-            Object.assign(wsOptions.headers, { "guilded-last-message-id": this.lastMessageID });
-        this.ws = new WebSocket(this.proxyURL, wsOptions);
-
-        this.ws.on("open", this.onSocketOpen.bind(this));
-        this.ws.on("close", this.onSocketClose.bind(this));
-        this.ws.on("ping", this.onSocketPing.bind(this));
-        this.ws.on("pong", this.onSocketPong.bind(this));
-
-        this.ws.on("message", (args: string)=> {
-            if (this.firstWsMessage) this.firstWsMessage = false;
-            this.onSocketMessage(args);
-        });
-
-        this.ws.on("error", (err: Error) => {
-            this.onSocketError.bind(this)(err as Error);
-            console.error("GATEWAY ERR: Couldn't connect to Guilded.");
-        });
-
-        this.#connectTimeout = setTimeout(() => {
-            if (!this.connected) {
-                this.disconnect(undefined, new Error("Connection timeout."));
-            }
-        }, this.connectionTimeout);
-    }
-
-    private onSocketMessage(data: Data): void | undefined {
-        if (typeof data === "string") {
-            data = Buffer.from(data);
-        }
-        try {
-            if (data instanceof ArrayBuffer) {
-                if (this.compression || Erlpack) {
-                    data = Buffer.from(data);
-                }
-
-            } else if (Array.isArray(data)) {
-                data = Buffer.concat(data);
-            }
-
-            assert(is<Buffer>(data));
-            if (this.compression) {
-                if (data.length >= 4 && data.readUInt32BE(data.length - 4) === 0x30307D7D) {
-                    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
-                    this.#sharedZLib.push(data, zlibConstants!.Z_SYNC_FLUSH);
-                    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-                    if (this.#sharedZLib.err) {
-                    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/restrict-template-expressions
-                        this.client.emit("error", new Error(`ZLib ERROR ${this.#sharedZLib.err}: ${this.#sharedZLib.msg ?? ""}`));
-                        return;
-                    }
-
-                    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-argument
-                    data = Buffer.from(this.#sharedZLib.result ?? "");
-                    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
-                    return this.onPacket((Erlpack ? Erlpack.unpack(data as Buffer) : JSON.parse(data.toString())) as AnyPacket);
-                } else {
-                    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
-                    this.#sharedZLib.push(data, false);
-                }
-            } else if (Erlpack) {
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
-                return this.onPacket(Erlpack.unpack(data) as AnyPacket);
-            } else {
-                return this.onPacket(JSON.parse(data.toString()) as AnyPacket);
-            }
-
-        } catch (err) {
-            this.client.emit("error", err as Error);
-        }
-    }
-
-    private onPacket(packet: AnyPacket): void {
-        // s: Message ID used for replaying events after a disconnect.
-        if (packet.s) this.lastMessageID = packet.s;
-        switch (packet.op) {
-            case GatewayOPCodes.Event: {
-                this.emit("GATEWAY_PARSED_PACKET", packet.t, packet.d as object);
-                this.emit("GATEWAY_PACKET", packet);
-                break;
-            }
-            case GatewayOPCodes.Welcome: {
-                if (!packet.d) throw new Error("WSERR: Couldn't get packet data.");
-                if (!packet.d["heartbeatIntervalMs" as keyof object])
-                    throw new Error("WSERR: Couldn't get the heartbeat interval.");
-                if (this.#connectTimeout) {
-                    clearInterval(this.#connectTimeout);
-                }
-                this.#heartbeatInterval =
-                  setInterval(() =>
-                      this.heartbeat(),
-                  packet.d["heartbeatIntervalMs" as keyof object] as number
-                  );
-                this.emit("GATEWAY_WELCOME", packet.d["user" as keyof object] as RawAppUser);
-                this.emit("GATEWAY_WELCOME_PACKET", packet as WelcomePacket);
-                this.connected = true;
-                break;
-            }
-            case GatewayOPCodes.Resume: {
-                this.lastMessageID = undefined;
-                break;
-            }
-            default: {
-                this.emit("GATEWAY_UNKNOWN_PACKET", "??UNKNOWN OPCODE??", packet);
-                break;
-            }
-        }
-    }
-
-    private onSocketOpen(): void {
-        this.alive = true;
-        this.currReconnectAttempt = 0; // reset reconnection attempts
-        this.emit("debug", "Socket connection is open.");
-    }
-
-    private onSocketError(error: Error): void {
-        this.client.emit("error", error);
-        this.emit("error", error); this.emit("exit", error);
-        this.alive = false; return void 0;
-    }
-
-    private onSocketClose(code: number, r: Buffer): void {
-        const reason = r.toString();
-        // reconnect: can be set within the switch depending on the code to toggle reconnection.
-        let reconnect: boolean | undefined;
-        let err: Error | undefined;
-        this.alive = false;
-        if (code) {
-            this.client.emit("debug", `${code === 1000 ? "Clean" : "Unclean"} WS close: ${code}: ${reason}`);
-            switch (code) {
-                case 1006: {
-                    err = new GatewayError("Connection lost", code);
-                    break;
-                }
-                default: {
-                    err = new GatewayError(reason, code);
-                    break;
-                }
-            }
-            this.disconnect(reconnect, err);
-        }
-    }
-
-    private onSocketPing(): void {
-        // this._debug("Heartbeat has been sent.");
-        this.ws!.ping(); this.lastHeartbeatSent = Date.now();
-    }
-
-    private onSocketPong(): void {
-        this.client.emit("debug", "Heartbeat acknowledged.");
-        if (!Number.isNaN(this.lastHeartbeatSent)) this.latency = Date.now() - this.lastHeartbeatSent;
-        this.lastHeartbeatAck = true;
-    }
-
-    private heartbeat(): void | boolean {
-        if (this.heartbeatRequested) {
-            if (!this.lastHeartbeatAck) {
-                this.lastHeartbeatAck = false;
-                return this.client.emit(
-                    "error",
-                    new Error("Server didn't acknowledge the previous heartbeat, possible lost connection.")
-                );
-            }
-            this.heartbeatRequested = false;
-        } else {
-            this.client.emit("debug", "Heartbeat requested.");
-            this.ws?.ping();
-            this.heartbeatRequested = true;
-            this.lastHeartbeatAck = false;
-        }
     }
 
     disconnect(reconnect = this.reconnect, error?: Error): void {
@@ -413,22 +216,6 @@ export class WSManager extends TypedEmitter<WebsocketEvents> {
             this.hardReset();
         }
     }
-
-    reset(): void {
-        this.ws = null;
-        this.firstWsMessage = true;
-        this.lastMessageID = undefined;
-
-        this.alive = false;
-        this.latency = NaN;
-        this.lastHeartbeatSent = NaN;
-        this.lastHeartbeatReceived = NaN;
-        this.lastHeartbeatAck = false;
-        this.heartbeatRequested = false;
-        this.connectionTimeout = 30000;
-        this.#connectTimeout = null;
-    }
-
     hardReset(): void {
         this.reset();
         this.currReconnectAttempt = 0;
@@ -456,6 +243,218 @@ export class WSManager extends TypedEmitter<WebsocketEvents> {
         this.connectionTimeout = 30000;
         this.#connectTimeout = null;
     }
+    private heartbeat(): void | boolean {
+        if (this.heartbeatRequested) {
+            if (!this.lastHeartbeatAck) {
+                this.lastHeartbeatAck = false;
+                return this.client.emit(
+                    "error",
+                    new Error("Server didn't acknowledge the previous heartbeat, possible lost connection.")
+                );
+            }
+            this.heartbeatRequested = false;
+        } else {
+            this.client.emit("debug", "Heartbeat requested.");
+            this.ws?.ping();
+            this.heartbeatRequested = true;
+            this.lastHeartbeatAck = false;
+        }
+    }
+    private initialize(): void {
+        if (!this.token) return this.disconnect(false, new Error("Invalid Token."));
+
+        if (this.compression) {
+            if (!ZlibSync) {
+                throw new Error("Cannot use compression without the pako or zlib-sync module.");
+            }
+            this.client.emit("debug", "Initializing compression.");
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
+            this.#sharedZLib = new ZlibSync.Inflate({ chunkSize: 128 * 1024 });
+        }
+
+        const wsOptions = {
+            headers: {
+                "Authorization": `Bearer ${this.params.token}`,
+                "User-Agent":
+                  `TouchGuild ${pkgconfig.branch} (${pkgconfig.version}) Node.JS ${pkgconfig.NodeJSVersion}`,
+                "X-Library-Details":
+                  `TouchGuild ${pkgconfig.branch} (${pkgconfig.version}) Node.JS ${pkgconfig.NodeJSVersion}`
+            }, protocol: "HTTPS"
+        };
+        Object.assign(
+            wsOptions.headers,
+            { "x-guilded-bot-api-use-official-markdown": this.isOfficialMarkdownEnabled }
+        ); // temporary header
+        if (this.replayEventsCondition)
+            Object.assign(wsOptions.headers, { "guilded-last-message-id": this.lastMessageID });
+        this.ws = new WebSocket(this.proxyURL, wsOptions);
+
+        this.ws.on("open", this.onSocketOpen.bind(this));
+        this.ws.on("close", this.onSocketClose.bind(this));
+        this.ws.on("ping", this.onSocketPing.bind(this));
+        this.ws.on("pong", this.onSocketPong.bind(this));
+
+        this.ws.on("message", (args: string)=> {
+            if (this.firstWsMessage) this.firstWsMessage = false;
+            this.onSocketMessage(args);
+        });
+
+        this.ws.on("error", (err: Error) => {
+            this.onSocketError.bind(this)(err as Error);
+            console.error("GATEWAY ERR: Couldn't connect to Guilded.");
+        });
+
+        this.#connectTimeout = setTimeout(() => {
+            if (!this.connected) {
+                this.disconnect(undefined, new Error("Connection timeout."));
+            }
+        }, this.connectionTimeout);
+    }
+
+    private onPacket(packet: AnyPacket): void {
+        // s: Message ID used for replaying events after a disconnect.
+        if (packet.s) this.lastMessageID = packet.s;
+        switch (packet.op) {
+            case GatewayOPCodes.Event: {
+                this.emit("GATEWAY_PARSED_PACKET", packet.t, packet.d as object);
+                this.emit("GATEWAY_PACKET", packet);
+                break;
+            }
+            case GatewayOPCodes.Welcome: {
+                if (!packet.d) throw new Error("WSERR: Couldn't get packet data.");
+                if (!packet.d["heartbeatIntervalMs" as keyof object])
+                    throw new Error("WSERR: Couldn't get the heartbeat interval.");
+                if (this.#connectTimeout) {
+                    clearInterval(this.#connectTimeout);
+                }
+                this.#heartbeatInterval =
+                  setInterval(() =>
+                      this.heartbeat(),
+                  packet.d["heartbeatIntervalMs" as keyof object] as number
+                  );
+                this.emit("GATEWAY_WELCOME", packet.d["user" as keyof object] as RawAppUser);
+                this.emit("GATEWAY_WELCOME_PACKET", packet as WelcomePacket);
+                this.connected = true;
+                break;
+            }
+            case GatewayOPCodes.Resume: {
+                this.lastMessageID = undefined;
+                break;
+            }
+            default: {
+                this.emit("GATEWAY_UNKNOWN_PACKET", "??UNKNOWN OPCODE??", packet);
+                break;
+            }
+        }
+    }
+    private onSocketClose(code: number, r: Buffer): void {
+        const reason = r.toString();
+        // reconnect: can be set within the switch depending on the code to toggle reconnection.
+        let reconnect: boolean | undefined;
+        let err: Error | undefined;
+        this.alive = false;
+        if (code) {
+            this.client.emit("debug", `${code === 1000 ? "Clean" : "Unclean"} WS close: ${code}: ${reason}`);
+            switch (code) {
+                case 1006: {
+                    err = new GatewayError("Connection lost", code);
+                    break;
+                }
+                default: {
+                    err = new GatewayError(reason, code);
+                    break;
+                }
+            }
+            this.disconnect(reconnect, err);
+        }
+    }
+    private onSocketError(error: Error): void {
+        this.client.emit("error", error);
+        this.emit("error", error); this.emit("exit", error);
+        this.alive = false; return void 0;
+    }
+    private onSocketMessage(data: Data): void | undefined {
+        if (typeof data === "string") {
+            data = Buffer.from(data);
+        }
+        try {
+            if (data instanceof ArrayBuffer) {
+                if (this.compression || Erlpack) {
+                    data = Buffer.from(data);
+                }
+
+            } else if (Array.isArray(data)) {
+                data = Buffer.concat(data);
+            }
+
+            assert(is<Buffer>(data));
+            if (this.compression) {
+                if (data.length >= 4 && data.readUInt32BE(data.length - 4) === 0x30307D7D) {
+                    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+                    this.#sharedZLib.push(data, zlibConstants!.Z_SYNC_FLUSH);
+                    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+                    if (this.#sharedZLib.err) {
+                    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/restrict-template-expressions
+                        this.client.emit("error", new Error(`ZLib ERROR ${this.#sharedZLib.err}: ${this.#sharedZLib.msg ?? ""}`));
+                        return;
+                    }
+
+                    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-argument
+                    data = Buffer.from(this.#sharedZLib.result ?? "");
+                    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+                    return this.onPacket((Erlpack ? Erlpack.unpack(data as Buffer) : JSON.parse(data.toString())) as AnyPacket);
+                } else {
+                    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+                    this.#sharedZLib.push(data, false);
+                }
+            } else if (Erlpack) {
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+                return this.onPacket(Erlpack.unpack(data) as AnyPacket);
+            } else {
+                return this.onPacket(JSON.parse(data.toString()) as AnyPacket);
+            }
+
+        } catch (err) {
+            this.client.emit("error", err as Error);
+        }
+    }
+
+
+    private onSocketOpen(): void {
+        this.alive = true;
+        this.currReconnectAttempt = 0; // reset reconnection attempts
+        this.emit("debug", "Socket connection is open.");
+    }
+
+
+    private onSocketPing(): void {
+        // this._debug("Heartbeat has been sent.");
+        this.ws!.ping(); this.lastHeartbeatSent = Date.now();
+    }
+
+    private onSocketPong(): void {
+        this.client.emit("debug", "Heartbeat acknowledged.");
+        if (!Number.isNaN(this.lastHeartbeatSent)) this.latency = Date.now() - this.lastHeartbeatSent;
+        this.lastHeartbeatAck = true;
+    }
+
+
+    reset(): void {
+        this.ws = null;
+        this.firstWsMessage = true;
+        this.lastMessageID = undefined;
+
+        this.alive = false;
+        this.latency = NaN;
+        this.lastHeartbeatSent = NaN;
+        this.lastHeartbeatReceived = NaN;
+        this.lastHeartbeatAck = false;
+        this.heartbeatRequested = false;
+        this.connectionTimeout = 30000;
+        this.#connectTimeout = null;
+    }
+
+
 }
 
 

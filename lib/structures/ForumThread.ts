@@ -149,6 +149,16 @@ export class ForumThread<T extends ForumChannel> extends Base<number> {
               this.channelID
           ) as T extends AnyTextableChannel ? T : undefined);
     }
+    /** The guild the thread is in. This will throw an error if the guild isn't cached.*/
+    get guild(): T extends Guild ? Guild : Guild | null {
+        if (!this._cachedGuild) {
+            this._cachedGuild = this.client.getGuild(this.guildID);
+            if (!this._cachedGuild) {
+                throw new Error(`${this.constructor.name}#guild: couldn't find the Guild in cache.`);
+            }
+        }
+        return this._cachedGuild as T extends Guild ? Guild : Guild | null;
+    }
     /** Add a comment to this forum thread.
      * @param options Options of the comment.
      */
@@ -197,16 +207,6 @@ export class ForumThread<T extends ForumChannel> extends Base<number> {
             this.id as number,
             options
         );
-    }
-    /** The guild the thread is in. This will throw an error if the guild isn't cached.*/
-    get guild(): T extends Guild ? Guild : Guild | null {
-        if (!this._cachedGuild) {
-            this._cachedGuild = this.client.getGuild(this.guildID);
-            if (!this._cachedGuild) {
-                throw new Error(`${this.constructor.name}#guild: couldn't find the Guild in cache.`);
-            }
-        }
-        return this._cachedGuild as T extends Guild ? Guild : Guild | null;
     }
 
 
