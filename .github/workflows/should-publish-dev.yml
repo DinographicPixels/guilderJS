@@ -18,13 +18,13 @@ jobs:
         run: |
           if ! node scripts/should-publish; then
             echo "should-publish=false" >> "$GITHUB_OUTPUT"
-          else
+          else 
             echo "should-publish=true" >> "$GITHUB_OUTPUT"
           fi
   publish:
     needs: [should-publish]
     if: needs.should-publish.outputs.check == 'true'
     uses: ./.github/workflows/dev-publish.yml
-    with:
-      NPM_TOKEN: ${{ input.NPM_TOKEN }}
-      TEST_APP_TOKEN: ${{ input.TEST_APP_TOKEN }}
+    secrets:
+      NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+      TEST_APP_TOKEN: ${{ secrets.TEST_APP_TOKEN }}

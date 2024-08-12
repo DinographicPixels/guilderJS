@@ -1,13 +1,11 @@
 name: Publish Dev Build
 on:
   workflow_call:
-    inputs:
+    secrets:
       NPM_TOKEN:
         required: true
-        type: string
       TEST_APP_TOKEN:
         required: true
-        type: string
   workflow_dispatch:
 
 jobs:
@@ -17,8 +15,8 @@ jobs:
   testing:
     name: Feature Testing
     uses: ./.github/workflows/feature-testing.yml
-    with:
-      TEST_APP_TOKEN: ${{ inputs.TEST_APP_TOKEN }}
+    secrets:
+      TEST_APP_TOKEN: ${{ secrets.TEST_APP_TOKEN }}
   publish:
     runs-on: ubuntu-latest
     needs: [lint, testing]
@@ -41,9 +39,9 @@ jobs:
           contents=$(jq --arg version "$v" '.version = $version' package.json) && echo -E "${contents}" > package.json
       - uses: JS-DevTools/npm-publish@v1
         with:
-          token: ${{ inputs.NPM_TOKEN }}
+          token: ${{ secrets.NPM_TOKEN }}
           tag: dev
       - name: Deprecate Old Versions
         run: npx -y npm-deprecate
         env:
-          NODE_AUTH_TOKEN: ${{ inputs.NPM_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
