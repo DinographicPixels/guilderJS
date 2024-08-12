@@ -7,3 +7,4 @@ export * from "./json";
 export * from "./request-handler";
 export * from "./types";
 export * from "./webhooks";
+export * from "./users";

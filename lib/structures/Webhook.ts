@@ -83,15 +83,23 @@ export class Webhook extends Base<string> {
         }
     }
 
-    /** Request Webhook Token if not provided.
-     * @note This method sets this Webhook's token property as well as returning its token.
-     */
-    async requestToken(): Promise<string> {
-        const webhook = await this.client.rest.guilds.getWebhook(this.guildID, this.id);
-        if (webhook.token) return this.token = webhook.token;
-        throw new Error("Guilded did not provide a token for this webhook.");
+    /** Delete the webhook. */
+    async delete(): Promise<void>{
+        return this.client.rest.webhooks.delete(
+            this.guildID,
+            this.id
+        );
     }
-
+    /** Update the webhook.
+     * @param options Edit Options.
+     */
+    async edit(options: WebhookEditOptions): Promise<Webhook>{
+        return this.client.rest.webhooks.edit(
+            this.guildID,
+            this.id,
+            options
+        );
+    }
     /**
      * Execute this Webhook.
      * @param options Execute Options.
@@ -104,29 +112,18 @@ export class Webhook extends Base<string> {
                 "Token has not been provided by Guilded, " +
               "request it using Webhook#requestToken."
             );
-        return this.client.rest.guilds.executeWebhook(
+        return this.client.rest.webhooks.execute(
             this.id,
             this.token,
             options
         );
     }
-
-    /** Update the webhook.
-     * @param options Edit Options.
+    /** Request Webhook Token if not provided.
+     * @note This method sets this Webhook's token property as well as returning its token.
      */
-    async edit(options: WebhookEditOptions): Promise<Webhook>{
-        return this.client.rest.guilds.editWebhook(
-            this.guildID,
-            this.id,
-            options
-        );
-    }
-
-    /** Delete the webhook. */
-    async delete(): Promise<void>{
-        return this.client.rest.guilds.deleteWebhook(
-            this.guildID,
-            this.id
-        );
+    async requestToken(): Promise<string> {
+        const webhook = await this.client.rest.webhooks.get(this.guildID, this.id);
+        if (webhook.token) return this.token = webhook.token;
+        throw new Error("Guilded did not provide a token for this webhook.");
     }
 }

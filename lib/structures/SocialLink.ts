@@ -40,6 +40,11 @@ export class SocialLink {
         this.update(data);
     }
 
+    /** Retrieve cached user. */
+    get user(): User | null {
+        return this.client.users.get(this.userID) ?? null;
+    }
+
     toJSON(): JSONSocialLink {
         return {
             type:      this.type,
@@ -66,10 +71,5 @@ export class SocialLink {
         if (data.userId !== undefined) {
             this.userID = data.userId;
         }
-    }
-
-    /** Retrieve cached user. */
-    get user(): User | null {
-        return this.client.users.get(this.userID) ?? null;
     }
 }

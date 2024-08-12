@@ -93,32 +93,12 @@ export class Announcement extends Base<string> {
     }
 
     /**
-     * Edit this announcement.
-     * @param options Edit options
-     */
-    async edit(options: PATCHChannelAnnouncementBody): Promise<Announcement> {
-        return this.client.rest.channels.editAnnouncement(
-            this.channelID,
-            this.id,
-            options
-        );
-    }
-
-    /**
-     * Delete this announcement.
-     */
-    async delete(): Promise<void> {
-        return this.client.rest.channels.deleteAnnouncement(this.channelID, this.id);
-    }
-
-    /**
      * Create an announcement in the same Announcement channel as this one.
      * @param options Create options.
      */
     async createAnnouncement(options: POSTChannelAnnouncementBody): Promise<Announcement> {
         return this.client.rest.channels.createAnnouncement(this.channelID, options);
     }
-
     /**
      * Add a reaction to this announcement.
      * @param emoteID ID of the emote to add
@@ -131,7 +111,12 @@ export class Announcement extends Base<string> {
             emoteID
         );
     }
-
+    /**
+     * Delete this announcement.
+     */
+    async delete(): Promise<void> {
+        return this.client.rest.channels.deleteAnnouncement(this.channelID, this.id);
+    }
     /**
      * Remove a reaction from this announcement.
      * @param emoteID ID of the emote to remove
@@ -142,6 +127,17 @@ export class Announcement extends Base<string> {
             "ChannelAnnouncement",
             this.id,
             emoteID
+        );
+    }
+    /**
+     * Edit this announcement.
+     * @param options Edit options
+     */
+    async edit(options: PATCHChannelAnnouncementBody): Promise<Announcement> {
+        return this.client.rest.channels.editAnnouncement(
+            this.channelID,
+            this.id,
+            options
         );
     }
 }

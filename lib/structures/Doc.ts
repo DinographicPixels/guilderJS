@@ -111,23 +111,21 @@ export class Doc extends Base<number> {
         }
     }
 
-    /** Retrieve the member who executed this action.
-     * Note: If this doc has been edited, the updatedBy id will be used to get you the member.
-     */
-    get member(): Member | Promise<Member> {
-        return this.client.getGuild(this.guildID)?.members.get(this.updatedBy ?? this.memberID)
-          ?? this.client.rest.guilds.getMember(this.guildID, this.updatedBy ?? this.memberID);
+    /** Delete this doc. */
+    async delete(): Promise<void> {
+        return this.client.rest.channels.deleteDoc(this.channelID, this.id as number);
     }
-
     /** Edit this doc.
      * @param options Edit options.
      */
     async edit(options: EditDocOptions): Promise<Doc> {
         return this.client.rest.channels.editDoc(this.channelID, this.id as number, options);
     }
-
-    /** Delete this doc. */
-    async delete(): Promise<void> {
-        return this.client.rest.channels.deleteDoc(this.channelID, this.id as number);
+    /** Retrieve the member who executed this action.
+     * Note: If this doc has been edited, the updatedBy id will be used to get you the member.
+     */
+    get member(): Member | Promise<Member> {
+        return this.client.getGuild(this.guildID)?.members.get(this.updatedBy ?? this.memberID)
+          ?? this.client.rest.guilds.getMember(this.guildID, this.updatedBy ?? this.memberID);
     }
 }

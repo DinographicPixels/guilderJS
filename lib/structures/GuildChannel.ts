@@ -98,7 +98,6 @@ export class GuildChannel extends Base<string> {
             visibility:      this.visibility
         };
     }
-
     protected override update(data: RawChannel): void {
         if (data.archivedAt !== undefined) {
             this.archivedAt = new Date(data.archivedAt);
@@ -144,24 +143,21 @@ export class GuildChannel extends Base<string> {
             this.isPublic = data.visibility === "public";
         }
     }
-
-    /** Edit the channel. */
-    async edit(options: EditChannelOptions): Promise<Channel>{
-        return this.client.rest.guilds.editChannel(this.id as string, options);
+    /** Archive the channel */
+    async archive(): Promise<void>{
+        return this.client.rest.channels.archive(this.id as string);
     }
 
     /** Delete the channel. */
     async delete(): Promise<void>{
         return this.client.rest.guilds.deleteChannel(this.id as string);
     }
-
-    /** Archive the channel */
-    async archive(): Promise<void>{
-        return this.client.rest.channels.archiveChannel(this.id as string);
+    /** Edit the channel. */
+    async edit(options: EditChannelOptions): Promise<Channel>{
+        return this.client.rest.guilds.editChannel(this.id as string, options);
     }
-
     /** Restore the archived channel */
     async restore(): Promise<void>{
-        return this.client.rest.channels.restoreChannel(this.id as string);
+        return this.client.rest.channels.restore(this.id as string);
     }
 }

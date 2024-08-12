@@ -32,7 +32,7 @@ export abstract class MemberInfo {
     }
 
     get guild(): Guild | Promise<Guild> {
-        return this.client!.guilds.get(this.guildID) ?? this.client!.rest.guilds.getGuild(this.guildID);
+        return this.client!.guilds.get(this.guildID) ?? this.client!.rest.guilds.get(this.guildID);
     }
 
     get member(): Member | Promise<Member> {

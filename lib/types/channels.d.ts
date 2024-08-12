@@ -14,40 +14,28 @@ import { AnnouncementChannel } from "../structures/AnnouncementChannel";
 import type {
     APIChatMessage,
     APIEmbedField,
-    APIEmbedOptions,
     APIForumTopic,
     APIForumTopicSummary,
-    APIGuild,
-    APIGuildCategory,
     APIGuildChannel,
-    APIGuildGroup,
-    APIGuildMember,
-    APIGuildRole,
-    APIGuildSubscription,
-    APIUser,
     APIAnnouncement,
     APIAnnouncementComment,
     APIAnnouncementCommentReaction,
-    APIUserSummary,
     APICalendarEventRSVPStatuses,
-    APIMentions,
     APICalendarEvent,
     APICalendarEventComment,
     APICalendarEventCommentReaction,
     APIDoc,
     APICalendarEventRSVP,
     APIForumTopicComment,
-    APIGuildMemberBan,
     APIListItem,
     APIListItemSummary,
-    APIBotUser
+    APIEmbedOptions,
+    APIMentions
 } from "guildedapi-types.ts/v1";
 import { APIDocComment } from "guildedapi-types.ts/typings/payloads/v1/Docs";
 import { APIDocCommentReaction, APIForumTopicCommentReaction, APIForumTopicReaction } from "guildedapi-types.ts/typings/payloads/v1/Reactions";
-import { APIGuildMemberSummary } from "guildedapi-types.ts/typings/payloads/v1/Members";
 import { APIListItemNote, APIListItemNoteSummary } from "guildedapi-types.ts/typings/payloads/v1/ListItems";
 import { APIEmote } from "guildedapi-types.ts/typings/payloads/v1/Emotes";
-import { APISocialLink } from "guildedapi-types.ts/typings/payloads/v1/Users";
 
 export type RawChannel = APIGuildChannel;
 export type RawAnnouncement = APIAnnouncement;
@@ -71,22 +59,9 @@ export type RawListItem = APIListItem;
 export type RawPartialListItem = APIListItemSummary;
 export type RawListItemNote = APIListItemNote;
 export type RawPartialListItemNote = APIListItemNoteSummary;
-// TODO: has to move
-export type RawGuild = APIGuild;
-export type RawGroup = APIGuildGroup;
-export type RawCategory = APIGuildCategory;
-export type RawMember = APIGuildMember;
-export type RawMemberBan = APIGuildMemberBan;
-export type RawPartialMember = APIGuildMemberSummary;
-export type RawRole = APIGuildRole;
-export type RawSubscription = APIGuildSubscription;
-export type RawUser = APIUser;
-export type RawPartialUser = APIUserSummary;
-export type RawAppUser = APIBotUser;
 export type RawEmbed = APIEmbedOptions;
-export type RawMentions = APIMentions;
 export type RawEmote = APIEmote;
-export type RawSocialLink = APISocialLink;
+export type RawMentions = APIMentions;
 
 export interface MessageConstructorParams {
     originals?: {

@@ -37,6 +37,12 @@ export class CalendarChannel extends GuildChannel {
         this.update(data);
     }
 
+    override toJSON(): JSONCalendarChannel {
+        return {
+            ...super.toJSON(),
+            scheduledEvents: this.scheduledEvents.map(event => event.toJSON())
+        };
+    }
     /** Create an event in this channel.
      * @param options Event options.
      * @param createSeries (optional) Create a series. (event's repetition)
@@ -48,6 +54,21 @@ export class CalendarChannel extends GuildChannel {
         return this.client.rest.channels.createCalendarEvent(this.id, options, createSeries);
     }
 
+    /**
+     * Delete an event from this channel.
+     * @param eventID ID of the event to delete.
+     */
+    async deleteEvent(eventID: number): Promise<void> {
+        return this.client.rest.channels.deleteCalendarEvent(this.id, eventID);
+    }
+    /**
+     * Delete an event series set in this channel.
+     * @param eventID ID of the event.
+     * @param seriesID ID of the series.
+     */
+    async deleteSeries(eventID: number, seriesID: string): Promise<void> {
+        return this.client.rest.channels.deleteCalendarEventSeries(this.id, eventID, seriesID);
+    }
     /** Edit an event from this channel.
      * @param eventID ID of a calendar event.
      * @param options Edit options.
@@ -73,29 +94,5 @@ export class CalendarChannel extends GuildChannel {
             seriesID,
             options
         );
-    }
-
-    /**
-     * Delete an event series set in this channel.
-     * @param eventID ID of the event.
-     * @param seriesID ID of the series.
-     */
-    async deleteSeries(eventID: number, seriesID: string): Promise<void> {
-        return this.client.rest.channels.deleteCalendarEventSeries(this.id, eventID, seriesID);
-    }
-
-    /**
-     * Delete an event from this channel.
-     * @param eventID ID of the event to delete.
-     */
-    async deleteEvent(eventID: number): Promise<void> {
-        return this.client.rest.channels.deleteCalendarEvent(this.id, eventID);
-    }
-
-    override toJSON(): JSONCalendarChannel {
-        return {
-            ...super.toJSON(),
-            scheduledEvents: this.scheduledEvents.map(event => event.toJSON())
-        };
     }
 }

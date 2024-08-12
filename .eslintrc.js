@@ -49,7 +49,8 @@ module.exports = {
     "@typescript-eslint",
     "jsdoc",
     "import-newlines",
-    "unused-imports"
+    "unused-imports",
+    "sort-class-members"
   ],
   "rules": {
     "@typescript-eslint/adjacent-overload-signatures": "error",
@@ -327,6 +328,30 @@ module.exports = {
     "unicorn/no-array-callback-reference": "off",
     "unicorn/no-array-method-this-argument": "off",
     "unicorn/no-negated-condition": "off",
-    "unicorn/no-typeof-undefined": "off"
+    "unicorn/no-typeof-undefined": "off",
+    "sort-class-members/sort-class-members": [
+      "error",
+      {
+        "order": [
+          "[properties]",
+          "constructor",
+          "[special-methods]",
+          "[methods]"
+        ],
+        "groups": {
+          "properties": [{ "type": "property" }],
+          "special-methods": [
+            { "type": "method", "override": true, "sort": "alphabetical" },
+            { "type": "method", "readonly": true, "sort": "alphabetical" },
+            { "type": "method", "abstract": true, "sort": "alphabetical" },
+            { "type": "method", "static": true, "sort": "alphabetical" },
+            { "type": "method", "kind": "get", "sort": "alphabetical" },
+            { "type": "method", "kind": "set", "sort": "alphabetical" }
+          ],
+          "methods": [{ "type": "method", "sort": "alphabetical" }]
+        },
+        "accessorPairPositioning": "getThenSet"
+      }
+    ]
   }
 }

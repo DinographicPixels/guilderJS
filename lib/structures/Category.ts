@@ -71,25 +71,6 @@ export class Category extends Base<number> {
     }
 
     /**
-     * Update a guild category.
-     * @param options Edit options.
-     */
-    async editCategory(options: PATCHUpdateCategoryBody): Promise<Category> {
-        return this.client.rest.guilds.editCategory(
-            this.guildID as string,
-            this.id as number,
-            options
-        );
-    }
-
-    /**
-     * Delete a guild category.
-     */
-    async deleteCategory(): Promise<Category> {
-        return this.client.rest.guilds.deleteCategory(this.guildID as string, this.id as number);
-    }
-
-    /**
      * Create a channel category permission assigned to a user or role.
      * @param targetID ID of the user (string) or role (number) to assign the permission to
      * @param options Permission options
@@ -107,6 +88,35 @@ export class Category extends Base<number> {
             options
         );
     }
+    /**
+     * Delete a guild category.
+     */
+    async deleteCategory(): Promise<Category> {
+        return this.client.rest.guilds.deleteCategory(this.guildID as string, this.id as number);
+    }
+    /**
+     * Delete a category permission.
+     * @param targetID ID of the user or role to delete the permission from
+     */
+    async deletePermission(targetID: string | number): Promise<void> {
+        return this.client.rest.guilds.deleteCategoryPermission(
+            this.guildID,
+            this.id,
+            targetID
+        );
+    }
+    /**
+     * Update a guild category.
+     * @param options Edit options.
+     */
+    async editCategory(options: PATCHUpdateCategoryBody): Promise<Category> {
+        return this.client.rest.guilds.editCategory(
+            this.guildID as string,
+            this.id as number,
+            options
+        );
+    }
+
 
     /**
      * Update a category permission.
@@ -147,28 +157,15 @@ export class Category extends Base<number> {
     }
 
     /**
-     * Get user permissions from a specified category.
-     */
-    async getUserPermissions(): Promise<Array<Permission>> {
-        return this.client.rest.guilds.getCategoryUserPermissions(this.guildID, this.id);
-    }
-
-    /**
      * Get role permissions from a specified category.
      */
     async getRolePermissions(): Promise<Array<Permission>> {
         return this.client.rest.guilds.getCategoryRolePermissions(this.guildID, this.id);
     }
-
     /**
-     * Delete a category permission.
-     * @param targetID ID of the user or role to delete the permission from
+     * Get user permissions from a specified category.
      */
-    async deletePermission(targetID: string | number): Promise<void> {
-        return this.client.rest.guilds.deleteCategoryPermission(
-            this.guildID,
-            this.id,
-            targetID
-        );
+    async getUserPermissions(): Promise<Array<Permission>> {
+        return this.client.rest.guilds.getCategoryUserPermissions(this.guildID, this.id);
     }
 }

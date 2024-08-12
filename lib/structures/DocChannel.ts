@@ -31,19 +31,17 @@ export class DocChannel extends GuildChannel {
         this.update(data);
     }
 
+    override toJSON(): JSONDocChannel {
+        return {
+            ...super.toJSON(),
+            docs: this.docs.map(doc => doc.toJSON())
+        };
+    }
     /** Create a doc in this channel.
      * @param options Doc's options.
      */
     async createDoc(options: CreateDocOptions): Promise<Doc> {
         return this.client.rest.channels.createDoc(this.id, options);
-    }
-
-    /** Edit a doc from this channel.
-     * @param docID ID of a doc.
-     * @param options Edit options.
-     */
-    async editDoc(docID: number, options: EditDocOptions): Promise<Doc> {
-        return this.client.rest.channels.editDoc(this.id, docID, options);
     }
 
     /** Delete a doc from this channel.
@@ -52,11 +50,11 @@ export class DocChannel extends GuildChannel {
     async deleteDoc(docID: number): Promise<void> {
         return this.client.rest.channels.deleteDoc(this.id, docID);
     }
-
-    override toJSON(): JSONDocChannel {
-        return {
-            ...super.toJSON(),
-            docs: this.docs.map(doc => doc.toJSON())
-        };
+    /** Edit a doc from this channel.
+     * @param docID ID of a doc.
+     * @param options Edit options.
+     */
+    async editDoc(docID: number, options: EditDocOptions): Promise<Doc> {
+        return this.client.rest.channels.editDoc(this.id, docID, options);
     }
 }

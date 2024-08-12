@@ -32,6 +32,14 @@ export class Channel extends Base<string> {
         this.name = data.name;
     }
 
+    override toJSON(): JSONChannel {
+        return {
+            ...super.toJSON(),
+            type: this.type,
+            name: this.name
+        };
+    }
+
     static from<T extends AnyChannel = AnyChannel>(data: RawChannel, client: Client): T {
         switch (data.type) {
             case "announcements": {
@@ -70,21 +78,13 @@ export class Channel extends Base<string> {
         }
     }
 
-    override toJSON(): JSONChannel {
-        return {
-            ...super.toJSON(),
-            type: this.type,
-            name: this.name
-        };
-    }
-
-    /** Edit the channel. */
-    async edit(options: EditChannelOptions): Promise<Channel>{
-        return this.client.rest.guilds.editChannel(this.id as string, options);
-    }
 
     /** Delete the channel. */
-    async delete(): Promise<void>{
+    async delete(): Promise<void> {
         return this.client.rest.guilds.deleteChannel(this.id as string);
+    }
+    /** Edit the channel. */
+    async edit(options: EditChannelOptions): Promise<Channel> {
+        return this.client.rest.guilds.editChannel(this.id as string, options);
     }
 }

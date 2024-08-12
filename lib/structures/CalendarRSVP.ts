@@ -63,7 +63,6 @@ export class CalendarEventRSVP extends Base<number> {
             createdAt: this.createdAt
         };
     }
-
     protected override update(data: RawCalendarRSVP): void {
         if (data.calendarEventId !== undefined) {
             this.id = data.calendarEventId;
@@ -93,23 +92,22 @@ export class CalendarEventRSVP extends Base<number> {
             this.entityID = data.userId;
         }
     }
+    /** Delete this RSVP. */
+    async delete(): Promise<void>{
+        return this.client.rest.channels.deleteCalendarRSVP(
+            this.channelID,
+            this.id as number,
+            this.entityID
+        );
+    }
 
     /** Edit this RSVP. */
     async edit(options: EditCalendarRSVPOptions): Promise<CalendarEventRSVP>{
-        return this.client.rest.channels.editCalendarRsvp(
+        return this.client.rest.channels.editCalendarRSVP(
             this.channelID,
             this.id as number,
             this.entityID,
             options
-        );
-    }
-
-    /** Delete this RSVP. */
-    async delete(): Promise<void>{
-        return this.client.rest.channels.deleteCalendarRsvp(
-            this.channelID,
-            this.id as number,
-            this.entityID
         );
     }
 }

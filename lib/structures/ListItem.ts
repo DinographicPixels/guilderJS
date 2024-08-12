@@ -124,6 +124,14 @@ export class ListItem extends Base<string> {
         }
     }
 
+    /** Retrieve the member who executed this action.
+     *
+     * Note: If the item has been edited, the updatedBy id will be used to get you the member.
+     */
+    get member(): Member | Promise<Member> {
+        return this.client.getGuild(this.guildID)?.members.get(this.updatedBy ?? this.memberID)
+          ?? this.client.rest.guilds.getMember(this.guildID, this.updatedBy ?? this.memberID);
+    }
     get note(): ListItemNoteTypes | null {
         return this._data.note ? {
             createdAt:       new Date(this._data.note.createdAt),
@@ -135,15 +143,15 @@ export class ListItem extends Base<string> {
         } as ListItemNoteTypes : null;
     }
 
-    /** Retrieve the member who executed this action.
-     *
-     * Note: If the item has been edited, the updatedBy id will be used to get you the member.
-     */
-    get member(): Member | Promise<Member> {
-        return this.client.getGuild(this.guildID)?.members.get(this.updatedBy ?? this.memberID)
-          ?? this.client.rest.guilds.getMember(this.guildID, this.updatedBy ?? this.memberID);
-    }
 
+    /** Set this item as "complete". */
+    async complete(): Promise<void> {
+        return this.client.rest.channels.completeListItem(this.channelID, this.id as string);
+    }
+    /** Delete this item. */
+    async delete(): Promise<void> {
+        return this.client.rest.channels.deleteListItem(this.channelID, this.id as string);
+    }
     /** Edit this item.
      * @param options Edit options.
      */
@@ -155,16 +163,6 @@ export class ListItem extends Base<string> {
             this.id as string,
             options
         );
-    }
-
-    /** Delete this item. */
-    async delete(): Promise<void> {
-        return this.client.rest.channels.deleteListItem(this.channelID, this.id as string);
-    }
-
-    /** Set this item as "complete". */
-    async complete(): Promise<void> {
-        return this.client.rest.channels.completeListItem(this.channelID, this.id as string);
     }
 
     /** Set this item as "incomplete". */

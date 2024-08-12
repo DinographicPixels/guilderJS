@@ -152,22 +152,32 @@ export class Guild extends Base<string> {
           ?? this.client.rest.guilds.getMember(this.id, this.ownerID);
     }
 
-    /** Get a channel from this guild, if cached.
-     * @param channelID The ID of the channel to get from cache.
+    /** Award a member using the built-in EXP system.
+     * @param memberID ID of the member to award.
+     * @param amount Amount of experience to give.
      */
-    getChannel(channelID: string): Channel | undefined {
-        if (!channelID) throw new Error("channelID is a required parameter.");
-        return this.channels.get(channelID);
+    async awardMember(memberID: string, amount: number): Promise<number>{
+        return this.client.rest.guilds.awardMember(this.id as string, memberID, amount);
     }
-
-    /** Get a member from this guild, if cached.
-     * @param memberID The ID of the member to get.
+    /** Award every member of a guild having a role using the built-in EXP system.
+     * @param roleID ID of a role.
+     * @param amount Amount of experience.
      */
-    getMember(memberID: string): Member | undefined {
-        if (!memberID) throw new Error("memberID is a required parameter.");
-        return this.members.get(memberID);
+    async awardRole(roleID: number, amount: number): Promise<void> {
+        return this.client.rest.guilds.awardRole(this.id as string, roleID, amount);
     }
-
+    /** Bulk Award XP Members
+     * @param options Members to award XP and amount of XP to award.
+     */
+    async bulkAwardXPMembers(options: BulkXPOptions): Promise<POSTBulkAwardXPResponse> {
+        return this.client.rest.guilds.bulkAwardXP(this.id as string, options);
+    }
+    /** Bulk set XP Members
+     * @param options Members to set XP and amount of XP to set.
+     */
+    async bulkSetXPMembers(options: BulkXPOptions): Promise<POSTBulkAwardXPResponse> {
+        return this.client.rest.guilds.bulkSetXP(this.id as string, options);
+    }
     /** Ban a member.
      * @param memberID ID of the member to ban.
      * @param reason The reason of the ban.
@@ -175,40 +185,6 @@ export class Guild extends Base<string> {
     async createBan(memberID: string, reason?: string): Promise<BannedMember> {
         return this.client.rest.guilds.createBan(this.id as string, memberID, reason);
     }
-
-    /** Unban a member.
-     * @param memberID ID of the member to unban.
-     */
-    async removeBan(memberID: string): Promise<void> {
-        return this.client.rest.guilds.removeBan(this.id as string, memberID);
-    }
-
-    /** Get Subscription
-     * @param subscriptionID ID of the subscription to get.
-     */
-    async getSubscription(subscriptionID: string): Promise<Subscription> {
-        return this.client.rest.guilds.getSubscription(this.id as string, subscriptionID);
-    }
-
-    /** Get Subscriptions */
-    async getSubscriptions(): Promise<Array<Subscription>> {
-        return this.client.rest.guilds.getSubscriptions(this.id as string);
-    }
-
-    /** Bulk Award XP Members
-     * @param options Members to award XP and amount of XP to award.
-     */
-    async bulkAwardXPMembers(options: BulkXPOptions): Promise<POSTBulkAwardXPResponse> {
-        return this.client.rest.guilds.bulkAwardXP(this.id as string, options);
-    }
-
-    /** Bulk set XP Members
-     * @param options Members to set XP and amount of XP to set.
-     */
-    async bulkSetXPMembers(options: BulkXPOptions): Promise<POSTBulkAwardXPResponse> {
-        return this.client.rest.guilds.bulkSetXP(this.id as string, options);
-    }
-
     /**
      * Create a category
      * @param options Create options.
@@ -217,11 +193,11 @@ export class Guild extends Base<string> {
         return this.client.rest.guilds.createCategory(this.id as string, options);
     }
     /**
-     * Read a guild category.
+     * Delete a category.
      * @param categoryID ID of the category you want to read.
      */
-    async getCategory(categoryID: number): Promise<Category> {
-        return this.client.rest.guilds.getCategory(this.id as string, categoryID);
+    async deleteCategory(categoryID: number): Promise<Category> {
+        return this.client.rest.guilds.deleteCategory(this.id as string, categoryID);
     }
     /**
      * Edit a category.
@@ -231,22 +207,48 @@ export class Guild extends Base<string> {
     async editCategory(categoryID: number, options: PATCHUpdateCategoryBody): Promise<Category> {
         return this.client.rest.guilds.editCategory(this.id as string, categoryID, options);
     }
-
     /**
-     * Delete a category.
+     * Read a guild category.
      * @param categoryID ID of the category you want to read.
      */
-    async deleteCategory(categoryID: number): Promise<Category> {
-        return this.client.rest.guilds.deleteCategory(this.id as string, categoryID);
+    async getCategory(categoryID: number): Promise<Category> {
+        return this.client.rest.guilds.getCategory(this.id as string, categoryID);
+    }
+    /** Get a channel from this guild, if cached.
+     * @param channelID The ID of the channel to get from cache.
+     */
+    getChannel(channelID: string): Channel | undefined {
+        if (!channelID) throw new Error("channelID is a required parameter.");
+        return this.channels.get(channelID);
     }
 
-    /** Award a member using the built-in EXP system.
-     * @param memberID ID of the member to award.
-     * @param amount Amount of experience to give.
+
+    /** Get a member from this guild, if cached.
+     * @param memberID The ID of the member to get.
      */
-    async awardMember(memberID: string, amount: number): Promise<number>{
-        return this.client.rest.guilds.awardMember(this.id as string, memberID, amount);
+    getMember(memberID: string): Member | undefined {
+        if (!memberID) throw new Error("memberID is a required parameter.");
+        return this.members.get(memberID);
     }
+
+
+    /** Get Subscription
+     * @param subscriptionID ID of the subscription to get.
+     */
+    async getSubscription(subscriptionID: string): Promise<Subscription> {
+        return this.client.rest.guilds.getSubscription(this.id as string, subscriptionID);
+    }
+    /** Get Subscriptions */
+    async getSubscriptions(): Promise<Array<Subscription>> {
+        return this.client.rest.guilds.getSubscriptions(this.id as string);
+    }
+    /** Unban a member.
+     * @param memberID ID of the member to unban.
+     */
+    async removeBan(memberID: string): Promise<void> {
+        return this.client.rest.guilds.removeBan(this.id as string, memberID);
+    }
+
 
     /** Set member's experience using the built-in EXP system.
      * @param memberID ID of the member to award.
@@ -254,13 +256,5 @@ export class Guild extends Base<string> {
      */
     async setMemberXP(memberID: string, amount: number): Promise<number>{
         return this.client.rest.guilds.setMemberXP(this.id as string, memberID, amount);
-    }
-
-    /** Award every member of a guild having a role using the built-in EXP system.
-     * @param roleID ID of a role.
-     * @param amount Amount of experience.
-     */
-    async awardRole(roleID: number, amount: number): Promise<void> {
-        return this.client.rest.guilds.awardRole(this.id as string, roleID, amount);
     }
 }

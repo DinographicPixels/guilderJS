@@ -100,24 +100,12 @@ export class DocComment extends Base<number> {
         }
     }
 
-    /** Retrieve the member who sent this comment, if cached.
-     * If there is no cached member, this will make a rest request which returns a Promise.
-     * If the request fails, it'll return undefined or throw an error that you can catch.
-     */
-    get member(): Member | Promise<Member> | undefined {
-        if (this.guildID === null) throw new Error("Couldn't get member, API did not return guildID.");
-        return this.client.getGuild(this.guildID as string)?.members.get(this.memberID)
-        ?? this.guildID
-            ? this.client.rest.guilds.getMember(this.guildID as string, this.memberID) : undefined;
-    }
-
     /** Create a comment in the same doc as this one.
      * @param options Create options.
      */
     async createDocComment(options: CreateDocCommentOptions): Promise<DocComment> {
         return this.client.rest.channels.createDocComment(this.channelID, this.docID, options);
     }
-
     /** Add a reaction to this comment.
      * @param reaction ID of the reaction to add.
      */
@@ -130,7 +118,10 @@ export class DocComment extends Base<number> {
             reaction
         );
     }
-
+    /** Delete this comment */
+    async delete(): Promise<void>{
+        return this.client.rest.channels.deleteDocComment(this.channelID, this.docID, this.id);
+    }
     /** Remove a reaction from this comment.
      * @param reaction ID of the reaction to remove.
      */
@@ -143,7 +134,6 @@ export class DocComment extends Base<number> {
             reaction
         );
     }
-
     /** Edit this comment */
     async edit(options: EditDocCommentOptions): Promise<DocComment>{
         return this.client.rest.channels.editDocComment(
@@ -153,9 +143,14 @@ export class DocComment extends Base<number> {
             options
         );
     }
-
-    /** Delete this comment */
-    async delete(): Promise<void>{
-        return this.client.rest.channels.deleteDocComment(this.channelID, this.docID, this.id);
+    /** Retrieve the member who sent this comment, if cached.
+     * If there is no cached member, this will make a rest request which returns a Promise.
+     * If the request fails, it'll return undefined or throw an error that you can catch.
+     */
+    get member(): Member | Promise<Member> | undefined {
+        if (this.guildID === null) throw new Error("Couldn't get member, API did not return guildID.");
+        return this.client.getGuild(this.guildID as string)?.members.get(this.memberID)
+        ?? this.guildID
+            ? this.client.rest.guilds.getMember(this.guildID as string, this.memberID) : undefined;
     }
 }

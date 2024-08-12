@@ -95,43 +95,6 @@ export class AnnouncementComment extends Base<number> {
 
 
     /**
-     * Retrieve the member who sent this comment, if cached.
-     * If there is no cached member, this will make a rest request which returns a Promise.
-     * If the request fails, it'll return undefined or throw an error that you can catch.
-     */
-    get member(): Member | Promise<Member> | undefined {
-        if (this.guildID === null) throw new Error("Couldn't get member, API did not return guildID.");
-        return this.client.getGuild(this.guildID as string)?.members
-            .get(this.memberID)
-        ?? this.guildID
-            ? this.client.rest.guilds.getMember(this.guildID as string, this.memberID) : undefined;
-    }
-
-    /**
-     * Edit this comment.
-     * @param options Edit options
-     */
-    async edit(options: PATCHChannelAnnouncementCommentBody): Promise<AnnouncementComment> {
-        return this.client.rest.channels.editAnnouncementComment(
-            this.channelID,
-            this.announcementID,
-            this.id,
-            options
-        );
-    }
-
-    /**
-     * Delete this comment.
-     */
-    async delete(): Promise<void> {
-        return this.client.rest.channels.deleteAnnouncementComment(
-            this.channelID,
-            this.announcementID,
-            this.id
-        );
-    }
-
-    /**
      * Create a comment in the same announcement as this one.
      * @param options Create options.
      */
@@ -142,7 +105,6 @@ export class AnnouncementComment extends Base<number> {
             options
         );
     }
-
     /**
      * Add a reaction to this comment.
      * @param emoteID ID of the emote to add
@@ -156,7 +118,16 @@ export class AnnouncementComment extends Base<number> {
             emoteID
         );
     }
-
+    /**
+     * Delete this comment.
+     */
+    async delete(): Promise<void> {
+        return this.client.rest.channels.deleteAnnouncementComment(
+            this.channelID,
+            this.announcementID,
+            this.id
+        );
+    }
     /**
      * Remove a reaction from this comment.
      * @param emoteID ID of the emote to remove
@@ -170,4 +141,32 @@ export class AnnouncementComment extends Base<number> {
             emoteID
         );
     }
+    /**
+     * Edit this comment.
+     * @param options Edit options
+     */
+    async edit(options: PATCHChannelAnnouncementCommentBody): Promise<AnnouncementComment> {
+        return this.client.rest.channels.editAnnouncementComment(
+            this.channelID,
+            this.announcementID,
+            this.id,
+            options
+        );
+    }
+
+
+    /**
+     * Retrieve the member who sent this comment, if cached.
+     * If there is no cached member, this will make a rest request which returns a Promise.
+     * If the request fails, it'll return undefined or throw an error that you can catch.
+     */
+    get member(): Member | Promise<Member> | undefined {
+        if (this.guildID === null) throw new Error("Couldn't get member, API did not return guildID.");
+        return this.client.getGuild(this.guildID as string)?.members
+            .get(this.memberID)
+        ?? this.guildID
+            ? this.client.rest.guilds.getMember(this.guildID as string, this.memberID) : undefined;
+    }
+
+
 }

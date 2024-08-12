@@ -11,14 +11,24 @@ import type { RequestOptions, RESTOptions } from "../types";
 import { Guilds } from "../routes/Guilds";
 import { Channels } from "../routes/Channels";
 import { Miscellaneous } from "../routes/Misc";
+import { Webhooks } from "../routes/Webhooks";
 
 export class RESTManager {
+    /** Client */
     client: Client;
+    /** Websocket Manager */
     #ws: Client["ws"];
+    /** Client Token */
     token: Client["ws"]["token"];
+    /** Request Handler */
     handler: RequestHandler;
+    /** Guild routes */
     guilds: Guilds;
+    /** Channel routes */
     channels: Channels;
+    /** Webhook routes */
+    webhooks: Webhooks;
+    /** Misc routes */
     misc: Miscellaneous;
     constructor(client: Client, options?: RESTOptions){
         this.#ws = client.ws;
@@ -27,6 +37,7 @@ export class RESTManager {
         this.handler = new RequestHandler(this, options);
         this.guilds = new Guilds(this);
         this.channels = new Channels(this);
+        this.webhooks = new Webhooks(this);
         this.misc = new Miscellaneous(this);
     }
 

@@ -12,14 +12,7 @@ import type {
     GuildDeleteInfo,
     UserStatusCreate,
     UserStatusDelete
-} from "./types";
-import {
-    AnyChannel,
-    AnyTextableChannel,
-    ChannelMessageReactionBulkRemove,
-    PossiblyUncachedMessage,
-    RawAppUser
-} from "./channels";
+} from "./typves";
 import type { AnyPacket, WelcomePacket } from "./gateway-raw";
 import {
     JSONAnnouncement,
@@ -41,6 +34,8 @@ import {
     JSONMessage,
     JSONTextChannel
 } from "./json";
+import { AnyChannel, AnyTextableChannel, ChannelMessageReactionBulkRemove, PossiblyUncachedMessage } from "./channels";
+import { RawAppUser } from "./users";
 import type { BannedMember } from "../structures/BannedMember";
 import type { ForumThread } from "../structures/ForumThread";
 import type { ForumThreadComment } from "../structures/ForumThreadComment";

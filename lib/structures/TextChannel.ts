@@ -39,33 +39,17 @@ export class TextChannel extends GuildChannel {
         this.update(data);
     }
 
+    override toJSON(): JSONTextChannel {
+        return {
+            ...super.toJSON(),
+            messages: this.messages.map(message => message.toJSON())
+        };
+    }
     /** Create a message in this channel.
      * @param options Message options.
      */
     async createMessage(options: CreateMessageOptions): Promise<Message<TextChannel>> {
         return this.client.rest.channels.createMessage<TextChannel>(this.id, options);
-    }
-
-    /** Edit a message from this channel.
-     * @param messageID ID of the message to edit.
-     * @param options Message options.
-     */
-    async editMessage(
-        messageID: string,
-        options: EditMessageOptions
-    ): Promise<Message<TextChannel>> {
-        return this.client.rest.channels.editMessage<TextChannel>(
-            this.id,
-            messageID,
-            options
-        );
-    }
-
-    /** Delete a message from this channel.
-     * @param messageID ID of the message to delete.
-     */
-    async deleteMessage(messageID: string): Promise<void> {
-        return this.client.rest.channels.deleteMessage(this.id, messageID);
     }
 
     /** Create Channel Role Permissions
@@ -85,6 +69,40 @@ export class TextChannel extends GuildChannel {
             options
         );
     }
+    /** Delete a message from this channel.
+     * @param messageID ID of the message to delete.
+     */
+    async deleteMessage(messageID: string): Promise<void> {
+        return this.client.rest.channels.deleteMessage(this.id, messageID);
+    }
+    /**
+     * Delete an existing permission set on this channel.
+     * @param targetID ID of the target object (role or user) the permission is assigned to.
+     *
+     * Warning: targetID must have the correct type (number=role, string=user).
+     */
+    async deletePermission(targetID: string | number): Promise<void> {
+        return this.client.rest.channels.deletePermission(
+            this.guildID,
+            this.id,
+            targetID
+        );
+    }
+    /** Edit a message from this channel.
+     * @param messageID ID of the message to edit.
+     * @param options Message options.
+     */
+    async editMessage(
+        messageID: string,
+        options: EditMessageOptions
+    ): Promise<Message<TextChannel>> {
+        return this.client.rest.channels.editMessage<TextChannel>(
+            this.id,
+            messageID,
+            options
+        );
+    }
+
 
     /**
      * Edit a channel permission.
@@ -103,26 +121,5 @@ export class TextChannel extends GuildChannel {
             targetID,
             options
         );
-    }
-
-    /**
-     * Delete an existing permission set on this channel.
-     * @param targetID ID of the target object (role or user) the permission is assigned to.
-     *
-     * Warning: targetID must have the correct type (number=role, string=user).
-     */
-    async deletePermission(targetID: string | number): Promise<void> {
-        return this.client.rest.channels.deletePermission(
-            this.guildID,
-            this.id,
-            targetID
-        );
-    }
-
-    override toJSON(): JSONTextChannel {
-        return {
-            ...super.toJSON(),
-            messages: this.messages.map(message => message.toJSON())
-        };
     }
 }

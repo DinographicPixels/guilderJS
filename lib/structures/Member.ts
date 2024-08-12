@@ -76,9 +76,8 @@ export class Member extends User {
      * If guild isn't cached & the request failed, this will return you undefined.
      */
     get guild(): Guild | Promise<Guild> {
-        return this.client.guilds.get(this.guildID) ?? this.client.rest.guilds.getGuild(this.guildID);
+        return this.client.guilds.get(this.guildID) ?? this.client.rest.guilds.get(this.guildID);
     }
-
     /** Member's user, shows less information. */
     get user(): User {
         if (this.client.users.get(this.id)) {
@@ -88,19 +87,26 @@ export class Member extends User {
             this.client.users.add(USER); return USER;
         }
     }
-
-    /** Edit this member.
-     * @param options Edit options.
+    /** Add this member to a guild group.
+     * @param groupID ID of the guild group.
      */
-    async edit(options: EditMemberOptions): Promise<void> {
-        return this.client.rest.guilds.editMember(this.guildID, this.id as string, options);
+    async addGroup(groupID: string): Promise<void>{
+        return this.client.rest.guilds.memberAddGroup(groupID, this.id as string);
     }
 
-    /** Kick this member. */
-    async kick(): Promise<void> {
-        return this.client.rest.guilds.removeMember(this.guildID, this.id as string);
-    }
 
+    /** Add a role to this member.
+     * @param roleID ID of the role to be added.
+     */
+    async addRole(roleID: number): Promise<void>{
+        return this.client.rest.guilds.memberAddRole(this.guildID, this.id as string, roleID);
+    }
+    /** Award the member using the built-in EXP system.
+     * @param amount Amount of experience to give.
+     */
+    async award(amount: number): Promise<number>{
+        return this.client.rest.guilds.awardMember(this.guildID, this.id as string, amount);
+    }
     /** Ban this member.
      * @param reason The reason of the ban.
      */
@@ -108,11 +114,17 @@ export class Member extends User {
         return this.client.rest.guilds.createBan(this.guildID, this.id as string, reason);
     }
 
-    /** Unban this member. */
-    async unban(): Promise<void> {
-        return this.client.rest.guilds.removeBan(this.guildID, this.id as string);
-    }
 
+    /** Edit this member.
+     * @param options Edit options.
+     */
+    async edit(options: EditMemberOptions): Promise<void> {
+        return this.client.rest.guilds.editMember(this.guildID, this.id as string, options);
+    }
+    /** Get member permission */
+    async getPermission(): Promise<Array<Permissions>> {
+        return this.client.rest.guilds.getMemberPermission(this.guildID, this.id as string);
+    }
     /** Get a specified social link from the member, if member is connected to them through Guilded.
      * @param socialMediaName Name of a social media linked to this member.
      */
@@ -124,13 +136,11 @@ export class Member extends User {
         );
     }
 
-    /** Add this member to a guild group.
-     * @param groupID ID of the guild group.
-     */
-    async addGroup(groupID: string): Promise<void>{
-        return this.client.rest.guilds.memberAddGroup(groupID, this.id as string);
-    }
 
+    /** Kick this member. */
+    async kick(): Promise<void> {
+        return this.client.rest.guilds.removeMember(this.guildID, this.id as string);
+    }
     /** Remove this member from a guild group.
      * @param groupID ID of the guild group.
      */
@@ -138,12 +148,6 @@ export class Member extends User {
         return this.client.rest.guilds.memberRemoveGroup(groupID, this.id as string);
     }
 
-    /** Add a role to this member.
-     * @param roleID ID of the role to be added.
-     */
-    async addRole(roleID: number): Promise<void>{
-        return this.client.rest.guilds.memberAddRole(this.guildID, this.id as string, roleID);
-    }
 
     /** Remove a role from this member.
      * @param roleID ID of the role to be added.
@@ -151,24 +155,15 @@ export class Member extends User {
     async removeRole(roleID: number): Promise<void>{
         return this.client.rest.guilds.memberRemoveRole(this.guildID, this.id as string, roleID);
     }
-
-    /** Award the member using the built-in EXP system.
-     * @param amount Amount of experience to give.
-     */
-    async award(amount: number): Promise<number>{
-        return this.client.rest.guilds.awardMember(this.guildID, this.id as string, amount);
-    }
-
     /** Set member's experience using the built-in EXP system.
      * @param amount Amount of experience to set.
      */
     async setXP(amount: number): Promise<number>{
         return this.client.rest.guilds.setMemberXP(this.guildID, this.id as string, amount);
     }
-
-    /** Get member permission */
-    async getPermission(): Promise<Array<Permissions>> {
-        return this.client.rest.guilds.getMemberPermission(this.guildID, this.id as string);
+    /** Unban this member. */
+    async unban(): Promise<void> {
+        return this.client.rest.guilds.removeBan(this.guildID, this.id as string);
     }
 }
 

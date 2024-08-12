@@ -177,6 +177,43 @@ export class Message<T extends AnyTextableChannel> extends Base<string> {
         }
     }
 
+    /**
+     * Get attachment URLs from this Message
+     * *(works for embedded content such as images).*
+     */
+    get attachmentURLs(): Array<string> {
+        const regex = /!\[]\((https:\/\/[^)]+)\)/g;
+        const URLs: Array<string> = [];
+        let match: RegExpExecArray | null;
+        while ((match = regex.exec(this.content ?? "")) !== null) {
+            URLs.push(match[1]);
+        }
+        return URLs;
+    }
+    /** The channel this message was created in.  */
+    get channel(): T extends AnyTextableChannel ? T : undefined {
+        if (!this.guildID)
+            throw new Error(`Couldn't get ${this.constructor.name}#guildID. (channel cannot be retrieved)`);
+        if (!this.channelID)
+            throw new Error(`Couldn't get ${this.constructor.name}#channelID. (channel cannot be retrieved)`);
+        return this._cachedChannel
+          ?? (this._cachedChannel = this.client.getChannel(
+              this.guildID,
+              this.channelID
+          ) as T extends AnyTextableChannel ? T : undefined);
+    }
+    /** The guild the message is in. This will throw an error if the guild isn't cached.*/
+    get guild(): T extends Guild ? Guild : Guild | null {
+        if (!this.guildID)
+            throw new Error(`Couldn't get ${this.constructor.name}#guildID. (guild cannot be retrieved)`);
+        if (!this._cachedGuild) {
+            this._cachedGuild = this.client.getGuild(this.guildID);
+            if (!this._cachedGuild) {
+                throw new Error(`${this.constructor.name}#guild: couldn't find the Guild in cache.`);
+            }
+        }
+        return this._cachedGuild as T extends Guild ? Guild : Guild | null;
+    }
     /** Get to know if this Message is original.
      *
      * It is Original when:
@@ -192,6 +229,7 @@ export class Message<T extends AnyTextableChannel> extends Base<string> {
                 ? "response"
                 : false);
     }
+
 
     /** Retrieve message's member.
      *
@@ -225,46 +263,198 @@ export class Message<T extends AnyTextableChannel> extends Base<string> {
         }
     }
 
-    /** The guild the message is in. This will throw an error if the guild isn't cached.*/
-    get guild(): T extends Guild ? Guild : Guild | null {
-        if (!this.guildID)
-            throw new Error(`Couldn't get ${this.constructor.name}#guildID. (guild cannot be retrieved)`);
-        if (!this._cachedGuild) {
-            this._cachedGuild = this.client.getGuild(this.guildID);
-            if (!this._cachedGuild) {
-                throw new Error(`${this.constructor.name}#guild: couldn't find the Guild in cache.`);
-            }
-        }
-        return this._cachedGuild as T extends Guild ? Guild : Guild | null;
-    }
 
-    /** The channel this message was created in.  */
-    get channel(): T extends AnyTextableChannel ? T : undefined {
-        if (!this.guildID)
-            throw new Error(`Couldn't get ${this.constructor.name}#guildID. (channel cannot be retrieved)`);
-        if (!this.channelID)
-            throw new Error(`Couldn't get ${this.constructor.name}#channelID. (channel cannot be retrieved)`);
-        return this._cachedChannel
-          ?? (this._cachedChannel = this.client.getChannel(
-              this.guildID,
-              this.channelID
-          ) as T extends AnyTextableChannel ? T : undefined);
-    }
-
-    /**
-     * Get attachment URLs from this Message
-     * *(works for embedded content such as images).*
+    /** Create a follow-up message that replies to the trigger message and original response.
+     * (use Message#createMessage if the message has not been acknowledged).
+     *
+     * Note: The trigger message and original response are automatically replied,
+     * use Client#createMessage to create an independent message.
+     * @param options Message options.
      */
-    get attachmentURLs(): Array<string> {
-        const regex = /!\[]\((https:\/\/[^)]+)\)/g;
-        const URLs: Array<string> = [];
-        let match: RegExpExecArray | null;
-        while ((match = regex.exec(this.content ?? "")) !== null) {
-            URLs.push(match[1]);
-        }
-        return URLs;
-    }
+    async createFollowup(options: CreateMessageOptions): Promise<Message<T>> {
+        if (!this.acknowledged || !this.originals.responseID)
+            throw new Error(
+                "Message has not been acknowledged, " +
+              "please acknowledge the message using the createMessage method."
+            );
 
+        if (options.replyMessageIDs)
+            options.replyMessageIDs.push(this.id);
+        else
+            options.replyMessageIDs = [this.id];
+
+        if (options.replyMessageIDs?.includes(this.originals.triggerID ?? " ")) {
+            options.replyMessageIDs[options.replyMessageIDs.length - 1] = this.originals.responseID;
+        }
+        const response =
+          await this.client.rest.channels.createMessage<T>(
+              this.channelID,
+              options,
+              {
+                  originals: {
+                      triggerID:  this.originals.triggerID,
+                      responseID: this.originals.responseID
+                  },
+                  acknowledged: true
+              }
+          );
+
+        this._lastMessageID = response.id as string;
+        if (this.isOriginal && !(this.originals.responseID)) this.originals.responseID = response.id;
+        return response;
+    }
+    /** This method is used to create a message following this message
+     * (use Message#createFollowup on already acknowledged messages).
+     *
+     * Note: The trigger message is automatically replied and acknowledged,
+     * use Client#createMessage to create an independent message.
+     * @param options Message options.
+     */
+    async createMessage(options: CreateMessageOptions): Promise<Message<T>> {
+        if (this.acknowledged
+          && !(this.client.params.deprecations?.independentMessageBehavior)
+        ) throw new Error(
+            "Message has already been acknowledged, " +
+          "please use the createFollowup method."
+        );
+        if (!this.isOriginal && !(this.originals.triggerID)) this.originals.triggerID = this.id;
+
+        if (!(this.client.params.deprecations?.independentMessageBehavior)) {
+            if (options.replyMessageIDs)
+                options.replyMessageIDs.push(this.originals.triggerID ?? this.id);
+            else
+                options.replyMessageIDs = [this.originals.triggerID ?? this.id];
+        }
+
+        const response =
+          await this.client.rest.channels.createMessage<T>(
+              this.channelID,
+              options,
+              {
+                  originals: {
+                      triggerID:  this.originals.triggerID,
+                      responseID: this.originals.responseID
+                  },
+                  acknowledged: true
+              }
+          );
+        this._lastMessageID = response.id as string;
+        this.acknowledged = true;
+        if (this.isOriginal && !(this.originals.responseID)) this.originals.responseID = response.id;
+        return response;
+    }
+    /** Add a reaction to this message.
+     * @param reaction ID of a reaction/emote.
+     */
+    async createReaction(reaction: number): Promise<void>{
+        return this.client.rest.channels.createReaction(
+            this.channelID,
+            "ChannelMessage",
+            this.id as string,
+            reaction
+        );
+    }
+    /** This method is used to delete the current message. */
+    async delete(): Promise<void> {
+        return this.client.rest.channels.deleteMessage(this.channelID, this.id as string);
+    }
+    /** Delete the last message sent with the message itself. */
+    async deleteLast(): Promise<void>{
+        if (!this._lastMessageID) throw new TypeError("Cannot delete last message if it does not exist.");
+        return this.client.rest.channels.deleteMessage(this.channelID, this._lastMessageID);
+    }
+    /** Delete the message's original response message (prioritizes parent).
+     * @param target (optional) Delete specifically the trigger or the response.
+     */
+    async deleteOriginal(target?: "trigger" | "response"): Promise<void>{
+        const targetID =
+          target === "trigger"
+              ? this.originals.triggerID
+              : (target === "response" ? this.originals.responseID : null);
+
+        const messageID = targetID ?? this.originals.responseID ?? this.originals.triggerID;
+
+        if (!(this.originals.responseID) && !(this.originals.triggerID)
+          || this.isOriginal || target && !targetID || !messageID
+        ) throw new Error(
+            "Couldn't delete original message from this Message, " +
+          "as it either does not exist or has not been stored inside this component."
+        );
+
+
+        return this.client.rest.channels.deleteMessage(
+            this.channelID,
+            messageID
+        );
+    }
+    /** Remove a reaction from this message.
+     * @param reaction ID of a reaction/emote.
+     * @param targetUserID ID of the user to remove reaction from.
+     * (works only on Channel Messages | default: @me)
+     */
+    async deleteReaction(reaction: number, targetUserID?: "@me" | string): Promise<void>{
+        return this.client.rest.channels.deleteReaction(
+            this.channelID,
+            "ChannelMessage",
+            this.id as string,
+            reaction,
+            targetUserID
+        );
+    }
+    /** This method is used to edit the current message.
+     * @param newMessage New message's options
+     */
+    async edit(newMessage: EditMessageOptions): Promise<Message<T>>{
+        return this.client.rest.channels.editMessage<T>(
+            this.channelID,
+            this.id as string,
+            newMessage,
+            {
+                originals: {
+                    triggerID:  this.originals.triggerID,
+                    responseID: this.originals.responseID
+                }
+            }
+        );
+    }
+    /** Edit the last message sent with the message itself.
+     * @param newMessage New message's options.
+     */
+    async editLast(newMessage: {content?: string; embeds?: Array<MessageEmbedOptions>;}): Promise<Message<T>>{
+        if (!this._lastMessageID) throw new TypeError("Cannot edit last message if it does not exist.");
+        return this.client.rest.channels.editMessage<T>(
+            this.channelID,
+            this._lastMessageID,
+            newMessage
+        );
+    }
+    /** Edit the message's original response message.
+     * @param newMessage New message's options.
+     */
+    async editOriginal(
+        newMessage: {
+            content?: string;
+            embeds?: Array<MessageEmbedOptions>;
+        }
+    ): Promise<Message<T>>{
+        if (!this.originals.responseID || this.isOriginal)
+            throw new Error(
+                "Couldn't edit the original message from this Message, " +
+              "as it either does not exist or has not been stored inside this component."
+            );
+
+        return this.client.rest.channels.editMessage<T>(
+            this.channelID,
+            this.originals.responseID,
+            newMessage,
+            {
+                originals: {
+                    triggerID:  this.originals.triggerID,
+                    responseID: this.originals.responseID
+                }
+            }
+        );
+    }
     /**
      * Get attachments from this Message (using REST)
      * *(works for embedded content such as images).*
@@ -321,119 +511,6 @@ export class Message<T extends AnyTextableChannel> extends Base<string> {
         return MessageAttachments;
     }
 
-    private async setCache(obj: Promise<Member> | Promise<Guild>): Promise<void> {
-        const guild = this.client.guilds.get(this.guildID as string);
-        const awaitedObj = await obj;
-        if (guild && awaitedObj instanceof Member) {
-            guild?.members?.add(awaitedObj);
-            if (awaitedObj.user) this.client.users.add(awaitedObj.user);
-        } else if (awaitedObj instanceof Guild) {
-            this.client.guilds.add(awaitedObj);
-        }
-    }
-
-    /** This method is used to create a message following this message
-     * (use Message#createFollowup on already acknowledged messages).
-     *
-     * Note: The trigger message is automatically replied and acknowledged,
-     * use Client#createMessage to create an independent message.
-     * @param options Message options.
-     */
-    async createMessage(options: CreateMessageOptions): Promise<Message<T>> {
-        if (this.acknowledged
-          && !(this.client.params.deprecations?.independentMessageBehavior)
-        ) throw new Error(
-            "Message has already been acknowledged, " +
-          "please use the createFollowup method."
-        );
-        if (!this.isOriginal && !(this.originals.triggerID)) this.originals.triggerID = this.id;
-
-        if (!(this.client.params.deprecations?.independentMessageBehavior)) {
-            if (options.replyMessageIDs)
-                options.replyMessageIDs.push(this.originals.triggerID ?? this.id);
-            else
-                options.replyMessageIDs = [this.originals.triggerID ?? this.id];
-        }
-
-        const response =
-          await this.client.rest.channels.createMessage<T>(
-              this.channelID,
-              options,
-              {
-                  originals: {
-                      triggerID:  this.originals.triggerID,
-                      responseID: this.originals.responseID
-                  },
-                  acknowledged: true
-              }
-          );
-        this._lastMessageID = response.id as string;
-        this.acknowledged = true;
-        if (this.isOriginal && !(this.originals.responseID)) this.originals.responseID = response.id;
-        return response;
-    }
-
-    /** Create a follow-up message that replies to the trigger message and original response.
-     * (use Message#createMessage if the message has not been acknowledged).
-     *
-     * Note: The trigger message and original response are automatically replied,
-     * use Client#createMessage to create an independent message.
-     * @param options Message options.
-     */
-    async createFollowup(options: CreateMessageOptions): Promise<Message<T>> {
-        if (!this.acknowledged || !this.originals.responseID)
-            throw new Error(
-                "Message has not been acknowledged, " +
-              "please acknowledge the message using the createMessage method."
-            );
-
-        if (options.replyMessageIDs)
-            options.replyMessageIDs.push(this.id);
-        else
-            options.replyMessageIDs = [this.id];
-
-        if (options.replyMessageIDs?.includes(this.originals.triggerID ?? " ")) {
-            options.replyMessageIDs[options.replyMessageIDs.length - 1] = this.originals.responseID;
-        }
-        const response =
-          await this.client.rest.channels.createMessage<T>(
-              this.channelID,
-              options,
-              {
-                  originals: {
-                      triggerID:  this.originals.triggerID,
-                      responseID: this.originals.responseID
-                  },
-                  acknowledged: true
-              }
-          );
-
-        this._lastMessageID = response.id as string;
-        if (this.isOriginal && !(this.originals.responseID)) this.originals.responseID = response.id;
-        return response;
-    }
-
-    /** This method is used to edit the current message.
-     * @param newMessage New message's options
-     */
-    async edit(newMessage: EditMessageOptions): Promise<Message<T>>{
-        return this.client.rest.channels.editMessage<T>(
-            this.channelID,
-            this.id as string,
-            newMessage,
-            {
-                originals: {
-                    triggerID:  this.originals.triggerID,
-                    responseID: this.originals.responseID
-                }
-            }
-        );
-    }
-
-    /** This method is used to delete the current message. */
-    async delete(): Promise<void> {
-        return this.client.rest.channels.deleteMessage(this.channelID, this.id as string);
-    }
 
     /**
      * Get the latest message sent with this Message.
@@ -446,25 +523,6 @@ export class Message<T extends AnyTextableChannel> extends Base<string> {
             this._lastMessageID
         );
     }
-
-    /** Edit the last message sent with the message itself.
-     * @param newMessage New message's options.
-     */
-    async editLast(newMessage: {content?: string; embeds?: Array<MessageEmbedOptions>;}): Promise<Message<T>>{
-        if (!this._lastMessageID) throw new TypeError("Cannot edit last message if it does not exist.");
-        return this.client.rest.channels.editMessage<T>(
-            this.channelID,
-            this._lastMessageID,
-            newMessage
-        );
-    }
-
-    /** Delete the last message sent with the message itself. */
-    async deleteLast(): Promise<void>{
-        if (!this._lastMessageID) throw new TypeError("Cannot delete last message if it does not exist.");
-        return this.client.rest.channels.deleteMessage(this.channelID, this._lastMessageID);
-    }
-
     /**
      * Get original message response or trigger
      * (prioritizes parent, the original response).
@@ -496,7 +554,6 @@ export class Message<T extends AnyTextableChannel> extends Base<string> {
             }
         );
     }
-
     /**
      * Get original messages
      * (the one triggering the response, and the original response message)
@@ -533,91 +590,21 @@ export class Message<T extends AnyTextableChannel> extends Base<string> {
             originalResponse
         };
     }
-
-    /** Edit the message's original response message.
-     * @param newMessage New message's options.
-     */
-    async editOriginal(
-        newMessage: {
-            content?: string;
-            embeds?: Array<MessageEmbedOptions>;
-        }
-    ): Promise<Message<T>>{
-        if (!this.originals.responseID || this.isOriginal)
-            throw new Error(
-                "Couldn't edit the original message from this Message, " +
-              "as it either does not exist or has not been stored inside this component."
-            );
-
-        return this.client.rest.channels.editMessage<T>(
-            this.channelID,
-            this.originals.responseID,
-            newMessage,
-            {
-                originals: {
-                    triggerID:  this.originals.triggerID,
-                    responseID: this.originals.responseID
-                }
-            }
-        );
-    }
-
-    /** Delete the message's original response message (prioritizes parent).
-     * @param target (optional) Delete specifically the trigger or the response.
-     */
-    async deleteOriginal(target?: "trigger" | "response"): Promise<void>{
-        const targetID =
-          target === "trigger"
-              ? this.originals.triggerID
-              : (target === "response" ? this.originals.responseID : null);
-
-        const messageID = targetID ?? this.originals.responseID ?? this.originals.triggerID;
-
-        if (!(this.originals.responseID) && !(this.originals.triggerID)
-          || this.isOriginal || target && !targetID || !messageID
-        ) throw new Error(
-            "Couldn't delete original message from this Message, " +
-          "as it either does not exist or has not been stored inside this component."
-        );
-
-
-        return this.client.rest.channels.deleteMessage(
-            this.channelID,
-            messageID
-        );
-    }
-
-    /** Add a reaction to this message.
-     * @param reaction ID of a reaction/emote.
-     */
-    async createReaction(reaction: number): Promise<void>{
-        return this.client.rest.channels.createReaction(
-            this.channelID,
-            "ChannelMessage",
-            this.id as string,
-            reaction
-        );
-    }
-
-    /** Remove a reaction from this message.
-     * @param reaction ID of a reaction/emote.
-     * @param targetUserID ID of the user to remove reaction from.
-     * (works only on Channel Messages | default: @me)
-     */
-    async deleteReaction(reaction: number, targetUserID?: "@me" | string): Promise<void>{
-        return this.client.rest.channels.deleteReaction(
-            this.channelID,
-            "ChannelMessage",
-            this.id as string,
-            reaction,
-            targetUserID
-        );
-    }
-
     /** Pin this message */
     async pin(): Promise<void>{
         return this.client.rest.channels.pinMessage(this.channelID, this.id as string);
     }
+    private async setCache(obj: Promise<Member> | Promise<Guild>): Promise<void> {
+        const guild = this.client.guilds.get(this.guildID as string);
+        const awaitedObj = await obj;
+        if (guild && awaitedObj instanceof Member) {
+            guild?.members?.add(awaitedObj);
+            if (awaitedObj.user) this.client.users.add(awaitedObj.user);
+        } else if (awaitedObj instanceof Guild) {
+            this.client.guilds.add(awaitedObj);
+        }
+    }
+
 
     /** Unpin this message */
     async unpin(): Promise<void>{

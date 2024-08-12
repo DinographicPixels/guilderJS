@@ -66,7 +66,6 @@ export class ForumThreadComment extends Base<number> {
             mentions:  this.mentions
         };
     }
-
     protected override update(data: RawForumThreadComment): void {
         if (data.channelId !== undefined) {
             this.channelID = data.channelId;
@@ -106,6 +105,7 @@ export class ForumThreadComment extends Base<number> {
             : undefined;
     }
 
+
     /** Add a comment to the same forum thread as this comment.
      * @param options New comment's options.
      */
@@ -116,7 +116,6 @@ export class ForumThreadComment extends Base<number> {
             options
         );
     }
-
     /** Add a reaction to the comment.
      * @param reaction The ID of the reaction to add.
      */
@@ -129,7 +128,14 @@ export class ForumThreadComment extends Base<number> {
             reaction
         );
     }
-
+    /** Delete this forum thread comment. */
+    async delete(): Promise<void>{
+        return this.client.rest.channels.deleteForumComment(
+            this.channelID,
+            this.threadID,
+            this.id as number
+        );
+    }
     /** Remove a reaction from the comment.
      * @param reaction The ID of the reaction to remove.
      */
@@ -142,7 +148,6 @@ export class ForumThreadComment extends Base<number> {
             reaction
         );
     }
-
     /** Edit this forum thread's comment.
      * @param options Edit options.
      */
@@ -152,15 +157,6 @@ export class ForumThreadComment extends Base<number> {
             this.threadID,
             this.id as number,
             { content: options?.content }
-        );
-    }
-
-    /** Delete this forum thread comment. */
-    async delete(): Promise<void>{
-        return this.client.rest.channels.deleteForumComment(
-            this.channelID,
-            this.threadID,
-            this.id as number
         );
     }
 }

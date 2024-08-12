@@ -75,6 +75,6 @@ export class BannedMember extends Base<string> {
      * Note: this can return a promise, make sure to await it before.
      */
     get guild(): Guild | Promise<Guild> {
-        return this.client.guilds.get(this.guildID) ?? this.client.rest.guilds.getGuild(this.guildID);
+        return this.client.guilds.get(this.guildID) ?? this.client.rest.guilds.get(this.guildID);
     }
 }
