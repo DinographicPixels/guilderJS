@@ -1,5 +1,5 @@
 name: Feature testing
-on: [push, pull_request]
+on: [push, pull_request, workflow_call]
 
 jobs:
   build:
@@ -14,7 +14,7 @@ jobs:
       run: npm install -g ts-node
     - name: Channel Features
       run: ts-node ./scripts/tests/channel.ts
-      env: 
+      env:
         TOKEN: ${{ secrets.TEST_BOT_TOKEN }}
     - name: Message Features
       run: ts-node ./scripts/tests/message.ts
