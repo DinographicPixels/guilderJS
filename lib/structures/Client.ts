@@ -157,7 +157,6 @@ export class Client extends TypedEmitter<ClientEvents> {
         return;
     }
 
-
     /** Connect to Guilded. */
     connect(): void {
         void this.checkForUpdate();
