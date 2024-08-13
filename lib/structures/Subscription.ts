@@ -1,4 +1,4 @@
-/** @module GuildSubscription */
+/** @module Subscription */
 
 //
 // Created by Wade (@pakkographic)

@@ -11,6 +11,8 @@ import { GETGuildMemberSocialsResponse, GETUserResponse, GETUserServersResponse,
 import { User } from "../structures/User";
 import { SocialLink } from "../structures/SocialLink";
 import { Guild } from "../structures/Guild";
+import { AppUser } from "../structures/AppUser";
+import { RawAppUser } from "../types";
 import { POSTURLSignatureBody, POSTURLSignatureResponse } from "guildedapi-types.ts/typings/REST/v1/URLSignature";
 
 /** Miscellaneous routes. */
@@ -33,6 +35,25 @@ export class Miscellaneous {
             path:   endpoints.USER_STATUS(userID)
         });
     }
+
+    /** Get Application/Client Partial User
+     * (and sets Client#user if REST Mode is enabled).
+     */
+    async getAppUser(): Promise<AppUser> {
+        return this.#manager.authRequest<GETUserResponse>({
+            method: "GET",
+            path:   endpoints.USER("@me")
+        }).then(data => {
+            const appUser = new AppUser(
+                data.user as RawAppUser,
+                this.#manager.client
+            );
+            if (this.#manager.client.params.restMode)
+                this.#manager.client.user = appUser;
+            return appUser;
+        });
+    }
+
     /** Get a specified social link from the member, if member is connected to them through Guilded.
      * @param guildID The ID of the guild the member is in.
      * @param memberID The ID of the member to get their social link.
@@ -48,16 +69,22 @@ export class Miscellaneous {
     /**
      * Get a user.
      *
-     * Note: when getting the app's user, only the information specific to 'User' will be returned.
-     * If you'd like to get the UserClient (the app itself), use Client#user.
+     * If you'd like to get the App User, we recommend to use Client#user
+     * or request it using Misc#getAppUser.
      * @param userID The ID of the user to get.
      */
     async getUser(userID: string): Promise<User> {
+        if (userID === "@me")
+            throw new Error(
+                "Cannot get App User, please use Client#user or " +
+              "request it using Misc#getAppUser"
+            );
         return this.#manager.authRequest<GETUserResponse>({
             method: "GET",
             path:   endpoints.USER(userID)
         }).then(data => this.#manager.client.util.updateUser(data.user));
     }
+
 
     /**
      * Retrieve user's joined servers.

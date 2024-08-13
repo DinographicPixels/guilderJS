@@ -90,6 +90,9 @@ export interface ClientOptions {
          */
         independentMessageBehavior?: boolean;
     };
+
+    /** REST-Only mode, does not initialize a gateway connection. */
+    restMode?: boolean;
 }
 
 export interface RESTOptions {

@@ -1456,6 +1456,7 @@ export class Channels {
                 path:   endpoints.GUILD_CHANNEL_ROLE_PERMISSION(guildID, channelID, targetID)
             }).then(data => new Permission(data.channelRolePermission));
     }
+
     async getPermissions(guildID: string, channelID: string): Promise<Array<Permission>> {
         const userPromise = this.getUserPermissions(guildID, channelID);
         const rolePromise = this.getRolePermissions(guildID, channelID);

@@ -1,4 +1,4 @@
-/** @module GuildCategory */
+/** @module Category */
 
 //
 // Created by Wade (@pakkographic)

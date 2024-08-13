@@ -1,4 +1,4 @@
-/** @module GuildGroup */
+/** @module Group */
 
 //
 // Created by Wade (@pakkographic)

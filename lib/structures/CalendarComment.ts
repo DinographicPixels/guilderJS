@@ -1,4 +1,4 @@
-/** @module CalendarEventComment */
+/** @module CalendarComment */
 
 //
 // Created by Wade (@pakkographic)

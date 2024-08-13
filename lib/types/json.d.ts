@@ -318,7 +318,7 @@ export interface JSONGuild extends JSONBase<string> {
     members: Array<JSONMember>;
 }
 
-export interface JSONUserClient extends JSONUser {
+export interface JSONAppUser extends JSONUser {
     /** Client User App ID */
     appID: string;
     /** When the app client was created. */

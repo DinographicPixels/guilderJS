@@ -345,6 +345,7 @@ module.exports = {
             { "type": "method", "readonly": true, "sort": "alphabetical" },
             { "type": "method", "abstract": true, "sort": "alphabetical" },
             { "type": "method", "static": true, "sort": "alphabetical" },
+            { "type": "method", "accessibility": "private", "sort": "alphabetical" },
             { "type": "method", "kind": "get", "sort": "alphabetical" },
             { "type": "method", "kind": "set", "sort": "alphabetical" }
           ],

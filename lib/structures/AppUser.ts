@@ -1,4 +1,4 @@
-/** @module UserClient */
+/** @module AppUser */
 
 //
 // Created by Wade (@pakkographic)
@@ -7,15 +7,15 @@
 
 import { Client } from "./Client";
 import { User } from "./User";
-import { RawAppUser, JSONUserClient } from "../types";
+import { RawAppUser, JSONAppUser } from "../types";
 
-/** UserClient represents the logged app's user. */
-export class UserClient extends User {
+/** AppUser represents the logged app user. */
+export class AppUser extends User {
     /** Client User App ID (aka botID) */
     appID: string;
     /** ID of the app owner. */
     ownerID: string;
-    /** @deprecated Use UserClient#appID */
+    /** @deprecated Use AppUser#appID */
     botID: string; // DEPRECATED
     /**
      * @param data raw data.
@@ -31,7 +31,7 @@ export class UserClient extends User {
         this.update(data);
     }
 
-    override toJSON(): JSONUserClient {
+    override toJSON(): JSONAppUser {
         return {
             ...super.toJSON(),
             appID:     this.appID,

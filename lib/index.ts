@@ -33,7 +33,7 @@ export * from "./structures/TextChannel";
 export * from "./structures/ForumChannel";
 export * from "./structures/CalendarChannel";
 export * from "./structures/Guild";
-export * from "./structures/UserClient";
+export * from "./structures/AppUser";
 export * from "./structures/Announcement";
 export * from "./structures/AnnouncementChannel";
 export * from "./structures/AnnouncementComment";
