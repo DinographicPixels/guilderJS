@@ -386,6 +386,7 @@ export class Channels {
         params?: MessageConstructorParams
     ): Promise<Message<T>> {
         if (typeof options !== "object") throw new Error("message options should be an object.");
+        options.replyMessageIDs = [...new Set(options.replyMessageIDs)]; // Remove duplicates.
         return this.#manager.authRequest<POSTChannelMessageResponse>({
             method: "POST",
             path:   endpoints.CHANNEL_MESSAGES(channelID),
@@ -1025,6 +1026,7 @@ export class Channels {
         params?: MessageConstructorParams
     ): Promise<Message<T>> {
         if (typeof newMessage !== "object") throw new Error("newMessage should be an object.");
+        newMessage.replyMessageIDs = [...new Set(newMessage.replyMessageIDs)]; // Remove duplicates.
         return this.#manager.authRequest<PUTChannelMessageResponse>({
             method: "PUT",
             path:   endpoints.CHANNEL_MESSAGE(channelID, messageID),

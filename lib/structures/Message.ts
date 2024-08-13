@@ -297,6 +297,7 @@ export class Message<T extends AnyTextableChannel> extends Base<string> {
         if (options.replyMessageIDs?.includes(this.originals.triggerID ?? " ")) {
             options.replyMessageIDs[options.replyMessageIDs.length - 1] = this.originals.responseID;
         }
+
         const response =
           await this.client.rest.channels.createMessage<T>(
               this.channelID,
