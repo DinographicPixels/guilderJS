@@ -20,4 +20,4 @@ examples/
 .eslintignore
 .eslintrc.js
 .npmrc
-lib/
+/lib
