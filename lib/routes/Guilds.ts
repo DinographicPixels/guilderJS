@@ -33,7 +33,6 @@ import {
     PATCHChannelCategoryRolePermissionResponse,
     PATCHChannelCategoryUserPermissionBody,
     PATCHChannelCategoryUserPermissionResponse,
-    PATCHChannelResponse,
     PATCHGuildGroupBody,
     PATCHGuildGroupResponse,
     PATCHGuildRoleBody,
@@ -61,7 +60,6 @@ import {
 import {
     AnyChannel,
     CreateChannelOptions,
-    EditChannelOptions,
     BulkXPOptions,
     EditMemberOptions,
     RawMember
@@ -277,16 +275,6 @@ export class Guilds {
                 path:   endpoints.GUILD_CATEGORY_ROLE_PERMISSION(guildID, categoryID, targetID)
             });
     }
-    /** Delete a channel.
-     * @param channelID ID of the channel to delete.
-     */
-    async deleteChannel(channelID: string): Promise<void> {
-        if (!channelID) throw new Error("channelID is a required parameter.");
-        return this.#manager.authRequest<void>({
-            method: "DELETE",
-            path:   endpoints.CHANNEL(channelID)
-        });
-    }
     /**
      * Delete a guild group
      * @param guildID ID of the guild where the group is in.
@@ -348,22 +336,6 @@ export class Guilds {
                 path:   endpoints.GUILD_CATEGORY_ROLE_PERMISSION(guildID, categoryID, targetID),
                 json:   options
             }).then(data => new Permission(data.channelCategoryRolePermission));
-    }
-    /** Edit a channel.
-     * @param channelID ID of the channel to edit.
-     * @param options Channel edit options.
-     */
-    async editChannel<T extends AnyChannel = AnyChannel>(channelID: string, options: EditChannelOptions): Promise<T> {
-        if (!channelID) throw new Error("channelID is a required parameter.");
-        return this.#manager.authRequest<PATCHChannelResponse>({
-            method: "PATCH",
-            path:   endpoints.CHANNEL(channelID),
-            json:   {
-                name:     options.name,
-                topic:    options.description,
-                isPublic: options.isPublic
-            }
-        }).then(data => Channel.from<T>(data.channel, this.#manager.client));
     }
     /**
      * Edit a guild group.

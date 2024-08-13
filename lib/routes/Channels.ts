@@ -80,7 +80,8 @@ import {
     POSTChannelUserPermissionResponse,
     GETChannelUserPermissionResponse,
     GETChannelUserManyPermissionResponse,
-    PATCHChannelUserPermissionResponse
+    PATCHChannelUserPermissionResponse,
+    PATCHChannelResponse
 } from "../Constants";
 import {
     AnyChannel,
@@ -105,7 +106,8 @@ import {
     EditDocOptions,
     CreateDocOptions,
     RawMessage,
-    RawListItem
+    RawListItem,
+    EditChannelOptions
 } from "../types";
 import { DocChannel } from "../structures/DocChannel";
 import { ForumChannel } from "../structures/ForumChannel";
@@ -116,6 +118,7 @@ import { DocComment } from "../structures/DocComment";
 import { Announcement } from "../structures/Announcement";
 import { AnnouncementComment } from "../structures/AnnouncementComment";
 import { Permission } from "../structures/Permission";
+import { Channel } from "../structures/Channel";
 import { PUTChannelMessageResponse } from "guildedapi-types.ts/v1";
 
 export class Channels {
@@ -504,6 +507,16 @@ export class Channels {
             )
         });
     }
+    /** Delete a channel.
+     * @param channelID ID of the channel to delete.
+     */
+    async delete(channelID: string): Promise<void> {
+        if (!channelID) throw new Error("channelID is a required parameter.");
+        return this.#manager.authRequest<void>({
+            method: "DELETE",
+            path:   endpoints.CHANNEL(channelID)
+        });
+    }
     /**
      * Delete an announcement.
      * @param channelID ID of an Announcement channel.
@@ -580,6 +593,7 @@ export class Channels {
             path:   endpoints.CHANNEL_EVENT_RSVP(channelID, eventID, memberID)
         });
     }
+
     /** Delete a doc from a "Docs" channel.
      * @param channelID ID of a "Docs" channel.
      * @param docID ID of a doc.
@@ -750,6 +764,22 @@ export class Channels {
                 reaction
             )
         });
+    }
+    /** Edit a channel.
+     * @param channelID ID of the channel to edit.
+     * @param options Channel edit options.
+     */
+    async edit<T extends AnyChannel = AnyChannel>(channelID: string, options: EditChannelOptions): Promise<T> {
+        if (!channelID) throw new Error("channelID is a required parameter.");
+        return this.#manager.authRequest<PATCHChannelResponse>({
+            method: "PATCH",
+            path:   endpoints.CHANNEL(channelID),
+            json:   {
+                name:     options.name,
+                topic:    options.description,
+                isPublic: options.isPublic
+            }
+        }).then(data => Channel.from<T>(data.channel, this.#manager.client));
     }
     /**
      * Edit an existing announcement.

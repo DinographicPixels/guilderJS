@@ -712,10 +712,10 @@ export class Client extends TypedEmitter<ClientEvents> {
     }
     /** Delete a channel.
      * @param channelID ID of the channel you'd like to delete.
-     * @deprecated Use Client.rest.guilds#deleteChannel
+     * @deprecated Use Client.rest.channels#delete
      */
     async deleteChannel(channelID: string): Promise<void> {
-        return this.rest.guilds.deleteChannel(channelID);
+        return this.rest.channels.delete(channelID);
     }
     /**
      * Delete a channel permission.
@@ -1012,13 +1012,13 @@ export class Client extends TypedEmitter<ClientEvents> {
     /** Edit a channel.
      * @param channelID ID of the channel you'd like to edit.
      * @param options Channel edit options.
-     * @deprecated Use Client.rest.guilds#editChannel
+     * @deprecated Use Client.rest.channels#edit
      */
     async editChannel<T extends AnyChannel = AnyChannel>(
         channelID: string,
         options: EditChannelOptions
     ): Promise<T> {
-        return this.rest.guilds.editChannel<T>(channelID, options);
+        return this.rest.channels.edit<T>(channelID, options);
     }
     /**
      * Update a channel permission.
@@ -1776,16 +1776,6 @@ export class Client extends TypedEmitter<ClientEvents> {
             if (fakeReady) this.emit("ready");
         });
     }
-
-
-    // CREATE, EDIT, DELETE.
-
-    // message
-
-
-    // ForumThread
-
-
     /**
      * Restore an archived channel.
      * @param channelID ID of the archived channel to restore.

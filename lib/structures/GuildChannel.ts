@@ -150,11 +150,11 @@ export class GuildChannel extends Base<string> {
 
     /** Delete the channel. */
     async delete(): Promise<void>{
-        return this.client.rest.guilds.deleteChannel(this.id as string);
+        return this.client.rest.channels.delete(this.id as string);
     }
     /** Edit the channel. */
     async edit(options: EditChannelOptions): Promise<Channel>{
-        return this.client.rest.guilds.editChannel(this.id as string, options);
+        return this.client.rest.channels.edit(this.id as string, options);
     }
     /** Restore the archived channel */
     async restore(): Promise<void>{
