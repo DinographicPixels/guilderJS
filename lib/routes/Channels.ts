@@ -1026,7 +1026,6 @@ export class Channels {
         params?: MessageConstructorParams
     ): Promise<Message<T>> {
         if (typeof newMessage !== "object") throw new Error("newMessage should be an object.");
-        newMessage.replyMessageIDs = [...new Set(newMessage.replyMessageIDs)]; // Remove duplicates.
         return this.#manager.authRequest<PUTChannelMessageResponse>({
             method: "PUT",
             path:   endpoints.CHANNEL_MESSAGE(channelID, messageID),
