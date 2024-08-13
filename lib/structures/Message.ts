@@ -313,6 +313,7 @@ export class Message<T extends AnyTextableChannel> extends Base<string> {
         if (this.isOriginal && !(this.originals.responseID)) this.originals.responseID = response.id;
         return response;
     }
+
     /** This method is used to create a message following this message
      * (use Message#createFollowup on already acknowledged messages).
      *
@@ -368,6 +369,19 @@ export class Message<T extends AnyTextableChannel> extends Base<string> {
     async delete(): Promise<void> {
         return this.client.rest.channels.deleteMessage(this.channelID, this.id as string);
     }
+
+    /**
+     * Delete followup message.
+     */
+    async deleteFollowup(): Promise<void> {
+        if (!this._lastMessageID || !this.acknowledged)
+            throw new Error("Cannot delete followup message if it does not exist.");
+        return this.client.rest.channels.deleteMessage(
+            this.channelID,
+            this._lastMessageID
+        );
+    }
+
     /** Delete the last message sent with the message itself. */
     async deleteLast(): Promise<void>{
         if (!this._lastMessageID) throw new TypeError("Cannot delete last message if it does not exist.");
@@ -427,6 +441,27 @@ export class Message<T extends AnyTextableChannel> extends Base<string> {
             }
         );
     }
+
+    /**
+     * Edit followup message.
+     * @param newMessage Edit options.
+     */
+    async editFollowup(newMessage: EditMessageOptions): Promise<Message<T>> {
+        if (!this._lastMessageID || !this.acknowledged)
+            throw new Error("Cannot edit followup message if it does not exist.");
+        return this.client.rest.channels.editMessage<T>(
+            this.channelID,
+            this._lastMessageID,
+            newMessage,
+            {
+                originals: {
+                    triggerID:  this.originals.triggerID,
+                    responseID: this.originals.responseID
+                }
+            }
+        );
+    }
+
     /** Edit the last message sent with the message itself.
      * @param newMessage New message's options.
      */
