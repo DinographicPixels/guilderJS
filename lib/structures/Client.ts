@@ -1490,8 +1490,7 @@ export class Client extends TypedEmitter<ClientEvents> {
     async getForumThreads(channelID: string, filter?: GetForumThreadsFilter): Promise<Array<ForumThread<ForumChannel>>> {
         return this.rest.channels.getForumThreads(channelID, filter);
     }
-    /** Get a cached guild, returns `undefined` if not cached.
-     *
+    /** Get a cached Guild, returns `undefined` if not cached.
      * Note: this method doesn't send a rest request, it only returns cached entities.
      *
      * There is a similar method that uses REST to request the data
