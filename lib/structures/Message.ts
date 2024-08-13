@@ -288,10 +288,11 @@ export class Message<T extends AnyTextableChannel> extends Base<string> {
               "please acknowledge the message using the createMessage method."
             );
 
-        if (options.replyMessageIDs)
-            options.replyMessageIDs.push(this.id);
-        else
+        if (!options.replyMessageIDs) {
             options.replyMessageIDs = [this.id];
+        } else if (!options.replyMessageIDs.includes(this.id)) {
+            options.replyMessageIDs.push(this.id);
+        }
 
         if (options.replyMessageIDs?.includes(this.originals.triggerID ?? " ")) {
             options.replyMessageIDs[options.replyMessageIDs.length - 1] = this.originals.responseID;
@@ -330,11 +331,13 @@ export class Message<T extends AnyTextableChannel> extends Base<string> {
         );
         if (!this.isOriginal && !(this.originals.triggerID)) this.originals.triggerID = this.id;
 
-        if (!(this.client.params.deprecations?.independentMessageBehavior)) {
-            if (options.replyMessageIDs)
-                options.replyMessageIDs.push(this.originals.triggerID ?? this.id);
-            else
-                options.replyMessageIDs = [this.originals.triggerID ?? this.id];
+        if (!this.client.params.deprecations?.independentMessageBehavior) {
+            const idToUse = this.originals.triggerID ?? this.id;
+            if (!options.replyMessageIDs) {
+                options.replyMessageIDs = [idToUse];
+            } else if (!options.replyMessageIDs.includes(idToUse)) {
+                options.replyMessageIDs.push(idToUse);
+            }
         }
 
         const response =
