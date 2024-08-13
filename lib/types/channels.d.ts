@@ -91,7 +91,7 @@ export interface CreateMessageOptions {
      * (min items 1; must have unique items true) */
     hiddenLinkPreviewURLs?: Array<string>;
     /** Embeds */
-    embeds?: Array<MessageEmbedOptions>;
+    embeds?: Array<Embed>;
     /** Message IDs to reply to (min items 1; max items 5) */
     replyMessageIDs?: Array<string>;
     /** If set, this message will not notify any mentioned users or roles (default `false`) */
@@ -107,7 +107,7 @@ export interface EditMessageOptions {
      * (min items 1; must have unique items true) */
     hiddenLinkPreviewURLs?: Array<string>;
     /** Embeds */
-    embeds?: Array<MessageEmbedOptions>;
+    embeds?: Array<Embed>;
     // /** Message IDs to reply to (min items 1; max items 5) */
     // replyMessageIds?: Array<string>;
     // /** If set, this message will not notify any mentioned users or roles (default `false`) */
@@ -116,7 +116,7 @@ export interface EditMessageOptions {
     // isPrivate?: boolean;
 }
 
-export interface MessageEmbedOptions {
+export interface Embed {
     /** Main header of the embed (max length 256) */
     title?: string;
     /** Subtext of the embed (max length 2048) */

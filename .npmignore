@@ -19,3 +19,5 @@ examples/
 .npm-deprecaterc.json
 .eslintignore
 .eslintrc.js
+.npmrc
+lib/

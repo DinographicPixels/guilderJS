@@ -10,7 +10,7 @@ import { Member } from "../structures/Member";
 import {
     AnyChannel,
     AnyTextableChannel,
-    MessageEmbedOptions,
+    Embed,
     MessageConstructorParams,
     RawUser,
     RawMember,
@@ -42,7 +42,7 @@ export class Util {
         this.#client = client;
     }
 
-    embedsToParsed(embeds: Array<RawEmbed>): Array<MessageEmbedOptions> {
+    embedsToParsed(embeds: Array<RawEmbed>): Array<Embed> {
         return embeds.map(embed => ({
             author: embed.author === undefined ? undefined : {
                 name:    embed.author.name,
@@ -70,7 +70,7 @@ export class Util {
             url: embed.url
         }));
     }
-    embedsToRaw(embeds: Array<MessageEmbedOptions>): Array<RawEmbed> {
+    embedsToRaw(embeds: Array<Embed>): Array<RawEmbed> {
         return embeds.map(embed => ({
             author: embed.author === undefined ? undefined :  {
                 name:     embed.author.name,

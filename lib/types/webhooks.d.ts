@@ -4,7 +4,7 @@
 // Copyright (c) 2024 DinographicPixels. All rights reserved.
 //
 
-import { MessageEmbedOptions } from "./channels";
+import { Embed } from "./channels";
 
 export interface WebhookEditOptions {
     /** New name of the webhook. */
@@ -24,7 +24,7 @@ export interface WebhookExecuteOptions {
     content?: string;
     username?: string;
     avatarURL?: string;
-    embeds?: Array<MessageEmbedOptions>;
+    embeds?: Array<Embed>;
 }
 
 export interface WebhookMessageDetails {
