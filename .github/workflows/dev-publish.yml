@@ -40,7 +40,9 @@ jobs:
           echo "Setting Version: $v"
           contents=$(jq --arg version "$v" '.version = $version' package.json) && echo -E "${contents}" > package.json
       - name: Publish
-        run: npm publish --tag dev --provenance --access public --no-git-checks --auth=$NODE_AUTH_TOKEN
+        run: |
+          echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > .npmrc
+          npm publish --tag dev --provenance --access public --no-git-checks
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
       - name: Deprecate Old Versions
