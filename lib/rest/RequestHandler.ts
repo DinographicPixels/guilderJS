@@ -42,17 +42,17 @@ export class RequestHandler {
         };
     }
 
-    async authRequest<T = unknown>(options: Omit<RequestOptions, "auth">): Promise<T> {
-        return this.request<T>({
-            ...options,
-            auth: true
-        });
-    }
     private globalUnblock(): void {
         this.globalBlock = false;
         while (this.readyQueue.length !== 0) {
             this.readyQueue.shift()!();
         }
+    }
+    async authRequest<T = unknown>(options: Omit<RequestOptions, "auth">): Promise<T> {
+        return this.request<T>({
+            ...options,
+            auth: true
+        });
     }
 
 

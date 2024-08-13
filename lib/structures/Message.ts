@@ -177,6 +177,16 @@ export class Message<T extends AnyTextableChannel> extends Base<string> {
         }
     }
 
+    private async setCache(obj: Promise<Member> | Promise<Guild>): Promise<void> {
+        const guild = this.client.guilds.get(this.guildID as string);
+        const awaitedObj = await obj;
+        if (guild && awaitedObj instanceof Member) {
+            guild?.members?.add(awaitedObj);
+            if (awaitedObj.user) this.client.users.add(awaitedObj.user);
+        } else if (awaitedObj instanceof Guild) {
+            this.client.guilds.add(awaitedObj);
+        }
+    }
     /**
      * Get attachment URLs from this Message
      * *(works for embedded content such as images).*
@@ -593,16 +603,6 @@ export class Message<T extends AnyTextableChannel> extends Base<string> {
     /** Pin this message */
     async pin(): Promise<void>{
         return this.client.rest.channels.pinMessage(this.channelID, this.id as string);
-    }
-    private async setCache(obj: Promise<Member> | Promise<Guild>): Promise<void> {
-        const guild = this.client.guilds.get(this.guildID as string);
-        const awaitedObj = await obj;
-        if (guild && awaitedObj instanceof Member) {
-            guild?.members?.add(awaitedObj);
-            if (awaitedObj.user) this.client.users.add(awaitedObj.user);
-        } else if (awaitedObj instanceof Guild) {
-            this.client.guilds.add(awaitedObj);
-        }
     }
 
 

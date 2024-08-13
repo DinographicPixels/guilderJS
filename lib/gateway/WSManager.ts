@@ -117,132 +117,6 @@ export class WSManager extends TypedEmitter<WebsocketEvents> {
         this.isOfficialMarkdownEnabled = client.params.isOfficialMarkdownEnabled ?? params.isOfficialMarkdownEnabled ?? true;
     }
 
-    get replayEventsCondition(): boolean {
-        return this.replayMissedEvents === true && this.lastMessageID !== undefined;
-    }
-    // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-
-    get vAPI(): number {
-        return this.apiVersion as number;
-    }
-
-    _debug(message: string | object): boolean {
-        return this.emit("debug", `[TouchGuild DEBUG]: ${message.toString()}`);
-    }
-
-
-    connect(): void | Error {
-        if (this.ws && this.ws.readyState !== WebSocket.CLOSED) {
-            this.client.emit(
-                "error",
-                new Error("Calling connect while an existing connection is already established.")
-            );
-            return;
-        }
-        this.currReconnectAttempt++;
-        this.initialize();
-    }
-
-    disconnect(reconnect = this.reconnect, error?: Error): void {
-        this.ws?.close();
-        this.alive = false;
-        this.connected = false;
-
-        if (this.#heartbeatInterval) {
-            clearInterval(this.#heartbeatInterval);
-            this.#heartbeatInterval = null;
-        }
-
-        if (this.ws?.readyState !== WebSocket.CLOSED) {
-            this.ws?.removeAllListeners();
-            try {
-                if (reconnect) {
-                    if (this.ws?.readyState !== WebSocket.OPEN) {
-                        this.ws?.close(4999, "Reconnect");
-                    } else {
-                        this.client.emit("debug", "Closing websocket.");
-                        this.ws.terminate();
-                    }
-                } else {
-                    this.ws?.close(1000, "Normal Close");
-                }
-
-            } catch (err) {
-                this.client.emit("error", err as Error);
-            }
-        }
-
-        if (error) {
-            if (error instanceof GatewayError && [1001, 1006].includes(error.code)) {
-                this.client.emit("debug", error.message);
-            } else {
-                this.client.emit("error", error);
-            }
-        }
-
-        this.ws = null;
-        this.reset();
-
-        this.emit("disconnect", error as Error);
-
-        if (this.lastMessageID && this.currReconnectAttempt >= (this.reconnectAttemptLimit as number)) {
-            this.client.emit(
-                "debug",
-                `Automatically invalidating session due to excessive resume attempts 
-                | Attempt ${this.currReconnectAttempt}`
-            );
-            this.lastMessageID = undefined;
-        }
-
-        if (reconnect) {
-            if (this.lastMessageID) {
-                this.client.emit(
-                    "debug",
-                    `Immediately reconnecting for potential resume 
-                  | Attempt ${this.currReconnectAttempt}`
-                );
-                this.connect();
-            } else {
-                this.client.emit(
-                    "debug",
-                    `Queueing reconnect in ${this.reconnectInterval}ms 
-                  | Attempt ${this.currReconnectAttempt}`);
-                setTimeout(() => {
-                    this.connect();
-                }, this.reconnectInterval);
-                this.reconnectInterval = Math.min(Math.round(this.reconnectInterval * (Math.random() * 2 + 1)), 30000);
-            }
-        } else {
-            this.hardReset();
-        }
-    }
-    hardReset(): void {
-        this.reset();
-        this.currReconnectAttempt = 0;
-        this.token = this.params.token;
-        this.apiVersion = this.params.apiVersion ?? pkgconfig.GuildedAPI.GatewayVersion ?? 1;
-        this.proxyURL = this.params.proxyURL
-          ?? pkgconfig.GuildedAPI.GatewayURL
-          ?? `wss://www.guilded.gg/websocket/v${this.apiVersion}`;
-        this.reconnect = this.params.reconnect ?? true;
-        this.reconnectAttemptLimit = this.params.reconnectAttemptLimit ?? 1;
-        this.replayMissedEvents = this.params.replayMissedEvents ?? true;
-        this.#heartbeatInterval = null;
-
-        this.ws = null;
-        this.firstWsMessage = true;
-        this.lastMessageID = undefined;
-        this.currReconnectAttempt = 0;
-
-        this.alive = false;
-        this.latency = NaN;
-        this.lastHeartbeatSent = NaN;
-        this.lastHeartbeatReceived = NaN;
-        this.lastHeartbeatAck = false;
-        this.heartbeatRequested = false;
-        this.connectionTimeout = 30000;
-        this.#connectTimeout = null;
-    }
     private heartbeat(): void | boolean {
         if (this.heartbeatRequested) {
             if (!this.lastHeartbeatAck) {
@@ -310,7 +184,6 @@ export class WSManager extends TypedEmitter<WebsocketEvents> {
             }
         }, this.connectionTimeout);
     }
-
     private onPacket(packet: AnyPacket): void {
         // s: Message ID used for replaying events after a disconnect.
         if (packet.s) this.lastMessageID = packet.s;
@@ -418,24 +291,151 @@ export class WSManager extends TypedEmitter<WebsocketEvents> {
             this.client.emit("error", err as Error);
         }
     }
-
-
     private onSocketOpen(): void {
         this.alive = true;
         this.currReconnectAttempt = 0; // reset reconnection attempts
         this.emit("debug", "Socket connection is open.");
     }
-
-
     private onSocketPing(): void {
         // this._debug("Heartbeat has been sent.");
         this.ws!.ping(); this.lastHeartbeatSent = Date.now();
     }
-
     private onSocketPong(): void {
         this.client.emit("debug", "Heartbeat acknowledged.");
         if (!Number.isNaN(this.lastHeartbeatSent)) this.latency = Date.now() - this.lastHeartbeatSent;
         this.lastHeartbeatAck = true;
+    }
+    get replayEventsCondition(): boolean {
+        return this.replayMissedEvents === true && this.lastMessageID !== undefined;
+    }
+
+
+    // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+
+    get vAPI(): number {
+        return this.apiVersion as number;
+    }
+
+
+    _debug(message: string | object): boolean {
+        return this.emit("debug", `[TouchGuild DEBUG]: ${message.toString()}`);
+    }
+
+
+    connect(): void | Error {
+        if (this.ws && this.ws.readyState !== WebSocket.CLOSED) {
+            this.client.emit(
+                "error",
+                new Error("Calling connect while an existing connection is already established.")
+            );
+            return;
+        }
+        this.currReconnectAttempt++;
+        this.initialize();
+    }
+
+
+    disconnect(reconnect = this.reconnect, error?: Error): void {
+        this.ws?.close();
+        this.alive = false;
+        this.connected = false;
+
+        if (this.#heartbeatInterval) {
+            clearInterval(this.#heartbeatInterval);
+            this.#heartbeatInterval = null;
+        }
+
+        if (this.ws?.readyState !== WebSocket.CLOSED) {
+            this.ws?.removeAllListeners();
+            try {
+                if (reconnect) {
+                    if (this.ws?.readyState !== WebSocket.OPEN) {
+                        this.ws?.close(4999, "Reconnect");
+                    } else {
+                        this.client.emit("debug", "Closing websocket.");
+                        this.ws.terminate();
+                    }
+                } else {
+                    this.ws?.close(1000, "Normal Close");
+                }
+
+            } catch (err) {
+                this.client.emit("error", err as Error);
+            }
+        }
+
+        if (error) {
+            if (error instanceof GatewayError && [1001, 1006].includes(error.code)) {
+                this.client.emit("debug", error.message);
+            } else {
+                this.client.emit("error", error);
+            }
+        }
+
+        this.ws = null;
+        this.reset();
+
+        this.emit("disconnect", error as Error);
+
+        if (this.lastMessageID && this.currReconnectAttempt >= (this.reconnectAttemptLimit as number)) {
+            this.client.emit(
+                "debug",
+                `Automatically invalidating session due to excessive resume attempts 
+                | Attempt ${this.currReconnectAttempt}`
+            );
+            this.lastMessageID = undefined;
+        }
+
+        if (reconnect) {
+            if (this.lastMessageID) {
+                this.client.emit(
+                    "debug",
+                    `Immediately reconnecting for potential resume 
+                  | Attempt ${this.currReconnectAttempt}`
+                );
+                this.connect();
+            } else {
+                this.client.emit(
+                    "debug",
+                    `Queueing reconnect in ${this.reconnectInterval}ms 
+                  | Attempt ${this.currReconnectAttempt}`);
+                setTimeout(() => {
+                    this.connect();
+                }, this.reconnectInterval);
+                this.reconnectInterval = Math.min(Math.round(this.reconnectInterval * (Math.random() * 2 + 1)), 30000);
+            }
+        } else {
+            this.hardReset();
+        }
+    }
+
+
+    hardReset(): void {
+        this.reset();
+        this.currReconnectAttempt = 0;
+        this.token = this.params.token;
+        this.apiVersion = this.params.apiVersion ?? pkgconfig.GuildedAPI.GatewayVersion ?? 1;
+        this.proxyURL = this.params.proxyURL
+          ?? pkgconfig.GuildedAPI.GatewayURL
+          ?? `wss://www.guilded.gg/websocket/v${this.apiVersion}`;
+        this.reconnect = this.params.reconnect ?? true;
+        this.reconnectAttemptLimit = this.params.reconnectAttemptLimit ?? 1;
+        this.replayMissedEvents = this.params.replayMissedEvents ?? true;
+        this.#heartbeatInterval = null;
+
+        this.ws = null;
+        this.firstWsMessage = true;
+        this.lastMessageID = undefined;
+        this.currReconnectAttempt = 0;
+
+        this.alive = false;
+        this.latency = NaN;
+        this.lastHeartbeatSent = NaN;
+        this.lastHeartbeatReceived = NaN;
+        this.lastHeartbeatAck = false;
+        this.heartbeatRequested = false;
+        this.connectionTimeout = 30000;
+        this.#connectTimeout = null;
     }
 
 
