@@ -39,10 +39,6 @@ jobs:
           v="$version-dev.$hash"
           echo "Setting Version: $v"
           contents=$(jq --arg version "$v" '.version = $version' package.json) && echo -E "${contents}" > package.json
-      - uses: JS-DevTools/npm-publish@v1
-        with:
-          token: ${{ secrets.NPM_TOKEN }}
-          tag: dev
       - name: Publish
         run: npm publish --tag dev --provenance --access public --no-git-checks
         env:
