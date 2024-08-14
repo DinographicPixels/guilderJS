@@ -387,6 +387,7 @@ export class Channels {
     ): Promise<Message<T>> {
         if (typeof options !== "object") throw new Error("message options should be an object.");
         options.replyMessageIDs = [...new Set(options.replyMessageIDs)]; // Remove duplicates.
+        if (options.replyMessageIDs.length === 0) options.replyMessageIDs = undefined;
         return this.#manager.authRequest<POSTChannelMessageResponse>({
             method: "POST",
             path:   endpoints.CHANNEL_MESSAGES(channelID),
