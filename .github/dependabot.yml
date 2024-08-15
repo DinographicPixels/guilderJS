@@ -1,0 +1,15 @@
+version: 2
+updates:
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+    assignees:
+      - "pakkographic"
+    commit-message:
+      include: "scope"
+      prefix: ""
+    target-branch: "dev"
+    versioning-strategy: "increase"
+    labels:
+      - "dependencies"

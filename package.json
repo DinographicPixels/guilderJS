@@ -46,8 +46,8 @@
   "devDependencies": {
     "@favware/npm-deprecate": "^1.0.6",
     "@types/events": "^3.0.0",
-    "@types/node": "^18.11.9",
-    "@types/pako": "^2.0.0",
+    "@types/node": "^22.3.0",
+    "@types/pako": "^2.0.3",
     "@types/sync-fetch": "^0.4.0",
     "@types/ws": "^8.5.3",
     "@typescript-eslint/eslint-plugin": "^5.44.0",
@@ -68,8 +68,8 @@
   },
   "dependencies": {
     "guildedapi-types.ts": "0.3.61",
-    "undici": "^6.19.2",
-    "ws": "^8.11.0"
+    "undici": "^6.19.7",
+    "ws": "^8.18.0"
   },
   "engines": {
     "node": ">= 16.16.0"
