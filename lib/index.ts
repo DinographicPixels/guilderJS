@@ -20,7 +20,6 @@
 //
 
 // EXPORT LIST:
-export type * from "./types/index";
 export * from "./structures/Message";
 
 export * from "./structures/Client";
