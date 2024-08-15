@@ -122,11 +122,11 @@ export interface ClientEvents {
     /** @event Emitted when a channel user permission is deleted. */
     channelUserPermissionDeleted: [channelUserPermission: ChannelUserPermission];
     /** @event Emitted when a channel category role permission is created. */
-    channelCategoryRolePermissionCreated: [channelCategoryUserPermission: ChannelCategoryRolePermission];
+    channelCategoryRolePermissionCreated: [channelCategoryRolePermission: ChannelCategoryRolePermission];
     /** @event Emitted when a channel category role permission is updated. */
-    channelCategoryRolePermissionUpdated: [channelCategoryUserPermission: ChannelCategoryRolePermission];
+    channelCategoryRolePermissionUpdated: [channelCategoryRolePermission: ChannelCategoryRolePermission];
     /** @event Emitted when a channel category role permission is deleted. */
-    channelCategoryRolePermissionDeleted: [channelCategoryUserPermission: ChannelCategoryRolePermission];
+    channelCategoryRolePermissionDeleted: [channelCategoryRolePermission: ChannelCategoryRolePermission];
     /** @event Emitted when a channel category user permission is created. */
     channelCategoryUserPermissionCreated: [channelCategoryUserPermission: ChannelCategoryUserPermission];
     /** @event Emitted when a channel category user permission is updated. */

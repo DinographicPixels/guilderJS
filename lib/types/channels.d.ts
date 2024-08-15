@@ -234,6 +234,8 @@ export interface ChannelRolePermission {
     roleID: number;
     /** The ID of the channel */
     channelID: string;
+    /** ID of the Guild **/
+    guildID: string;
 }
 
 export interface ChannelUserPermission {
@@ -243,9 +245,11 @@ export interface ChannelUserPermission {
     /** The ISO 8601 timestamp that the permission override was updated at, if relevant */
     updatedAt?: string;
     /** The ID of the role */
-    userID: number;
+    userID: string;
     /** The ID of the channel */
     channelID: string;
+    /** ID of the Guild **/
+    guildID: string;
 }
 
 export interface ChannelCategoryUserPermission {
@@ -255,9 +259,11 @@ export interface ChannelCategoryUserPermission {
     /** The ISO 8601 timestamp that the permission override was updated at, if relevant */
     updatedAt?: string;
     /** The ID of the role */
-    userID: number;
+    userID: string;
     /** The ID of the channel */
-    categoryID: string;
+    categoryID: number;
+    /** ID of the Guild **/
+    guildID: string;
 }
 
 export interface ChannelCategoryRolePermission {
@@ -269,7 +275,9 @@ export interface ChannelCategoryRolePermission {
     /** The ID of the role */
     roleID: number;
     /** The ID of the channel */
-    categoryID: string;
+    categoryID: number;
+    /** ID of the Guild **/
+    guildID: string;
 }
 
 export type AnyTextableChannel = TextChannel;

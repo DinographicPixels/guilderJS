@@ -20,6 +20,7 @@ import type {
     GatewayEvent_ServerChannelUpdated
 } from "../../Constants";
 import type { AnyChannel } from "../../types";
+import { Permissions } from "guildedapi-types.ts/v1";
 
 /** Internal component, emitting channel events. */
 export class ChannelHandler extends GatewayEventHandler{
@@ -40,29 +41,77 @@ export class ChannelHandler extends GatewayEventHandler{
         this.client.emit("channelArchive", ChannelComponent);
     }
     async channelCategoryRolePermissionCreated(data: GatewayEvent_ChannelCategoryRolePermissionCreated): Promise<void> {
-        const ChannelComponent = data.channelCategoryRolePermission;
-        this.client.emit("channelCategoryRolePermissionCreated", ChannelComponent);
+        this.client.emit(
+            "channelCategoryRolePermissionCreated",
+            {
+                permission: (data.channelCategoryRolePermission.permissions as never as Array<Permissions>),
+                createdAt:  data.channelCategoryRolePermission.createdAt,
+                updatedAt:  data.channelCategoryRolePermission.updatedAt,
+                roleID:     data.channelCategoryRolePermission.roleId,
+                categoryID: data.channelCategoryRolePermission.categoryId,
+                guildID:    data.serverId
+            });
     }
     async channelCategoryRolePermissionDeleted(data: GatewayEvent_ChannelCategoryRolePermissionCreated): Promise<void> {
-        const ChannelComponent = data.channelCategoryRolePermission;
-        this.client.emit("channelCategoryRolePermissionDeleted", ChannelComponent);
+        this.client.emit(
+            "channelCategoryRolePermissionDeleted",
+            {
+                permission: (data.channelCategoryRolePermission.permissions as never as Array<Permissions>),
+                createdAt:  data.channelCategoryRolePermission.createdAt,
+                updatedAt:  data.channelCategoryRolePermission.updatedAt,
+                roleID:     data.channelCategoryRolePermission.roleId,
+                categoryID: data.channelCategoryRolePermission.categoryId,
+                guildID:    data.serverId
+            });
     }
     async channelCategoryRolePermissionUpdated(data: GatewayEvent_ChannelCategoryRolePermissionCreated): Promise<void> {
-        const ChannelComponent = data.channelCategoryRolePermission;
-        this.client.emit("channelCategoryRolePermissionUpdated", ChannelComponent);
+        this.client.emit(
+            "channelCategoryRolePermissionUpdated",
+            {
+                permission: (data.channelCategoryRolePermission.permissions as never as Array<Permissions>),
+                createdAt:  data.channelCategoryRolePermission.createdAt,
+                updatedAt:  data.channelCategoryRolePermission.updatedAt,
+                roleID:     data.channelCategoryRolePermission.roleId,
+                categoryID: data.channelCategoryRolePermission.categoryId,
+                guildID:    data.serverId
+            });
     }
     async channelCategoryUserPermissionCreated(data: GatewayEvent_ChannelCategoryUserPermissionCreated): Promise<void> {
-        const ChannelComponent = data.channelCategoryUserPermission;
-        this.client.emit("channelCategoryUserPermissionCreated", ChannelComponent);
+        this.client.emit(
+            "channelCategoryUserPermissionCreated",
+            {
+                permission: (data.channelCategoryUserPermission.permissions as never as Array<Permissions>),
+                createdAt:  data.channelCategoryUserPermission.createdAt,
+                updatedAt:  data.channelCategoryUserPermission.updatedAt,
+                categoryID: data.channelCategoryUserPermission.categoryId,
+                userID:     data.channelCategoryUserPermission.userId,
+                guildID:    data.serverId
+            });
     }
 
     async channelCategoryUserPermissionDeleted(data: GatewayEvent_ChannelCategoryUserPermissionCreated): Promise<void> {
-        const ChannelComponent = data.channelCategoryUserPermission;
-        this.client.emit("channelCategoryUserPermissionDeleted", ChannelComponent);
+        this.client.emit(
+            "channelCategoryUserPermissionDeleted",
+            {
+                permission: (data.channelCategoryUserPermission.permissions as never as Array<Permissions>),
+                createdAt:  data.channelCategoryUserPermission.createdAt,
+                updatedAt:  data.channelCategoryUserPermission.updatedAt,
+                categoryID: data.channelCategoryUserPermission.categoryId,
+                userID:     data.channelCategoryUserPermission.userId,
+                guildID:    data.serverId
+            });
     }
     async channelCategoryUserPermissionUpdated(data: GatewayEvent_ChannelCategoryUserPermissionCreated): Promise<void> {
-        const ChannelComponent = data.channelCategoryUserPermission;
-        this.client.emit("channelCategoryUserPermissionUpdated", ChannelComponent);
+        this.client.emit(
+            "channelCategoryUserPermissionUpdated",
+            {
+                permission: (data.channelCategoryUserPermission.permissions as never as Array<Permissions>),
+                createdAt:  data.channelCategoryUserPermission.createdAt,
+                updatedAt:  data.channelCategoryUserPermission.updatedAt,
+                categoryID: data.channelCategoryUserPermission.categoryId,
+                userID:     data.channelCategoryUserPermission.userId,
+                guildID:    data.serverId
+            });
     }
     async channelCreate(data: GatewayEvent_ServerChannelCreated): Promise<void> {
         if (this.client.params.waitForCaching)
@@ -84,16 +133,42 @@ export class ChannelHandler extends GatewayEventHandler{
         this.client.emit("channelRestore", ChannelComponent);
     }
     async channelRolePermissionCreated(data: GatewayEvent_ChannelRolePermissionCreated): Promise<void> {
-        const ChannelComponent = data.channelRolePermission;
-        this.client.emit("channelRolePermissionCreated", ChannelComponent);
+        this.client.emit(
+            "channelRolePermissionCreated",
+            {
+                permission: (data.channelRolePermission.permissions as never as Array<Permissions>),
+                createdAt:  data.channelRolePermission.createdAt,
+                updatedAt:  data.channelRolePermission.updatedAt,
+                roleID:     data.channelRolePermission.roleId,
+                channelID:  data.channelRolePermission.channelId,
+                guildID:    data.serverId
+            }
+        );
     }
     async channelRolePermissionDeleted(data: GatewayEvent_ChannelRolePermissionCreated): Promise<void> {
-        const ChannelComponent = data.channelRolePermission;
-        this.client.emit("channelRolePermissionDeleted", ChannelComponent);
+        this.client.emit(
+            "channelRolePermissionDeleted",
+            {
+                permission: (data.channelRolePermission.permissions as never as Array<Permissions>),
+                createdAt:  data.channelRolePermission.createdAt,
+                updatedAt:  data.channelRolePermission.updatedAt,
+                roleID:     data.channelRolePermission.roleId,
+                channelID:  data.channelRolePermission.channelId,
+                guildID:    data.serverId
+            });
     }
     async channelRolePermissionUpdated(data: GatewayEvent_ChannelRolePermissionCreated): Promise<void> {
-        const ChannelComponent = data.channelRolePermission;
-        this.client.emit("channelRolePermissionUpdated", ChannelComponent);
+        const channelRolePermission = data.channelRolePermission;
+        this.client.emit(
+            "channelRolePermissionUpdated",
+            {
+                permission: (data.channelRolePermission.permissions as never as Array<Permissions>),
+                createdAt:  data.channelRolePermission.createdAt,
+                updatedAt:  data.channelRolePermission.updatedAt,
+                roleID:     data.channelRolePermission.roleId,
+                channelID:  data.channelRolePermission.channelId,
+                guildID:    data.serverId
+            });
     }
     async channelUpdate(data: GatewayEvent_ServerChannelUpdated): Promise<void> {
         if (this.client.params.waitForCaching)
@@ -108,16 +183,40 @@ export class ChannelHandler extends GatewayEventHandler{
 
 
     async channelUserPermissionCreated(data: GatewayEvent_ChannelUserPermissionCreated): Promise<void> {
-        const ChannelComponent = data.channelUserPermission;
-        this.client.emit("channelUserPermissionCreated", ChannelComponent);
+        this.client.emit(
+            "channelUserPermissionCreated",
+            {
+                channelID:  data.channelUserPermission.channelId,
+                createdAt:  data.channelUserPermission.createdAt,
+                updatedAt:  data.channelUserPermission.updatedAt,
+                userID:     data.channelUserPermission.userId,
+                guildID:    data.serverId,
+                permission: data.channelUserPermission as never as Array<Permissions>
+            });
     }
 
     async channelUserPermissionDeleted(data: GatewayEvent_ChannelUserPermissionDeleted): Promise<void> {
-        const ChannelComponent = data.channelUserPermission;
-        this.client.emit("channelUserPermissionDeleted", ChannelComponent);
+        this.client.emit(
+            "channelUserPermissionDeleted",
+            {
+                channelID:  data.channelUserPermission.channelId,
+                createdAt:  data.channelUserPermission.createdAt,
+                updatedAt:  data.channelUserPermission.updatedAt,
+                userID:     data.channelUserPermission.userId,
+                guildID:    data.serverId,
+                permission: data.channelUserPermission as never as Array<Permissions>
+            });
     }
     async channelUserPermissionUpdated(data: GatewayEvent_ChannelUserPermissionUpdated): Promise<void> {
-        const ChannelComponent = data.channelUserPermission;
-        this.client.emit("channelUserPermissionUpdated", ChannelComponent);
+        this.client.emit(
+            "channelUserPermissionUpdated",
+            {
+                channelID:  data.channelUserPermission.channelId,
+                createdAt:  data.channelUserPermission.createdAt,
+                updatedAt:  data.channelUserPermission.updatedAt,
+                userID:     data.channelUserPermission.userId,
+                guildID:    data.serverId,
+                permission: data.channelUserPermission as never as Array<Permissions>
+            });
     }
 }
