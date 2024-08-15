@@ -44,11 +44,11 @@ export class Message<T extends AnyTextableChannel> extends Base<string> {
     content: string | null;
     /** Links in content to prevent unfurling as a link preview when displaying in Guilded
      * (min items 1; must have unique items true) */
-    hiddenLinkPreviewUrls?: Array<string>;
+    hiddenLinkPreviewURLs?: Array<string>;
     /** Array of message embed. */
     embeds?: Array<RawEmbed> | [];
     /** The IDs of the message replied by the message. */
-    replyMessageIds: Array<string>;
+    replyMessageIDs: Array<string>;
     /** If true, the message appears as private. */
     isPrivate: boolean;
     /** If true, the message didn't mention anyone. */
@@ -88,9 +88,9 @@ export class Message<T extends AnyTextableChannel> extends Base<string> {
         this.guildID = data.serverId ?? null;
         this.channelID = data.channelId;
         this.content = data.content ?? "";
-        this.hiddenLinkPreviewUrls = data.hiddenLinkPreviewUrls ?? [];
+        this.hiddenLinkPreviewURLs = data.hiddenLinkPreviewUrls ?? [];
         this.embeds = data.embeds ?? [];
-        this.replyMessageIds = data.replyMessageIds ?? [];
+        this.replyMessageIDs = data.replyMessageIds ?? [];
         this.isPrivate = data.isPrivate ?? false;
         this.isSilent = data.isSilent ?? false;
         this.mentions = data.mentions as RawMentions ?? null;
@@ -118,9 +118,9 @@ export class Message<T extends AnyTextableChannel> extends Base<string> {
             guildID:               this.guildID,
             channelID:             this.channelID,
             content:               this.content,
-            hiddenLinkPreviewUrls: this.hiddenLinkPreviewUrls,
+            hiddenLinkPreviewUrls: this.hiddenLinkPreviewURLs,
             embeds:                this.embeds,
-            replyMessageIds:       this.replyMessageIds,
+            replyMessageIds:       this.replyMessageIDs,
             isPrivate:             this.isPrivate,
             isSilent:              this.isSilent,
             mentions:              this.mentions,
@@ -164,7 +164,7 @@ export class Message<T extends AnyTextableChannel> extends Base<string> {
             this.mentions = data.mentions;
         }
         if (data.replyMessageIds !== undefined) {
-            this.replyMessageIds = data.replyMessageIds;
+            this.replyMessageIDs = data.replyMessageIds;
         }
         if (data.serverId !== undefined) {
             this.guildID = data.serverId;
