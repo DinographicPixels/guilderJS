@@ -12,7 +12,7 @@ import type {
     GuildDeleteInfo,
     UserStatusCreate,
     UserStatusDelete
-} from "./typves";
+} from "./types";
 import type { AnyPacket, WelcomePacket } from "./gateway-raw";
 import {
     JSONAnnouncement,
@@ -34,8 +34,17 @@ import {
     JSONMessage,
     JSONTextChannel
 } from "./json";
-import { AnyChannel, AnyTextableChannel, ChannelMessageReactionBulkRemove, PossiblyUncachedMessage } from "./channels";
-import { RawAppUser } from "./users";
+import type {
+    AnyChannel,
+    AnyTextableChannel,
+    ChannelCategoryRolePermission,
+    ChannelCategoryUserPermission,
+    ChannelMessageReactionBulkRemove,
+    ChannelRolePermission,
+    ChannelUserPermission,
+    PossiblyUncachedMessage
+} from "./channels";
+import type { RawAppUser } from "./users";
 import type { BannedMember } from "../structures/BannedMember";
 import type { ForumThread } from "../structures/ForumThread";
 import type { ForumThreadComment } from "../structures/ForumThreadComment";
@@ -48,19 +57,19 @@ import type { CalendarEvent } from "../structures/CalendarEvent";
 import type { Doc } from "../structures/Doc";
 import type { Member } from "../structures/Member";
 import type { Webhook } from "../structures/Webhook";
-import { TextChannel } from "../structures/TextChannel";
-import { ForumChannel } from "../structures/ForumChannel";
-import { CalendarChannel } from "../structures/CalendarChannel";
-import { DocChannel } from "../structures/DocChannel";
-import { GuildChannel } from "../structures/GuildChannel";
-import { Channel } from "../structures/Channel";
-import { CalendarComment } from "../structures/CalendarComment";
-import { DocComment } from "../structures/DocComment";
-import { Announcement } from "../structures/Announcement";
+import type { TextChannel } from "../structures/TextChannel";
+import type { ForumChannel } from "../structures/ForumChannel";
+import type { CalendarChannel } from "../structures/CalendarChannel";
+import type { DocChannel } from "../structures/DocChannel";
+import type { GuildChannel } from "../structures/GuildChannel";
+import type { Channel } from "../structures/Channel";
+import type { CalendarComment } from "../structures/CalendarComment";
+import type { DocComment } from "../structures/DocComment";
+import type { Announcement } from "../structures/Announcement";
 import type { AnnouncementComment } from "../structures/AnnouncementComment";
-import { Group } from "../structures/Group";
-import { Role } from "../structures/Role";
-import { Category } from "../structures/Category";
+import type { Group } from "../structures/Group";
+import type { Role } from "../structures/Role";
+import type{ Category } from "../structures/Category";
 
 /** Every client events. */
 export interface ClientEvents {
@@ -114,7 +123,7 @@ export interface ClientEvents {
     channelUserPermissionDeleted: [channelUserPermission: ChannelUserPermission];
     /** @event Emitted when a channel category role permission is created. */
     channelCategoryRolePermissionCreated: [channelCategoryUserPermission: ChannelCategoryRolePermission];
-    /** @event Emitted when a channel category roke permission is updated. */
+    /** @event Emitted when a channel category role permission is updated. */
     channelCategoryRolePermissionUpdated: [channelCategoryUserPermission: ChannelCategoryRolePermission];
     /** @event Emitted when a channel category role permission is deleted. */
     channelCategoryRolePermissionDeleted: [channelCategoryUserPermission: ChannelCategoryRolePermission];
