@@ -4,7 +4,7 @@
 // Copyright (c) 2024 DinographicPixels. All rights reserved.
 //
 
-import {
+import type {
     RawCalendarEvent,
     RawCalendarComment,
     RawDocComment,
@@ -12,12 +12,12 @@ import {
     RawMentions,
     CalendarRSVPStatus
 } from "./channels";
-import { Member } from "../structures/Member";
-import { User } from "../structures/User";
-import { Guild } from "../structures/Guild";
-import { UserTypes } from "../Constants";
-import { Permissions } from "guildedapi-types.ts/v1";
-import { SocialLinkType } from "guildedapi-types.ts/typings/schemas/v1";
+import type { Member } from "../structures/Member";
+import type { User } from "../structures/User";
+import type { Guild } from "../structures/Guild";
+import type { UserTypes } from "../Constants";
+import type { Permissions } from "guildedapi-types.ts/v1";
+import type { SocialLinkType } from "guildedapi-types.ts/typings/schemas/v1";
 
 export interface JSONBase<ID= string | number> {
     // createdAt: number;

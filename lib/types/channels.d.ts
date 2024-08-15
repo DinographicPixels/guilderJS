@@ -5,12 +5,12 @@
 //
 
 import type { Message } from "../structures/Message";
-import { GuildChannel } from "../structures/GuildChannel";
-import { TextChannel } from "../structures/TextChannel";
-import { ForumChannel } from "../structures/ForumChannel";
-import { DocChannel } from "../structures/DocChannel";
-import { CalendarChannel } from "../structures/CalendarChannel";
-import { AnnouncementChannel } from "../structures/AnnouncementChannel";
+import type { GuildChannel } from "../structures/GuildChannel";
+import type { TextChannel } from "../structures/TextChannel";
+import type { ForumChannel } from "../structures/ForumChannel";
+import type { DocChannel } from "../structures/DocChannel";
+import type { CalendarChannel } from "../structures/CalendarChannel";
+import type { AnnouncementChannel } from "../structures/AnnouncementChannel";
 import type {
     APIChatMessage,
     APIEmbedField,
@@ -19,23 +19,27 @@ import type {
     APIGuildChannel,
     APIAnnouncement,
     APIAnnouncementComment,
-    APIAnnouncementCommentReaction,
     APICalendarEventRSVPStatuses,
     APICalendarEvent,
     APICalendarEventComment,
-    APICalendarEventCommentReaction,
     APIDoc,
     APICalendarEventRSVP,
     APIForumTopicComment,
     APIListItem,
     APIListItemSummary,
     APIEmbedOptions,
-    APIMentions
+    APIMentions,
+    Permissions,
+    APIAnnouncementCommentReaction,
+    APICalendarEventCommentReaction,
+    APIDocCommentReaction,
+    APIForumTopicCommentReaction,
+    APIForumTopicReaction,
+    APIListItemNote,
+    APIListItemNoteSummary,
+    APIDocComment,
+    APIEmote
 } from "guildedapi-types.ts/v1";
-import { APIDocComment } from "guildedapi-types.ts/typings/payloads/v1/Docs";
-import { APIDocCommentReaction, APIForumTopicCommentReaction, APIForumTopicReaction } from "guildedapi-types.ts/typings/payloads/v1/Reactions";
-import { APIListItemNote, APIListItemNoteSummary } from "guildedapi-types.ts/typings/payloads/v1/ListItems";
-import { APIEmote } from "guildedapi-types.ts/typings/payloads/v1/Emotes";
 
 export type RawChannel = APIGuildChannel;
 export type RawAnnouncement = APIAnnouncement;

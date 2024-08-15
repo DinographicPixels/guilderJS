@@ -6,10 +6,10 @@
 //
 
 import { ReactionInfo } from "./ReactionInfo";
-import { TextChannel } from "./TextChannel";
-import { Client } from "./Client";
-import { MessageReactionTypes } from "../types";
-import { GatewayEvent_ChannelMessageReactionCreated, GatewayEvent_ChannelMessageReactionDeleted } from "../Constants";
+import type { TextChannel } from "./TextChannel";
+import type { Client } from "./Client";
+import type { MessageReactionTypes } from "../types";
+import type { GatewayEvent_ChannelMessageReactionCreated, GatewayEvent_ChannelMessageReactionDeleted } from "../Constants";
 
 /** Information about a Message's reaction. */
 export class MessageReactionInfo extends ReactionInfo {

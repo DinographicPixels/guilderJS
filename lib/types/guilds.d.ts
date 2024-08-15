@@ -15,7 +15,7 @@ import type {
     APIUserSummary
 } from "guildedapi-types.ts/v1";
 
-import { APIGuildMemberSummary } from "guildedapi-types.ts/typings/payloads/v1/Members";
+import type { APIGuildMemberSummary } from "guildedapi-types.ts/typings/payloads/v1/Members";
 
 export type RawGuild = APIGuild;
 export type RawGroup = APIGuildGroup;

@@ -7,10 +7,10 @@
 
 import { GatewayEventHandler } from "./GatewayEventHandler";
 import { Announcement } from "../../structures/Announcement";
-import { AnnouncementChannel } from "../../structures/AnnouncementChannel";
+import type { AnnouncementChannel } from "../../structures/AnnouncementChannel";
 import { AnnouncementComment } from "../../structures/AnnouncementComment";
 import { AnnouncementReactionInfo } from "../../structures/AnnouncementReactionInfo";
-import {
+import type {
     GatewayEvent_AnnouncementCommentCreated,
     GatewayEvent_AnnouncementCommentDeleted,
     GatewayEvent_AnnouncementCommentReactionCreated,

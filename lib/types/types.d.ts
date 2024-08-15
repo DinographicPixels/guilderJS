@@ -5,22 +5,23 @@
 // Copyright (c) 2024 DinographicPixels. All rights reserved.
 //
 
-import type { RawEmote, RawMentions } from "./channels";
-import { ForumThread } from "../structures/ForumThread";
-import { Guild } from "../structures/Guild";
-import { Member } from "../structures/Member";
-import { Message } from "../structures/Message";
+import type { AnyTextableChannel, RawEmote, RawMentions } from "./channels";
+import type { ForumThread } from "../structures/ForumThread";
+import type { Guild } from "../structures/Guild";
+import type { Member } from "../structures/Member";
+import type { Message } from "../structures/Message";
 import type { MessageReactionInfo } from "../structures/MessageReactionInfo";
 import type { ForumThreadReactionInfo } from "../structures/ForumThreadReactionInfo";
-import { CalendarEvent } from "../structures/CalendarEvent";
-import { CalendarReactionInfo } from "../structures/CalendarReactionInfo";
-import { Doc } from "../structures/Doc";
-import { DocReactionInfo } from "../structures/DocReactionInfo";
-import { Announcement } from "../structures/Announcement";
+import type { CalendarEvent } from "../structures/CalendarEvent";
+import type { CalendarReactionInfo } from "../structures/CalendarReactionInfo";
+import type { Doc } from "../structures/Doc";
+import type { DocReactionInfo } from "../structures/DocReactionInfo";
+import type { Announcement } from "../structures/Announcement";
 import type { AnnouncementReactionInfo } from "../structures/AnnouncementReactionInfo";
+import type { ForumChannel } from "../structures/ForumChannel";
 
 export interface MessageReactionTypes {
-    message: Message | {
+    message: Message<AnyTextableChannel> | {
         id: string;
         guild: Guild | {
             id?: string;
@@ -34,7 +35,7 @@ export interface MessageReactionTypes {
 }
 
 export interface ForumThreadReactionTypes {
-    thread: ForumThread | {
+    thread: ForumThread<ForumChannel> | {
         id: number;
         guild: Guild | {
             id?: string;

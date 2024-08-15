@@ -5,7 +5,7 @@
 //
 
 import type { APIBotUser, APIUser } from "guildedapi-types.ts/v1";
-import { APISocialLink } from "guildedapi-types.ts/typings/payloads/v1/Users";
+import type { APISocialLink } from "guildedapi-types.ts/typings/payloads/v1/Users";
 
 export type RawUser = APIUser;
 export type RawAppUser = APIBotUser;

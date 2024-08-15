@@ -8,7 +8,7 @@
 import { GatewayEventHandler } from "./GatewayEventHandler";
 import { CalendarEvent } from "../../structures/CalendarEvent";
 import { CalendarEventRSVP } from "../../structures/CalendarRSVP";
-import {
+import type {
     GatewayEvent_CalendarEventCommentCreated,
     GatewayEvent_CalendarEventCommentDeleted,
     GatewayEvent_CalendarEventCommentReactionCreated,
@@ -23,7 +23,7 @@ import {
     GatewayEvent_CalendarEventRsvpUpdated,
     GatewayEvent_CalendarEventUpdated
 } from "../../Constants";
-import { CalendarChannel } from "../../structures/CalendarChannel";
+import type { CalendarChannel } from "../../structures/CalendarChannel";
 import { CalendarReactionInfo } from "../../structures/CalendarReactionInfo";
 import { CalendarComment } from "../../structures/CalendarComment";
 

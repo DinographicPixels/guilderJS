@@ -5,9 +5,9 @@
 // Copyright (c) 2024 DinographicPixels. All rights reserved.
 //
 
-import { Member } from "./Member";
-import { Client } from "./Client";
-import {
+import type { Member } from "./Member";
+import type { Client } from "./Client";
+import type {
     GatewayEvent_AnnouncementCommentReactionCreated,
     GatewayEvent_AnnouncementCommentReactionDeleted,
     GatewayEvent_AnnouncementReactionCreated,
@@ -25,7 +25,7 @@ import {
     GatewayEvent_ForumTopicReactionCreated,
     GatewayEvent_ForumTopicReactionDeleted
 } from "../Constants";
-import { RawEmote } from "../types";
+import type { RawEmote } from "../types";
 
 /** Default information every other reaction has. */
 export class ReactionInfo {

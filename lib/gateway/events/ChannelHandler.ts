@@ -6,7 +6,7 @@
 //
 
 import { GatewayEventHandler } from "./GatewayEventHandler";
-import {
+import type {
     GatewayEvent_ChannelArchived,
     GatewayEvent_ChannelCategoryRolePermissionCreated,
     GatewayEvent_ChannelCategoryUserPermissionCreated,
@@ -19,7 +19,7 @@ import {
     GatewayEvent_ServerChannelDeleted,
     GatewayEvent_ServerChannelUpdated
 } from "../../Constants";
-import { AnyChannel } from "../../types";
+import type { AnyChannel } from "../../types";
 
 /** Internal component, emitting channel events. */
 export class ChannelHandler extends GatewayEventHandler{

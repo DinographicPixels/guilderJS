@@ -4,7 +4,7 @@
 // Copyright (c) 2024 DinographicPixels. All rights reserved.
 //
 
-import { Embed } from "./channels";
+import type { Embed } from "./channels";
 
 export interface WebhookEditOptions {
     /** New name of the webhook. */

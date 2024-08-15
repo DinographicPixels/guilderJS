@@ -5,14 +5,19 @@
 // Copyright (c) 2024 DinographicPixels. All rights reserved.
 //
 
-import { Client } from "./Client";
-import { Guild } from "./Guild";
-import { Member } from "./Member";
+/** @module ForumThread */
+//
+// Created by Wade (@pakkographic)
+// Copyright (c) 2024 DinographicPixels. All rights reserved.
+//
+import type { Client } from "./Client";
+import type { Guild } from "./Guild";
+import type { Member } from "./Member";
 import { Base } from "./Base";
-import { User } from "./User";
+import type { User } from "./User";
 import { ForumThreadComment } from "./ForumThreadComment";
-import { ForumChannel } from "./ForumChannel";
-import {
+import type { ForumChannel } from "./ForumChannel";
+import type {
     EditForumThreadOptions,
     JSONForumThread,
     AnyTextableChannel,

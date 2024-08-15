@@ -4,8 +4,8 @@
 // Copyright (c) 2024 DinographicPixels. All rights reserved.
 //
 
-import { RawAppUser } from "./users";
-import { GatewayOPCodes } from "../Constants";
+import type { RawAppUser } from "./users";
+import type { GatewayOPCodes } from "../Constants";
 
 export type AnyPacket = RawPacket | WelcomePacket;
 
