@@ -20,7 +20,7 @@ import type {
     GatewayEvent_ServerChannelUpdated
 } from "../../Constants";
 import type { AnyChannel } from "../../types";
-import { Permissions } from "guildedapi-types.ts/v1";
+import type { Permissions } from "guildedapi-types.ts/v1";
 
 /** Internal component, emitting channel events. */
 export class ChannelHandler extends GatewayEventHandler{
@@ -158,7 +158,6 @@ export class ChannelHandler extends GatewayEventHandler{
             });
     }
     async channelRolePermissionUpdated(data: GatewayEvent_ChannelRolePermissionCreated): Promise<void> {
-        const channelRolePermission = data.channelRolePermission;
         this.client.emit(
             "channelRolePermissionUpdated",
             {

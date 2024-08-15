@@ -10,7 +10,7 @@ import GuildedHTTPError from "./GuildedHTTPError";
 import GuildedRESTError from "./GuildedRESTError";
 import SequentialBucket from "./SequentialBucket";
 import { RESTMethod, RESTMethods } from "../Constants";
-import { LatencyRef, RequestOptions, RESTOptions } from "../types";
+import type { LatencyRef, RequestOptions, RESTOptions } from "../types";
 import { config as pkgconfig } from "../../pkgconfig";
 import { fetch, File, FormData } from "undici";
 

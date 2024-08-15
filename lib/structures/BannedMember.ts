@@ -5,12 +5,12 @@
 // Copyright (c) 2024 DinographicPixels. All rights reserved.
 //
 
-import { Client } from "./Client";
+import type { Client } from "./Client";
 import { User } from "./User";
-import { Guild } from "./Guild";
+import type { Guild } from "./Guild";
 import { Base } from "./Base";
-import { Member } from "./Member";
-import { JSONBannedMember, RawMemberBan, RawUser } from "../types";
+import type { Member } from "./Member";
+import type { JSONBannedMember, RawMemberBan, RawUser } from "../types";
 
 /** BannedMember represents a banned guild member. */
 export class BannedMember extends Base<string> {

@@ -7,13 +7,13 @@
 
 import type { RESTManager } from "../rest/RESTManager";
 import * as endpoints from "../rest/endpoints";
-import { GETGuildMemberSocialsResponse, GETUserResponse, GETUserServersResponse, PUTUserStatusBody } from "../Constants";
-import { User } from "../structures/User";
+import type { GETGuildMemberSocialsResponse, GETUserResponse, GETUserServersResponse, PUTUserStatusBody } from "../Constants";
+import type { User } from "../structures/User";
 import { SocialLink } from "../structures/SocialLink";
 import { Guild } from "../structures/Guild";
 import { AppUser } from "../structures/AppUser";
-import { RawAppUser } from "../types";
-import { POSTURLSignatureBody, POSTURLSignatureResponse } from "guildedapi-types.ts/typings/REST/v1/URLSignature";
+import type { RawAppUser } from "../types";
+import type { POSTURLSignatureBody, POSTURLSignatureResponse } from "guildedapi-types.ts/v1";
 
 /** Miscellaneous routes. */
 export class Miscellaneous {

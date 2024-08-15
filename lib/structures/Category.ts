@@ -5,12 +5,12 @@
 // Copyright (c) 2024 DinographicPixels. All rights reserved.
 //
 
-import { Client } from "./Client";
+import type { Client } from "./Client";
 import { Base } from "./Base";
-import { Permission } from "./Permission";
-import { JSONCategory, RawCategory } from "../types";
-import { PATCHUpdateCategoryBody } from "../Constants";
-import { PATCHChannelCategoryUserPermissionBody, POSTChannelCategoryUserPermissionBody } from "guildedapi-types.ts/v1";
+import type { Permission } from "./Permission";
+import type { JSONCategory, RawCategory } from "../types";
+import type { PATCHUpdateCategoryBody } from "../Constants";
+import type { PATCHChannelCategoryUserPermissionBody, POSTChannelCategoryUserPermissionBody } from "guildedapi-types.ts/v1";
 
 /** Represents a Guild Category. */
 export class Category extends Base<number> {

@@ -6,10 +6,10 @@
 //
 
 import { ReactionInfo } from "./ReactionInfo";
-import { Client } from "./Client";
-import { ForumChannel } from "./ForumChannel";
-import { ForumThreadReactionTypes } from "../types";
-import { GatewayEvent_ForumTopicCommentReactionCreated, GatewayEvent_ForumTopicCommentReactionDeleted, GatewayEvent_ForumTopicReactionCreated, GatewayEvent_ForumTopicReactionDeleted } from "../Constants";
+import type  { Client } from "./Client";
+import type { ForumChannel } from "./ForumChannel";
+import type { ForumThreadReactionTypes } from "../types";
+import type { GatewayEvent_ForumTopicCommentReactionCreated, GatewayEvent_ForumTopicCommentReactionDeleted, GatewayEvent_ForumTopicReactionCreated, GatewayEvent_ForumTopicReactionDeleted } from "../Constants";
 
 /** Information about a ForumThread's reaction. */
 export class ForumThreadReactionInfo extends ReactionInfo {

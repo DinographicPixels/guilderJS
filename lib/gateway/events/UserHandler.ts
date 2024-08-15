@@ -6,8 +6,8 @@
 //
 
 import { GatewayEventHandler } from "./GatewayEventHandler";
-import { UserStatus, UserStatusCreate, UserStatusDelete } from "../../types";
-import { GatewayEvent_UserStatusCreated, GatewayEvent_UserStatusDeleted } from "guildedapi-types.ts/v1";
+import type { UserStatus, UserStatusCreate, UserStatusDelete } from "../../types";
+import type { GatewayEvent_UserStatusCreated, GatewayEvent_UserStatusDeleted } from "guildedapi-types.ts/v1";
 
 /** Internal component, emitting user events. */
 export class UserHandler extends GatewayEventHandler {

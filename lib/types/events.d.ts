@@ -14,7 +14,7 @@ import type {
     UserStatusDelete
 } from "./types";
 import type { AnyPacket, WelcomePacket } from "./gateway-raw";
-import {
+import type {
     JSONAnnouncement,
     JSONAnnouncementComment,
     JSONCalendarChannel,
@@ -69,7 +69,7 @@ import type { Announcement } from "../structures/Announcement";
 import type { AnnouncementComment } from "../structures/AnnouncementComment";
 import type { Group } from "../structures/Group";
 import type { Role } from "../structures/Role";
-import type{ Category } from "../structures/Category";
+import type { Category } from "../structures/Category";
 
 /** Every client events. */
 export interface ClientEvents {
@@ -140,7 +140,7 @@ export interface ClientEvents {
     /** @event Emitted when a forum thread is created. */
     forumThreadCreate: [thread: ForumThread<ForumChannel>];
     /** @event Emitted when a forum thread is edited. */
-    forumThreadUpdate: [thread: ForumThread<ForumChannel>, oldThread: JSONForumThread | null];
+    forumThreadUpdate: [thread: ForumThread<ForumChannel>, oldThread: JSONForumThread<ForumChannel> | null];
     /** @event Emitted when a forum thread is deleted. */
     forumThreadDelete: [thread: ForumThread<ForumChannel>];
     /** @event Emitted when a forum thread is pinned. */

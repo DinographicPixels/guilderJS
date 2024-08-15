@@ -5,9 +5,9 @@
 // Copyright (c) 2024 DinographicPixels. All rights reserved.
 //
 
-import { Client } from "./Client";
+import type { Client } from "./Client";
 import { User } from "./User";
-import { RawAppUser, JSONAppUser } from "../types";
+import type { RawAppUser, JSONAppUser } from "../types";
 
 /** AppUser represents the logged app user. */
 export class AppUser extends User {

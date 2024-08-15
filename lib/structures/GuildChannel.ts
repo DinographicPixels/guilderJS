@@ -5,11 +5,11 @@
 // Copyright (c) 2024 DinographicPixels. All rights reserved.
 //
 
-import { Client } from "./Client";
+import type { Client } from "./Client";
 
 import { Base } from "./Base";
-import { Channel } from "./Channel";
-import { EditChannelOptions, JSONGuildChannel, RawChannel } from "../types";
+import type { Channel } from "./Channel";
+import type { EditChannelOptions, JSONGuildChannel, RawChannel } from "../types";
 
 /** Represents a guild channel. */
 export class GuildChannel extends Base<string> {

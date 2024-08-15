@@ -5,14 +5,14 @@
 // Copyright (c) 2024 DinographicPixels. All rights reserved.
 //
 
-import { Client } from "./Client";
-import { Member } from "./Member";
+import type { Client } from "./Client";
+import type { Member } from "./Member";
 import { Base } from "./Base";
 
-import { User } from "./User";
+import type { User } from "./User";
 import { CalendarEventRSVP } from "./CalendarRSVP";
 import { CalendarComment } from "./CalendarComment";
-import {
+import type {
     EditCalendarEventOptions,
     JSONCalendarEvent,
     RawCalendarEvent,

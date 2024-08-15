@@ -5,14 +5,14 @@
 // Copyright (c) 2024 DinographicPixels. All rights reserved.
 //
 
-import { Client } from "./Client";
+import type { Client } from "./Client";
 import { Member } from "./Member";
 import { Guild } from "./Guild";
 
 import { Base } from "./Base";
 
-import { TextChannel } from "./TextChannel";
-import {
+import type { TextChannel } from "./TextChannel";
+import type {
     JSONMessage,
     MessageAttachment,
     MessageConstructorParams,
@@ -26,7 +26,7 @@ import {
     RawMentions
 } from "../types";
 import { fetch } from "undici";
-import { APIURLSignature } from "guildedapi-types.ts/v1";
+import type { APIURLSignature } from "guildedapi-types.ts/v1";
 
 /** Represents a guild message. */
 export class Message<T extends AnyTextableChannel> extends Base<string> {

@@ -5,10 +5,10 @@
 // Copyright (c) 2024 DinographicPixels. All rights reserved.
 //
 
-import { Client } from "./Client";
+import type { Client } from "./Client";
 import { Base } from "./Base";
-import { APIWebhook } from "../Constants";
-import { WebhookEditOptions, JSONWebhook, WebhookExecuteOptions, WebhookMessageDetails } from "../types";
+import type { APIWebhook } from "../Constants";
+import type { WebhookEditOptions, JSONWebhook, WebhookExecuteOptions, WebhookMessageDetails } from "../types";
 
 /** Represents a Guild or channel webhook. */
 export class Webhook extends Base<string> {

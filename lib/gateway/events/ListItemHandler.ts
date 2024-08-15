@@ -7,7 +7,7 @@
 
 import { GatewayEventHandler } from "./GatewayEventHandler";
 import { ListItem } from "../../structures/ListItem";
-import {
+import type {
     GatewayEvent_ListItemCompleted,
     GatewayEvent_ListItemCreated,
     GatewayEvent_ListItemDeleted,

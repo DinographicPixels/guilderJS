@@ -16,7 +16,7 @@ import { CalendarHandler } from "./events/CalendarHandler";
 import { ListItemHandler } from "./events/ListItemHandler";
 import { AnnouncementHandler } from "./events/AnnouncementHandler";
 import { UserHandler } from "./events/UserHandler";
-import { Client } from "../structures/Client";
+import type { Client } from "../structures/Client";
 
 import type {
     GATEWAY_EVENTS,
@@ -113,17 +113,16 @@ import type {
     GatewayEvent_ChannelRestored,
     GatewayEvent_ChannelArchived,
     GatewayEvent_ChannelCategoryUserPermissionCreated,
-    GatewayEvent_ChannelCategoryRolePermissionCreated
+    GatewayEvent_ChannelCategoryRolePermissionCreated,
+    GatewayEvent_CalendarEventRsvpManyUpdated
 } from "../Constants";
-import { GatewayEvent_CalendarEventRsvpManyUpdated } from "guildedapi-types.ts/typings/payloads/v1/Events";
 
 /** Gateway handler filters every ws events. */
 export class GatewayHandler {
-    messageHandler = new MessageHandler(this.client);
-    channelHandler = new ChannelHandler(this.client);
-    forumThreadHandler = new ForumThreadHandler(this.client);
-    guildHandler = new GuildHandler(this.client);
-    webhookHandler = new WebhookHandler(this.client);
+    messageHandler; channelHandler;
+    forumThreadHandler;
+    guildHandler;
+    webhookHandler;
     readonly toHandlerMap: Record<keyof GATEWAY_EVENTS, (data: object) => void> = {
         // Messages
         ChatMessageCreated:                   data => this.messageHandler.messageCreate(data as GatewayEvent_ChatMessageCreated),
@@ -240,12 +239,23 @@ export class GatewayHandler {
         CategoryUpdated:                      data => this.guildHandler.guildCategoryUpdate(data as GatewayEvent_CategoryUpdated),
         CategoryDeleted:                      data => this.guildHandler.guildCategoryDelete(data as GatewayEvent_CategoryDeleted)
     };
-    docHandler = new DocHandler(this.client);
-    calendarHandler = new CalendarHandler(this.client);
-    listItemHandler = new ListItemHandler(this.client);
-    announcementHandler = new AnnouncementHandler(this.client);
-    userHandler = new UserHandler(this.client);
-    constructor(readonly client: Client) {}
+    docHandler;
+    calendarHandler;
+    listItemHandler;
+    announcementHandler;
+    userHandler;
+    constructor(readonly client: Client) {
+        this.messageHandler = new MessageHandler(this.client);
+        this.channelHandler = new ChannelHandler(this.client);
+        this.forumThreadHandler = new ForumThreadHandler(this.client);
+        this.guildHandler = new GuildHandler(this.client);
+        this.webhookHandler = new WebhookHandler(this.client);
+        this.docHandler = new DocHandler(this.client);
+        this.calendarHandler = new CalendarHandler(this.client);
+        this.listItemHandler = new ListItemHandler(this.client);
+        this.announcementHandler = new AnnouncementHandler(this.client);
+        this.userHandler = new UserHandler(this.client);
+    }
 
     async handleMessage(eventType: keyof GATEWAY_EVENTS, eventData: object): Promise<void> {
         if (eventType as keyof GATEWAY_EVENTS){

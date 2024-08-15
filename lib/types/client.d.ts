@@ -1,3 +1,4 @@
+/** @module Types/Client */
 
 //
 // Created by Wade (@pakkographic)

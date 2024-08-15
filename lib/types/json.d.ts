@@ -1,3 +1,4 @@
+/** @module Types/JSON */
 
 //
 // Created by Wade (@pakkographic)
@@ -16,6 +17,7 @@ import type { Member } from "../structures/Member";
 import type { User } from "../structures/User";
 import type { Guild } from "../structures/Guild";
 import type { UserTypes } from "../Constants";
+import type { ForumChannel } from "../structures/ForumChannel";
 import type { Permissions } from "guildedapi-types.ts/v1";
 import type { SocialLinkType } from "guildedapi-types.ts/typings/schemas/v1";
 
@@ -142,7 +144,7 @@ export interface JSONTextChannel extends JSONGuildChannel {
 
 export interface JSONForumChannel extends JSONGuildChannel {
     /** Cached threads. */
-    threads: Array<JSONForumThread>;
+    threads: Array<JSONForumThread<ForumChannel>>;
 }
 
 export interface JSONDocChannel extends JSONGuildChannel {
@@ -232,7 +234,7 @@ export interface JSONBannedMember extends JSONBase<string> {
     };
 }
 
-export interface JSONForumThread extends JSONBase<number> {
+export interface JSONForumThread<T> extends JSONBase<number> {
     /** Guild/server id */
     guildID: string;
     /** Forum channel id */

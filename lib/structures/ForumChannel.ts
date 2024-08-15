@@ -5,12 +5,12 @@
 // Copyright (c) 2024 DinographicPixels. All rights reserved.
 //
 
-import { Client } from "./Client";
+import type { Client } from "./Client";
 
 import { ForumThread } from "./ForumThread";
 import { GuildChannel } from "./GuildChannel";
 import TypedCollection from "../util/TypedCollection";
-import {
+import type {
     JSONForumChannel,
     CreateForumThreadOptions,
     EditForumThreadOptions,

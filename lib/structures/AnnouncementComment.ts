@@ -5,12 +5,12 @@
 // Copyright (c) 2024 DinographicPixels. All rights reserved.
 //
 
-import { Client } from "./Client";
+import type { Client } from "./Client";
 import { Base } from "./Base";
 
-import { Member } from "./Member";
-import { PATCHChannelAnnouncementCommentBody, POSTChannelAnnouncementCommentBody } from "../Constants";
-import { ConstructorCalendarCommentOptions, JSONAnnouncementComment, RawAnnouncementComment, RawMentions } from "../types";
+import type { Member } from "./Member";
+import type { PATCHChannelAnnouncementCommentBody, POSTChannelAnnouncementCommentBody } from "../Constants";
+import type { ConstructorCalendarCommentOptions, JSONAnnouncementComment, RawAnnouncementComment, RawMentions } from "../types";
 
 /** AnnouncementComment represents a comment from an Announcement channel. */
 export class AnnouncementComment extends Base<number> {

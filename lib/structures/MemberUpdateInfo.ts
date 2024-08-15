@@ -5,10 +5,10 @@
 // Copyright (c) 2024 DinographicPixels. All rights reserved.
 //
 
-import { Client } from "./Client";
+import type { Client } from "./Client";
 import { MemberInfo } from "./MemberInfo";
 import { SocialLink } from "./SocialLink";
-import { GatewayEvent_ServerMemberUpdated as GWMUpdated, GatewayEvent_ServerRolesUpdated as GWRolesUpdated, GatewayEvent_ServerMemberSocialLinkUpdated as GWSocialLink } from "../Constants";
+import type { GatewayEvent_ServerMemberUpdated as GWMUpdated, GatewayEvent_ServerRolesUpdated as GWRolesUpdated, GatewayEvent_ServerMemberSocialLinkUpdated as GWSocialLink } from "../Constants";
 
 /** Information about an updated member. */
 export class MemberUpdateInfo extends MemberInfo {

@@ -5,9 +5,9 @@
 // Copyright (c) 2024 DinographicPixels. All rights reserved.
 //
 
-import { Client } from "./Client";
+import type { Client } from "./Client";
 import { MemberInfo } from "./MemberInfo";
-import { GatewayEvent_ServerMemberRemoved } from "../Constants";
+import type { GatewayEvent_ServerMemberRemoved } from "../Constants";
 
 /** Information about a removed member. */
 export class MemberRemoveInfo extends MemberInfo {

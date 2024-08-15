@@ -5,12 +5,12 @@
 // Copyright (c) 2024 DinographicPixels. All rights reserved.
 //
 
-import { Client } from "./Client";
+import type { Client } from "./Client";
 
 import { GuildChannel } from "./GuildChannel";
 import { Announcement } from "./Announcement";
 import TypedCollection from "../util/TypedCollection";
-import { JSONAnnouncementChannel, RawAnnouncement, RawChannel } from "../types";
+import type { JSONAnnouncementChannel, RawAnnouncement, RawChannel } from "../types";
 
 /** Represents a guild announcement channel. */
 export class AnnouncementChannel extends GuildChannel {

@@ -1,3 +1,4 @@
+/** @module Types/Webhooks */
 
 //
 // Created by Wade (@pakkographic)

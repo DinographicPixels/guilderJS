@@ -14,7 +14,7 @@ import { CalendarEventRSVP } from "../structures/CalendarRSVP";
 import { Message } from "../structures/Message";
 import { ForumThreadComment } from "../structures/ForumThreadComment";
 import { ListItem } from "../structures/ListItem";
-import {
+import type {
     ChannelReactionTypeBulkDeleteSupported,
     ChannelReactionTypes,
     ChannelSubcategoryReactionTypes,
@@ -83,7 +83,7 @@ import {
     PATCHChannelUserPermissionResponse,
     PATCHChannelResponse
 } from "../Constants";
-import {
+import type {
     AnyChannel,
     AnyTextableChannel,
     CreateMessageOptions,
@@ -109,17 +109,17 @@ import {
     RawListItem,
     EditChannelOptions
 } from "../types";
-import { DocChannel } from "../structures/DocChannel";
-import { ForumChannel } from "../structures/ForumChannel";
-import { CalendarChannel } from "../structures/CalendarChannel";
-import { TextChannel } from "../structures/TextChannel";
+import type { DocChannel } from "../structures/DocChannel";
+import type { ForumChannel } from "../structures/ForumChannel";
+import type { CalendarChannel } from "../structures/CalendarChannel";
+import type { TextChannel } from "../structures/TextChannel";
 import { CalendarComment } from "../structures/CalendarComment";
 import { DocComment } from "../structures/DocComment";
 import { Announcement } from "../structures/Announcement";
 import { AnnouncementComment } from "../structures/AnnouncementComment";
 import { Permission } from "../structures/Permission";
 import { Channel } from "../structures/Channel";
-import { PUTChannelMessageResponse } from "guildedapi-types.ts/v1";
+import type { PUTChannelMessageResponse } from "guildedapi-types.ts/v1";
 
 export class Channels {
     #manager: RESTManager;

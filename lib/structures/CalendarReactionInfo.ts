@@ -6,10 +6,10 @@
 //
 
 import { ReactionInfo } from "./ReactionInfo";
-import { Client } from "./Client";
-import { CalendarChannel } from "./CalendarChannel";
-import { CalendarReactionTypes } from "../types";
-import { GatewayEvent_CalendarEventCommentReactionCreated, GatewayEvent_CalendarEventCommentReactionDeleted, GatewayEvent_CalendarEventReactionCreated, GatewayEvent_CalendarEventReactionDeleted } from "../Constants";
+import type { Client } from "./Client";
+import type { CalendarChannel } from "./CalendarChannel";
+import type { CalendarReactionTypes } from "../types";
+import type { GatewayEvent_CalendarEventCommentReactionCreated, GatewayEvent_CalendarEventCommentReactionDeleted, GatewayEvent_CalendarEventReactionCreated, GatewayEvent_CalendarEventReactionDeleted } from "../Constants";
 
 /** Information about a CalendarEvent's reaction. */
 export class CalendarReactionInfo extends ReactionInfo {

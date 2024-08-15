@@ -8,7 +8,7 @@
 import { GatewayEventHandler } from "./GatewayEventHandler";
 import { Message } from "../../structures/Message";
 import { MessageReactionInfo } from "../../structures/MessageReactionInfo";
-import {
+import type {
     GatewayEvent_ChannelMessagePinned,
     GatewayEvent_ChannelMessageReactionCreated,
     GatewayEvent_ChannelMessageReactionDeleted,
@@ -18,8 +18,8 @@ import {
     GatewayEvent_ChatMessageDeleted,
     GatewayEvent_ChatMessageUpdated
 } from "../../Constants";
-import { TextChannel } from "../../structures/TextChannel";
-import { ChannelMessageReactionBulkRemove } from "../../types/";
+import type { TextChannel } from "../../structures/TextChannel";
+import type { ChannelMessageReactionBulkRemove } from "../../types/";
 
 /** Internal component, emitting message events. */
 export class MessageHandler extends GatewayEventHandler {

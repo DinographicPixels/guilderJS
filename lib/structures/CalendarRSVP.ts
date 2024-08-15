@@ -5,9 +5,9 @@
 // Copyright (c) 2024 DinographicPixels. All rights reserved.
 //
 
-import { Client } from "./Client";
+import type { Client } from "./Client";
 import { Base } from "./Base";
-import { JSONCalendarRSVP, EditCalendarRSVPOptions, RawCalendarRSVP, CalendarRSVPStatus } from "../types";
+import type { JSONCalendarRSVP, EditCalendarRSVPOptions, RawCalendarRSVP, CalendarRSVPStatus } from "../types";
 
 /** CalendarEventRSVP represents a guild member's event RSVP.
  * It gives information about a member's set presence to an event.

@@ -7,10 +7,10 @@
 
 import type { RESTManager } from "../rest/RESTManager";
 import * as endpoints from "../rest/endpoints";
-import { Guild } from "../structures/Guild";
-import { Member } from "../structures/Member";
+import type { Guild } from "../structures/Guild";
+import type { Member } from "../structures/Member";
 import { Channel } from "../structures/Channel";
-import {
+import type {
     APIChannelCategories,
     DELETEDeleteCategoryResponse,
     GETChannelCategoryRoleManyPermissionResponse,
@@ -57,7 +57,7 @@ import {
     PUTBulkSetXPResponse,
     PUTAwardGuildMemberXPResponse
 } from "../Constants";
-import {
+import type {
     AnyChannel,
     CreateChannelOptions,
     BulkXPOptions,
@@ -65,12 +65,12 @@ import {
     RawMember
 } from "../types";
 import { BannedMember } from "../structures/BannedMember";
-import { Role } from "../structures/Role";
-import { Group } from "../structures/Group";
-import { Subscription } from "../structures/Subscription";
-import { Category } from "../structures/Category";
+import type { Role } from "../structures/Role";
+import type { Group } from "../structures/Group";
+import type { Subscription } from "../structures/Subscription";
+import type { Category } from "../structures/Category";
 import { Permission } from "../structures/Permission";
-import { GETGuildMemberRolesResponse } from "guildedapi-types.ts/v1";
+import type { GETGuildMemberRolesResponse } from "guildedapi-types.ts/v1";
 
 export class Guilds {
     #manager: RESTManager;

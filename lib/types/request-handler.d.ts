@@ -1,3 +1,4 @@
+/** @module Types/RESTManager */
 
 //
 // Created by Wade (@pakkographic)

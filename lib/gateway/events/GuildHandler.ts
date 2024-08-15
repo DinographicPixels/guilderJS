@@ -9,8 +9,8 @@ import { GatewayEventHandler } from "./GatewayEventHandler";
 
 import { BannedMember, Guild, Role, Member } from "../../index";
 
-import { GuildCreateInfo, GuildDeleteInfo } from "../../types";
-import {
+import type { GuildCreateInfo, GuildDeleteInfo } from "../../types";
+import type {
     GatewayEvent_BotServerMembershipCreated,
     GatewayEvent_BotServerMembershipDeleted,
     GatewayEvent_GroupCreated,

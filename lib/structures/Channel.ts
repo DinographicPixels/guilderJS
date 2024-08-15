@@ -5,7 +5,7 @@
 // Copyright (c) 2024 DinographicPixels. All rights reserved.
 //
 
-import { Client } from "./Client";
+import type { Client } from "./Client";
 
 import { Base } from "./Base";
 import { GuildChannel } from "./GuildChannel";
@@ -14,7 +14,7 @@ import { DocChannel } from "./DocChannel";
 import { ForumChannel } from "./ForumChannel";
 import { TextChannel } from "./TextChannel";
 import { AnnouncementChannel } from "./AnnouncementChannel";
-import { AnyChannel, EditChannelOptions, JSONChannel, RawChannel } from "../types";
+import type { AnyChannel, EditChannelOptions, JSONChannel, RawChannel } from "../types";
 
 /** Represents a channel. */
 export class Channel extends Base<string> {

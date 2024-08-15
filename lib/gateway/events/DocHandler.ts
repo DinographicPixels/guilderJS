@@ -7,7 +7,7 @@
 
 import { GatewayEventHandler } from "./GatewayEventHandler";
 import { Doc } from "../../structures/Doc";
-import {
+import type {
     GatewayEvent_DocCommentCreated,
     GatewayEvent_DocCommentDeleted,
     GatewayEvent_DocCommentReactionCreated,
@@ -19,7 +19,7 @@ import {
     GatewayEvent_DocReactionDeleted,
     GatewayEvent_DocUpdated
 } from "../../Constants";
-import { DocChannel } from "../../structures/DocChannel";
+import type { DocChannel } from "../../structures/DocChannel";
 import { DocReactionInfo } from "../../structures/DocReactionInfo";
 import { DocComment } from "../../structures/DocComment";
 

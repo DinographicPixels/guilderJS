@@ -6,10 +6,10 @@
 //
 
 import { ReactionInfo } from "./ReactionInfo";
-import { Client } from "./Client";
-import { AnnouncementChannel } from "./AnnouncementChannel";
-import { AnnouncementReactionTypes } from "../types";
-import { GatewayEvent_AnnouncementCommentReactionCreated, GatewayEvent_AnnouncementCommentReactionDeleted, GatewayEvent_AnnouncementReactionCreated, GatewayEvent_AnnouncementReactionDeleted } from "../Constants";
+import type { Client } from "./Client";
+import type { AnnouncementChannel } from "./AnnouncementChannel";
+import type { AnnouncementReactionTypes } from "../types";
+import type { GatewayEvent_AnnouncementCommentReactionCreated, GatewayEvent_AnnouncementCommentReactionDeleted, GatewayEvent_AnnouncementReactionCreated, GatewayEvent_AnnouncementReactionDeleted } from "../Constants";
 
 /** Information about a Announcement's reaction. */
 export class AnnouncementReactionInfo extends ReactionInfo {

@@ -5,11 +5,11 @@
 // Copyright (c) 2024 DinographicPixels. All rights reserved.
 //
 
-import { Client } from "./Client";
+import type { Client } from "./Client";
 
-import { User } from "./User";
-import { JSONSocialLink, RawSocialLink } from "../types";
-import { SocialLinkType } from "../types/misc";
+import type { User } from "./User";
+import type { JSONSocialLink, RawSocialLink } from "../types";
+import type { SocialLinkType } from "../types/misc";
 
 /** User's social link. */
 export class SocialLink {

@@ -7,10 +7,10 @@
 
 import type { RESTManager } from "../rest/RESTManager";
 import { Webhook } from "../structures/Webhook";
-import { GETGuildWebhookResponse, GETGuildWebhooksResponse, POSTGuildWebhookResponse, PUTGuildWebhookResponse } from "../Constants";
+import type { GETGuildWebhookResponse, GETGuildWebhooksResponse, POSTGuildWebhookResponse, PUTGuildWebhookResponse } from "../Constants";
 import * as endpoints from "../rest/endpoints";
-import { EditWebhookOptions, WebhookExecuteOptions, WebhookMessageDetails } from "../types";
-import { POSTExecuteWebhookResponse } from "guildedapi-types.ts/typings/REST/v1/Webhooks";
+import type { EditWebhookOptions, WebhookExecuteOptions, WebhookMessageDetails } from "../types";
+import type { POSTExecuteWebhookResponse } from "guildedapi-types.ts/v1";
 
 /** Webhook routes. */
 export class Webhooks {

@@ -5,11 +5,11 @@
 // Copyright (c) 2024 DinographicPixels. All rights reserved.
 //
 
-import { Client } from "./Client";
-import { Member } from "./Member";
+import type { Client } from "./Client";
+import type { Member } from "./Member";
 import { Base } from "./Base";
-import { ListItemNoteTypes, JSONListItem, RawMentions, RawListItem } from "../types";
-import { PATCHListItemBody } from "../Constants";
+import type { ListItemNoteTypes, JSONListItem, RawMentions, RawListItem } from "../types";
+import type { PATCHListItemBody } from "../Constants";
 
 /** Represents an item of a "Lists" channel. */
 export class ListItem extends Base<string> {

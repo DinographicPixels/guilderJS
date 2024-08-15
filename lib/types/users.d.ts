@@ -1,3 +1,4 @@
+/** @module Types/Users */
 
 //
 // Created by Wade (@pakkographic)

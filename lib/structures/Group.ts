@@ -5,9 +5,9 @@
 // Copyright (c) 2024 DinographicPixels. All rights reserved.
 //
 
-import { Client } from "./Client";
+import type { Client } from "./Client";
 import { Base } from "./Base";
-import { JSONGroup, RawGroup } from "../types";
+import type { JSONGroup, RawGroup } from "../types";
 
 /** Represents a Guild Group. */
 export class Group extends Base<string> {

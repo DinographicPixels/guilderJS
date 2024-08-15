@@ -7,7 +7,7 @@
 
 import { GatewayEventHandler } from "./GatewayEventHandler";
 import { Webhook } from "../../structures/Webhook";
-import { GatewayEvent_ServerWebhookCreated, GatewayEvent_ServerWebhookUpdated } from "../../Constants";
+import type { GatewayEvent_ServerWebhookCreated, GatewayEvent_ServerWebhookUpdated } from "../../Constants";
 
 /** Internal component, emitting webhook events. */
 export class WebhookHandler extends GatewayEventHandler{

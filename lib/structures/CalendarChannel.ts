@@ -5,13 +5,13 @@
 // Copyright (c) 2024 DinographicPixels. All rights reserved.
 //
 
-import { Client } from "./Client";
+import type { Client } from "./Client";
 
 import { CalendarEvent } from "./CalendarEvent";
 import { GuildChannel } from "./GuildChannel";
 import type { POSTCalendarEventBody } from "../Constants";
 import TypedCollection from "../util/TypedCollection";
-import {
+import type {
     JSONCalendarChannel,
     CreateCalendarEventOptions,
     EditCalendarEventOptions,

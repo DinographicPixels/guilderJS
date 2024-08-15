@@ -5,9 +5,9 @@
 // Copyright (c) 2024 DinographicPixels. All rights reserved.
 //
 
-import { Client } from "../structures/Client";
+import type { Client } from "../structures/Client";
 import { Member } from "../structures/Member";
-import {
+import type {
     AnyChannel,
     AnyTextableChannel,
     Embed,
@@ -27,7 +27,7 @@ import {
 } from "../types";
 import { Channel } from "../structures/Channel";
 import { ForumThread } from "../structures/ForumThread";
-import { ForumChannel } from "../structures/ForumChannel";
+import type { ForumChannel } from "../structures/ForumChannel";
 import { Guild } from "../structures/Guild";
 import { User } from "../structures/User";
 import { Role } from "../structures/Role";

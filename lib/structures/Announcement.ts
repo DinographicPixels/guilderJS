@@ -5,11 +5,11 @@
 // Copyright (c) 2024 DinographicPixels. All rights reserved.
 //
 
-import { Client } from "./Client";
+import type { Client } from "./Client";
 import { Base } from "./Base";
 import { AnnouncementComment } from "./AnnouncementComment";
-import { PATCHChannelAnnouncementBody, POSTChannelAnnouncementBody } from "../Constants";
-import { JSONAnnouncement, RawAnnouncement, RawAnnouncementComment, RawMentions } from "../types";
+import type { PATCHChannelAnnouncementBody, POSTChannelAnnouncementBody } from "../Constants";
+import type { JSONAnnouncement, RawAnnouncement, RawAnnouncementComment, RawMentions } from "../types";
 import TypedCollection from "../util/TypedCollection";
 
 /** Represents a channel announcement. */

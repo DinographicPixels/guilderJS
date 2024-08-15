@@ -5,10 +5,10 @@
 // Copyright (c) 2024 DinographicPixels. All rights reserved.
 //
 
-import { Client } from "./Client";
+import type { Client } from "./Client";
 import { Base } from "./Base";
-import { UserTypes } from "../Constants";
-import { JSONUser, RawMember, RawPartialUser, RawUser } from "../types";
+import type { UserTypes } from "../Constants";
+import type { JSONUser, RawMember, RawPartialUser, RawUser } from "../types";
 
 /** Represents a user. */
 export class User extends Base<string> {

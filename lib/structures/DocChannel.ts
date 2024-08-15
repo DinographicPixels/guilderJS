@@ -1,10 +1,10 @@
 /** @module DocChannel */
-import { Client } from "./Client";
+import type { Client } from "./Client";
 
 import { Doc } from "./Doc";
 import { GuildChannel } from "./GuildChannel";
 import TypedCollection from "../util/TypedCollection";
-import {
+import type {
     JSONDocChannel,
     CreateDocOptions,
     EditDocOptions,

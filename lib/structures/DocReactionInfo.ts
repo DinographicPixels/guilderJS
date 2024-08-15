@@ -6,10 +6,10 @@
 //
 
 import { ReactionInfo } from "./ReactionInfo";
-import { Client } from "./Client";
-import { DocChannel } from "./DocChannel";
-import { DocReactionTypes } from "../types";
-import { GatewayEvent_DocReactionCreated as GW_DocRCRE, GatewayEvent_DocReactionDeleted as GW_DocRDEL, GatewayEvent_DocCommentReactionCreated as GW_DocCRCRE, GatewayEvent_DocCommentReactionDeleted as GW_DocCRDEL } from "../Constants";
+import type { Client } from "./Client";
+import type { DocChannel } from "./DocChannel";
+import type { DocReactionTypes } from "../types";
+import type { GatewayEvent_DocReactionCreated as GW_DocRCRE, GatewayEvent_DocReactionDeleted as GW_DocRDEL, GatewayEvent_DocCommentReactionCreated as GW_DocCRCRE, GatewayEvent_DocCommentReactionDeleted as GW_DocCRDEL } from "../Constants";
 
 /** Information about a Doc's reaction. */
 export class DocReactionInfo extends ReactionInfo {

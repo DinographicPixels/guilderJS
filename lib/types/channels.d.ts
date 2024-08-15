@@ -1,3 +1,4 @@
+/** @module Types/Channels */
 
 //
 // Created by Wade (@pakkographic)

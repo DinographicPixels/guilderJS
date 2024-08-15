@@ -5,9 +5,9 @@
 // Copyright (c) 2024 DinographicPixels. All rights reserved.
 //
 
-import { Client } from "./Client";
+import type { Client } from "./Client";
 import { Base } from "./Base";
-import { JSONSubscription, RawSubscription } from "../types";
+import type { JSONSubscription, RawSubscription } from "../types";
 
 /** Represents a Guild Subscription. */
 export class Subscription extends Base<string> {

@@ -50,7 +50,8 @@ module.exports = {
     "jsdoc",
     "import-newlines",
     "unused-imports",
-    "sort-class-members"
+    "sort-class-members",
+    "import"
   ],
   "rules": {
     "@typescript-eslint/adjacent-overload-signatures": "error",
@@ -329,6 +330,8 @@ module.exports = {
     "unicorn/no-array-method-this-argument": "off",
     "unicorn/no-negated-condition": "off",
     "unicorn/no-typeof-undefined": "off",
+    "import/no-cycle": ["error", { maxDepth: Infinity }],
+    "import/no-self-import": "error",
     "sort-class-members/sort-class-members": [
       "error",
       {

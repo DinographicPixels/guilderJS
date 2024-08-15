@@ -1,3 +1,4 @@
+/** @module Types/Gateway */
 
 //
 // Created by Wade (@pakkographic)

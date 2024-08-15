@@ -5,12 +5,12 @@
 // Copyright (c) 2024 DinographicPixels. All rights reserved.
 //
 
-import { Client } from "./Client";
+import type { Client } from "./Client";
 import { Base } from "./Base";
 
-import { Member } from "./Member";
+import type { Member } from "./Member";
 
-import {
+import type {
     CreateCalendarCommentOptions,
     EditCalendarCommentOptions,
     JSONCalendarComment,

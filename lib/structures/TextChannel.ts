@@ -5,12 +5,12 @@
 // Copyright (c) 2024 DinographicPixels. All rights reserved.
 //
 
-import { Client } from "./Client";
+import type { Client } from "./Client";
 
 import { Message } from "./Message";
 import { GuildChannel } from "./GuildChannel";
-import { Permission } from "./Permission";
-import {
+import type { Permission } from "./Permission";
+import type {
     AnyTextableChannel,
     CreateMessageOptions,
     EditMessageOptions,

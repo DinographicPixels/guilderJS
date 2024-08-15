@@ -5,11 +5,6 @@
 // Copyright (c) 2024 DinographicPixels. All rights reserved.
 //
 
-/** @module ForumThread */
-//
-// Created by Wade (@pakkographic)
-// Copyright (c) 2024 DinographicPixels. All rights reserved.
-//
 import type { Client } from "./Client";
 import type { Guild } from "./Guild";
 import type { Member } from "./Member";
@@ -91,7 +86,7 @@ export class ForumThread<T extends ForumChannel> extends Base<number> {
         this.update(data);
     }
 
-    override toJSON(): JSONForumThread {
+    override toJSON(): JSONForumThread<T> {
         return {
             ...super.toJSON(),
             guildID:         this.guildID,

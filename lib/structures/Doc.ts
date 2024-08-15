@@ -1,10 +1,10 @@
 /** @module Doc */
-import { Client } from "./Client";
-import { Member } from "./Member";
+import type  { Client } from "./Client";
+import type { Member } from "./Member";
 import { Base } from "./Base";
 
 import { DocComment } from "./DocComment";
-import {
+import type {
     EditDocOptions,
     JSONDoc,
     RawDoc,

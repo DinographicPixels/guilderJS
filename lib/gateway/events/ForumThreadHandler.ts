@@ -9,7 +9,7 @@ import { GatewayEventHandler } from "./GatewayEventHandler";
 import { ForumThread } from "../../structures/ForumThread";
 import { ForumThreadComment } from "../../structures/ForumThreadComment";
 import { ForumThreadReactionInfo } from "../../structures/ForumThreadReactionInfo";
-import {
+import type {
     GatewayEvent_ForumTopicCommentCreated,
     GatewayEvent_ForumTopicCommentDeleted,
     GatewayEvent_ForumTopicCommentReactionCreated,
@@ -25,7 +25,7 @@ import {
     GatewayEvent_ForumTopicUnpinned,
     GatewayEvent_ForumTopicUpdated
 } from "../../Constants";
-import { ForumChannel } from "../../structures/ForumChannel";
+import type { ForumChannel } from "../../structures/ForumChannel";
 
 /** Internal component, emitting forum thread events. */
 export class ForumThreadHandler extends GatewayEventHandler {

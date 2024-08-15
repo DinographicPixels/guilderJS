@@ -6,9 +6,9 @@
 //
 
 import { Base } from "./Base";
-import { Client } from "./Client";
-import { JSONRole, RawRole } from "../types";
-import { PATCHGuildRolePermissionUpdateBody, Permissions } from "guildedapi-types.ts/v1";
+import type { Client } from "./Client";
+import type { JSONRole, RawRole } from "../types";
+import type { PATCHGuildRolePermissionUpdateBody, Permissions } from "guildedapi-types.ts/v1";
 
 /** Represents a Guild Role. */
 export class Role extends Base<number> {

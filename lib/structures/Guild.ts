@@ -5,20 +5,20 @@
 // Copyright (c) 2024 DinographicPixels. All rights reserved.
 //
 
-import { Client } from "./Client";
+import type { Client } from "./Client";
 import { Base } from "./Base";
-import { Channel } from "./Channel";
+import type { Channel } from "./Channel";
 import { Member } from "./Member";
-import { User } from "./User";
-import { BannedMember } from "./BannedMember";
-import { Subscription } from "./Subscription";
+import type { User } from "./User";
+import type { BannedMember } from "./BannedMember";
+import type { Subscription } from "./Subscription";
 import { GuildChannel } from "./GuildChannel";
 import { Group } from "./Group";
 import { Role } from "./Role";
-import { Category } from "./Category";
-import { POSTBulkAwardXPResponse, POSTCreateCategoryBody, PATCHUpdateCategoryBody } from "../Constants";
+import type { Category } from "./Category";
+import type { POSTBulkAwardXPResponse, POSTCreateCategoryBody, PATCHUpdateCategoryBody } from "../Constants";
 import TypedCollection from "../util/TypedCollection";
-import {
+import type {
     JSONGuild,
     AnyChannel,
     BulkXPOptions,

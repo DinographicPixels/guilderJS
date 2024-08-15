@@ -5,13 +5,13 @@
 // Copyright (c) 2024 DinographicPixels. All rights reserved.
 //
 
-import { Client } from "./Client";
+import type { Client } from "./Client";
 import { User } from "./User";
-import { Guild } from "./Guild";
-import { BannedMember } from "./BannedMember";
-import { SocialLink } from "./SocialLink";
-import { Permissions } from "../Constants";
-import { EditMemberOptions, JSONMember, RawMember } from "../types";
+import type { Guild } from "./Guild";
+import type { BannedMember } from "./BannedMember";
+import type { SocialLink } from "./SocialLink";
+import type { Permissions } from "../Constants";
+import type { EditMemberOptions, JSONMember, RawMember } from "../types";
 
 /** Represents a guild user. */
 export class Member extends User {

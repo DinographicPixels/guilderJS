@@ -10,40 +10,40 @@
 // Copyright (c) 2024 DinographicPixels. All rights reserved.
 //
 
-import { Message } from "./Message";
+import type { Message } from "./Message";
 
-import { Member } from "./Member";
+import type { Member } from "./Member";
 import { Guild } from "./Guild";
 
 
 import { AppUser } from "./AppUser";
 import { User } from "./User";
 import { TextChannel } from "./TextChannel";
-import { BannedMember } from "./BannedMember";
-import { Doc } from "./Doc";
-import { DocComment } from "./DocComment";
-import { CalendarEventRSVP } from "./CalendarRSVP";
-import { Announcement } from "./Announcement";
-import { AnnouncementComment } from "./AnnouncementComment";
-import { CalendarComment } from "./CalendarComment";
-import { CalendarEvent } from "./CalendarEvent";
-import { Permission } from "./Permission";
-import { ForumThreadComment } from "./ForumThreadComment";
-import { ForumChannel } from "./ForumChannel";
-import { ForumThread } from "./ForumThread";
-import { Category } from "./Category";
-import { Group } from "./Group";
-import { Role } from "./Role";
-import { ListItem } from "./ListItem";
-import { Webhook } from "./Webhook";
-import { Subscription } from "./Subscription";
+import type { BannedMember } from "./BannedMember";
+import type { Doc } from "./Doc";
+import type { DocComment } from "./DocComment";
+import type { CalendarEventRSVP } from "./CalendarRSVP";
+import type { Announcement } from "./Announcement";
+import type { AnnouncementComment } from "./AnnouncementComment";
+import type { CalendarComment } from "./CalendarComment";
+import type { CalendarEvent } from "./CalendarEvent";
+import type { Permission } from "./Permission";
+import type { ForumThreadComment } from "./ForumThreadComment";
+import type { ForumChannel } from "./ForumChannel";
+import type { ForumThread } from "./ForumThread";
+import type { Category } from "./Category";
+import type { Group } from "./Group";
+import type { Role } from "./Role";
+import type { ListItem } from "./ListItem";
+import type { Webhook } from "./Webhook";
+import type { Subscription } from "./Subscription";
 import { WSManager } from "../gateway/WSManager";
 import { GatewayHandler } from "../gateway/GatewayHandler";
 import { RESTManager } from "../rest/RESTManager";
 import TypedCollection from "../util/TypedCollection";
-import TypedEmitter from "../types/TypedEmitter";
-import { ChannelReactionTypeBulkDeleteSupported, ChannelReactionTypes, ChannelSubcategoryReactionTypes, GATEWAY_EVENTS } from "../Constants";
-import {
+import TypedEmitter from "../util/TypedEmitter";
+import type { ChannelReactionTypeBulkDeleteSupported, ChannelReactionTypes, ChannelSubcategoryReactionTypes, GATEWAY_EVENTS } from "../Constants";
+import type {
     ClientEvents,
     ClientOptions,
     AnyChannel,
@@ -79,34 +79,34 @@ import {
 import { Util } from "../util/Util";
 import { config } from "../../pkgconfig";
 import { fetch } from "undici";
-import {
+import type {
     APIChannelCategories,
     PATCHChannelCategoryUserPermissionBody,
     PATCHGuildRolePermissionUpdateBody,
     Permissions,
-    POSTChannelCategoryUserPermissionBody
-} from "guildedapi-types.ts/v1";
-import { PATCHListItemBody, POSTListItemBody } from "guildedapi-types.ts/typings/REST/v1/ListItems";
-import { POSTBulkAwardXPResponse, PUTBulkSetXPResponse } from "guildedapi-types.ts/typings/REST/v1/Members";
-import { DELETEMessageReactionQuery } from "guildedapi-types.ts/typings/REST/v1/Reactions";
-import {
+    POSTChannelCategoryUserPermissionBody,
+    PATCHChannelRolePermissionBody,
+    POSTChannelRolePermissionBody,
+    POSTChannelUserPermissionBody,
+    POSTCalendarEventBody,
+    PATCHListItemBody,
+    POSTListItemBody,
+    POSTBulkAwardXPResponse,
+    PUTBulkSetXPResponse,
+    DELETEMessageReactionQuery,
     GETChannelAnnouncementsQuery,
     PATCHChannelAnnouncementBody,
     PATCHChannelAnnouncementCommentBody,
     POSTChannelAnnouncementBody,
-    POSTChannelAnnouncementCommentBody
-} from "guildedapi-types.ts/typings/REST/v1/Chat";
-import { POSTCalendarEventBody } from "guildedapi-types.ts/typings/REST/v1/Calendars";
-import { PATCHChannelRolePermissionBody, POSTChannelRolePermissionBody, POSTChannelUserPermissionBody } from "guildedapi-types.ts/typings/REST/v1/Channels";
-import {
+    POSTChannelAnnouncementCommentBody,
     PATCHGuildGroupBody,
     PATCHGuildRoleBody,
     PATCHUpdateCategoryBody,
     POSTCreateCategoryBody,
     POSTGuildGroupBody,
-    POSTGuildRoleBody
-} from "guildedapi-types.ts/typings/REST/v1/Guilds";
-import { PUTUserStatusBody } from "guildedapi-types.ts/typings/REST/v1/Users";
+    POSTGuildRoleBody,
+    PUTUserStatusBody
+} from "guildedapi-types.ts/v1";
 
 /** Represents the application client,
  * enabling you to perform actions, detect events,

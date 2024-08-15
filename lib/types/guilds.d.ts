@@ -1,3 +1,4 @@
+/** @module Types/Guilds */
 
 //
 // Created by Wade (@pakkographic)

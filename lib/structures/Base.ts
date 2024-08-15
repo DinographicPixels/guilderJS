@@ -6,7 +6,7 @@
 //
 
 import type { Client } from "./Client";
-import { JSONBase } from "../types";
+import type { JSONBase } from "../types";
 import { inspect } from "node:util";
 
 /** Default information that every other structure has. */
