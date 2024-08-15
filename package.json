@@ -68,7 +68,7 @@
   },
   "dependencies": {
     "guildedapi-types.ts": "0.3.61",
-    "undici": "^6.19.2",
+    "undici": "^6.19.7",
     "ws": "^8.11.0"
   },
   "engines": {
