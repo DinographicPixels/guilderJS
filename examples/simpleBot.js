@@ -21,9 +21,9 @@ client.on("ready", () => {
 
 // Listening to new messages being sent.
 client.on("messageCreate", async (message) => {
-    // Check if the user is a bot or not, if yes, return
+    // Check if the user is an app or not, if yes, return
     // preventing potential message creation loop when making out our commands
-    if ((await message.member)?.bot) return;
+    if ((await message.member)?.app) return;
     // Check if the message content starts with the set prefix
     if (message.content?.startsWith(config.prefix)) {
         // Split the message at the prefix symbol
@@ -37,8 +37,8 @@ client.on("messageCreate", async (message) => {
                     description: "Here are all the commands you can use:",
                     fields: [
                         { name: `${config.prefix }help`,      value: "shows all the command you can use."     },
-                        { name: `${config.prefix }uptime`,    value: "bot up time."                           },
-                        { name: `${config.prefix }latency`,   value: "bot's latency in ms."                   },
+                        { name: `${config.prefix }uptime`,    value: "app up time."                           },
+                        { name: `${config.prefix }latency`,   value: "app's latency in ms."                   },
                         { name: `${config.prefix }hi`,        value: "say hi"                                 },
                         { name: `${config.prefix }ping`,      value: "pong"                                   },
                         { name: `${config.prefix }pong`,      value: "ping"                                   },
@@ -47,7 +47,7 @@ client.on("messageCreate", async (message) => {
                 }
                 return message.createMessage({
                     embeds: [helpEmbed],
-                    replyMessageIds: [message.id]
+                    replyMessageIDs: [message.id]
                 });
             }
           // Uptime command, showing precisely for how long
@@ -72,25 +72,25 @@ client.on("messageCreate", async (message) => {
                     ]
                 });
             }
-          // Latency command, gives the bot latency in ms
+          // Latency command, gives the app latency in ms
             case "latency": {
                 const latency = Date.now() - message.createdAt.getTime();
                 return message.createMessage({ embeds: [{ title: "Latency: " + latency + "ms" }] })
             }
           // Simple hi command
             case "hi": {
-                return message.createMessage({ content: "hi", replyMessageIds: [message.id] });
+                return message.createMessage({ content: "hi", replyMessageIDs: [message.id] });
             }
           // ping!
             case "ping": {
-                return message.createMessage({ content: "pong!", replyMessageIds: [message.id] })
+                return message.createMessage({ content: "pong!", replyMessageIDs: [message.id] })
             }
           // pong!
             case "pong": {
-                return message.createMessage({ content: "ping!", replyMessageIds: [message.id] });
+                return message.createMessage({ content: "ping!", replyMessageIDs: [message.id] });
             }
           // Toggle the command not found message if it is annoying,
-          // or if you're using another bot with the same prefix (in both case it is annoying)
+          // or if you're using another app with the same prefix (in both case it is annoying)
             case "not_found": {
                 if (!guildSettingsMap.has(message.guildID) && message.guildID)
                     setGuildSettings(message.guildID);
@@ -116,7 +116,7 @@ client.on("messageCreate", async (message) => {
                     setGuildSettings(message.guildID);
                 if (guildSettingsMap.get(message.guildID)?.["not_found"])
                     void message.createMessage({
-                        content: "command not found", replyMessageIds: [message.id]
+                        content: "command not found", replyMessageIDs: [message.id]
                     });
             }
         }
@@ -125,7 +125,7 @@ client.on("messageCreate", async (message) => {
     ) {
         void message.createMessage({
             content: `haha, stop pinging me! (list of commands: ${config.prefix}help)`,
-            replyMessageIds: [message.id]
+            replyMessageIDs: [message.id]
         });
     }
 });

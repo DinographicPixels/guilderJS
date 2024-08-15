@@ -22,7 +22,7 @@ const badWords = [
 
 client.on("messageCreate", async (message) => {
     const member = await message.member;
-    if (member.bot) return;
+    if (member.app) return;
     if (member instanceof Member) {
         if (badWords.some(badWord => message.content.includes(badWord))) {
             message.delete().then(() => console.log("Successfully deleted the swear."))

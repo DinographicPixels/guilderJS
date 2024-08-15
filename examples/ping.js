@@ -10,7 +10,7 @@ client.on("error", (err) => {
 });
 
 client.on("messageCreate", async (message) => {
-    if ((await message.member).bot === true) return;
+    if ((await message.member).app === true) return;
     if (message.content === "!ping") {
         const gettingPing = "Please wait..";
         const pingResultText1 = "your ping: `";
