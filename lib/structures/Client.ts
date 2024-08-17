@@ -120,7 +120,7 @@ export class Client extends TypedEmitter<ClientEvents> {
         this.startTime = 0;
         this.lastCheckForUpdate = null;
     }
-
+    
     private async checkForUpdate(): Promise<void> {
         this.lastCheckForUpdate = Date.now();
         interface jsonRes {

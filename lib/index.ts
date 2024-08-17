@@ -22,6 +22,8 @@
 // EXPORT LIST:
 export type * from "./types/index";
 export * from "./structures/Message";
+export * from "./structures/CommandInteraction";
+export * from "./util/InteractionOptionWrapper";
 
 export * from "./structures/Client";
 export * from "./structures/User";
