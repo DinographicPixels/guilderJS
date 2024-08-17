@@ -15,12 +15,12 @@ export interface ClientOptions {
     /**
      * **NOT RECOMMENDED, CAN BREAK THINGS**
      *
-     * REST methods are used to communicate with the Guilded by sending requests.
+     * REST methods are used to communicate with the Guilded API by sending requests.
      * This feature was included in previous TouchGuild versions but we've changed how we manage REST requests.
      *
      * Forcing disabling REST methods may crash the library when receiving events, reorganizing cache hierarchy,
-     * which means that they are used internally,
-     * you can still disable those methods by setting this boolean to `true`, be aware that **it isn't recommended**.
+     * and more, they are used internally.
+     * Though you can still force disable those methods by setting this boolean to `true`, be aware that **it isn't recommended** at all.
      * @defaultValue false
      */
     ForceDisableREST?: boolean;
@@ -94,6 +94,12 @@ export interface ClientOptions {
 
     /** REST-Only mode, does not initialize a gateway connection. */
     restMode?: boolean;
+
+    /** Enable Command Interaction Features (uses slash commands). */
+    setupApplication?: {
+        enabled: boolean;
+        appShortcutName: string;
+    };
 }
 
 export interface RESTOptions {

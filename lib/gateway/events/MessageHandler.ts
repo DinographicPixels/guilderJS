@@ -18,9 +18,9 @@ import type {
     GatewayEvent_ChatMessageDeleted,
     GatewayEvent_ChatMessageUpdated
 } from "../../Constants";
-import type { TextChannel } from "../../structures/TextChannel";
+import { TextChannel } from "../../structures/TextChannel";
 import type { ChannelMessageReactionBulkRemove } from "../../types/";
-
+import { CommandInteraction } from "../../structures/CommandInteraction";
 /** Internal component, emitting message events. */
 export class MessageHandler extends GatewayEventHandler {
     private async addGuildChannel(guildID: string, channelID: string): Promise<void> {
@@ -39,10 +39,104 @@ export class MessageHandler extends GatewayEventHandler {
         if (this.client.params.waitForCaching)
             await this.addGuildChannel(data.serverId, data.message.channelId);
         else void this.addGuildChannel(data.serverId, data.message.channelId);
+
+        if (
+            this.client.application.enabled
+          && !data.message.createdByWebhookId
+        ) {
+            const isReplyingApp =
+              data.message.replyMessageIds?.some(messageID => {
+                  const message =
+                  this.client.getMessage(
+                      data.serverId,
+                      data.message.channelId,
+                      messageID
+                  );
+                  return message?.memberID === this.client.user?.id;
+              }) ?? false;
+
+            const commandNames =
+          this.client.application.commands.map(command => command.name);
+
+            let currentCommandName: string | null = null;
+            const executionType: "full" | "simple" | false =
+              commandNames?.some((name): boolean => {
+                  const usingAppCommand = data.message.content?.startsWith("/" + this.client.params.setupApplication!.appShortcutName + " " + name);
+                  const usingSimpleCommand = data.message.content?.startsWith("/" + name);
+
+                  if (usingAppCommand) {
+                      currentCommandName = name;
+                      return true;
+                  }
+
+                  if (usingSimpleCommand) {
+                      currentCommandName = name;
+                      return true;
+                  }
+
+                  return false;
+              }) ? (data.message.content?.startsWith("/" + this.client.params.setupApplication!.appShortcutName + " ") ? "full" : "simple") : false;
+
+
+            if (
+                isReplyingApp
+              && executionType === "simple"
+              || executionType === "full"
+            ) {
+                const interaction =
+                  new CommandInteraction(
+                      {
+                          guildID:     data.serverId,
+                          message:     data.message,
+                          name:        currentCommandName!,
+                          directReply: isReplyingApp,
+                          executionType
+                      },
+                      this.client
+                  );
+
+                const verifyOptionsData = interaction.data ? interaction.data.options.verifyOptions() : { missing: [], incorrect: [], total: [] };
+                if (
+                    interaction.data?.options.requiredOptions.length
+                  && interaction.data.options.values
+                  && (verifyOptionsData.missing.length !== 0 || verifyOptionsData.incorrect.length !== 0)
+                ) {
+                    let content = "";
+                    if (verifyOptionsData.missing.length !== 0 && verifyOptionsData.incorrect.length !== 0) {
+                        content = `${verifyOptionsData.missing.length} required option${verifyOptionsData.missing.length > 1 ? "s are" : " is"} missing, ${verifyOptionsData.incorrect.length} ${verifyOptionsData.incorrect.length > 1 ? "are" : "is"} incorrect.`;
+                    } else if (verifyOptionsData.missing.length !== 0) {
+                        content = `${verifyOptionsData.missing.length} required option${verifyOptionsData.missing.length > 1 ? "s are" : " is"} missing.`;
+                    } else if (verifyOptionsData.incorrect.length !== 0) {
+                        content = `${verifyOptionsData.incorrect.length} required option${verifyOptionsData.incorrect.length > 1 ? "s are" : " is"} incorrect.`;
+                    } else {
+                        content = "An error has occurred while treating your command.";
+                    }
+
+                    const totalList = interaction.data.applicationCommand.options ?
+                        interaction.data.applicationCommand.options.map(opt => {
+                            if (verifyOptionsData.total.includes(opt.name)) return `**${opt.name}**`;
+                            if (!opt.required) return `*${opt.name}*`;
+                            return opt.name;
+                        }) : [];
+
+                    if (content !== "An error has occurred while treating your command.") {
+                        content += " (" + totalList.join(", ") + ")";
+                    }
+
+                    return void interaction.createMessage({ content, isPrivate: true });
+                }
+                return void this.client.emit(
+                    "interactionCreate",
+                    interaction
+                );
+            }
+        }
+
         const channel =
           this.client.getChannel<TextChannel>(data.serverId, data.message.channelId);
         const MessageComponent =
           channel?.messages?.update(data.message) ?? new Message(data.message, this.client);
+
         this.client.emit("messageCreate", MessageComponent);
     }
     async messageDelete(data: GatewayEvent_ChatMessageDeleted): Promise<void> {

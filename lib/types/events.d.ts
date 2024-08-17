@@ -70,6 +70,7 @@ import type { AnnouncementComment } from "../structures/AnnouncementComment";
 import type { Group } from "../structures/Group";
 import type { Role } from "../structures/Role";
 import type { Category } from "../structures/Category";
+import type { CommandInteraction } from "../structures/CommandInteraction";
 
 /** Every client events. */
 export interface ClientEvents {
@@ -82,6 +83,8 @@ export interface ClientEvents {
     debug: [message: string | object];
     /** @event Emitted when the app is ready. */
     ready: [];
+    /** @event Emitted when an interaction is created. */
+    interactionCreate: [interaction: CommandInteraction<AnyTextableChannel>];
     /** @event Emitted when a message is created in a "chat" channel. */
     messageCreate: [message: Message<AnyTextableChannel>];
     /** @event Emitted when a message coming from a "chat" channel is edited. */

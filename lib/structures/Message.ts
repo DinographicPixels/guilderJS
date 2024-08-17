@@ -25,8 +25,6 @@ import type {
     RawEmbed,
     RawMentions
 } from "../types";
-import { fetch } from "undici";
-import type { APIURLSignature } from "guildedapi-types.ts/v1";
 
 /** Represents a guild message. */
 export class Message<T extends AnyTextableChannel> extends Base<string> {
@@ -200,6 +198,7 @@ export class Message<T extends AnyTextableChannel> extends Base<string> {
         }
         return URLs;
     }
+
     /** The channel this message was created in.  */
     get channel(): T extends AnyTextableChannel ? T : undefined {
         if (!this.guildID)
@@ -278,7 +277,7 @@ export class Message<T extends AnyTextableChannel> extends Base<string> {
      * (use Message#createMessage if the message has not been acknowledged).
      *
      * Note: The trigger message and original response are automatically replied,
-     * use Client#createMessage to create an independent message.
+     * use Client.rest.channels#createMessage to create an independent message.
      * @param options Message options.
      */
     async createFollowup(options: CreateMessageOptions): Promise<Message<T>> {
@@ -297,6 +296,8 @@ export class Message<T extends AnyTextableChannel> extends Base<string> {
         if (options.replyMessageIDs?.includes(this.originals.triggerID ?? " ")) {
             options.replyMessageIDs[options.replyMessageIDs.length - 1] = this.originals.responseID;
         }
+
+        if (!options.isPrivate && this.isPrivate) options.isPrivate = true;
 
         const response =
           await this.client.rest.channels.createMessage<T>(
@@ -320,7 +321,7 @@ export class Message<T extends AnyTextableChannel> extends Base<string> {
      * (use Message#createFollowup on already acknowledged messages).
      *
      * Note: The trigger message is automatically replied and acknowledged,
-     * use Client#createMessage to create an independent message.
+     * use Client.rest.channels#createMessage to create an independent message.
      * @param options Message options.
      */
     async createMessage(options: CreateMessageOptions): Promise<Message<T>> {
@@ -340,6 +341,8 @@ export class Message<T extends AnyTextableChannel> extends Base<string> {
                 options.replyMessageIDs.push(idToUse);
             }
         }
+
+        if (!options.isPrivate && this.isPrivate) options.isPrivate = true;
 
         const response =
           await this.client.rest.channels.createMessage<T>(
@@ -420,6 +423,7 @@ export class Message<T extends AnyTextableChannel> extends Base<string> {
      * @param targetUserID ID of the user to remove reaction from.
      * (works only on Channel Messages | default: @me)
      */
+    // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
     async deleteReaction(reaction: number, targetUserID?: "@me" | string): Promise<void>{
         return this.client.rest.channels.deleteReaction(
             this.channelID,
@@ -509,55 +513,19 @@ export class Message<T extends AnyTextableChannel> extends Base<string> {
      * *(works for embedded content such as images).*
      */
     async getAttachments(): Promise<Array<MessageAttachment>> {
-        const imageExtensions = new Set(["jpg", "jpeg", "png", "gif", "bmp", "webp", "svg"]);
-        const MessageAttachments: Array<MessageAttachment> = [];
+        return this.client.util.getAttachments(this.attachmentURLs);
+    }
 
-        // Signing URLs
-        let signedURLs: Array<APIURLSignature> = [];
-        try {
-            signedURLs =
-              (await this.client.rest.misc.signURL({
-                  urls: this.attachmentURLs
-              })).urlSignatures;
-        } catch {
-            this.client.emit(
-                "error",
-                new Error("Couldn't automatically sign attachment CDN URL.")
-            );
-        }
-
-        for (const attachmentURL of this.attachmentURLs) {
-            const URLObject = new URL(attachmentURL);
-            const pathName = URLObject.pathname;
-            const extension = pathName.split(".").pop()?.toLowerCase() || "";
-            const isImage = imageExtensions.has(extension);
-
-            let arrayBuffer: ArrayBuffer | null = null;
-
-            try {
-                if (isImage) {
-                    const fetchData = await fetch(attachmentURL);
-                    arrayBuffer = await fetchData.arrayBuffer();
-                }
-            } catch {
-                throw new Error("Couldn't get image ArrayBuffer data.");
-            }
-
-            // Array supposed to include only one URL, the target one.
-            const signedURL = signedURLs
-                .find(urlSignatureObj =>
-                    urlSignatureObj.url === attachmentURL
-                );
-
-            MessageAttachments.push({
-                originalURL:   attachmentURL,
-                signedURL:     signedURL?.signature ?? null,
-                isImage,
-                arrayBuffer,
-                fileExtension: extension
-            });
-        }
-        return MessageAttachments;
+    /**
+     * Get followup message.
+     */
+    async getFollowup(): Promise<Message<T>> {
+        if (!this._lastMessageID || !this.acknowledged)
+            throw new Error("Cannot get followup message if it does not exist.");
+        return this.client.rest.channels.getMessage<T>(
+            this.channelID,
+            this._lastMessageID
+        );
     }
 
 

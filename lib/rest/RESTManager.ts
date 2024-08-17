@@ -22,7 +22,7 @@ export class RESTManager {
     token: Client["ws"]["token"];
     /** Request Handler */
     handler: RequestHandler;
-    /** Guild routes */
+    /** Guild routes. */
     guilds: Guilds;
     /** Channel routes */
     channels: Channels;

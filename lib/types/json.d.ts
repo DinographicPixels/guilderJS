@@ -13,6 +13,7 @@ import type {
     RawMentions,
     CalendarRSVPStatus
 } from "./channels";
+import type { InteractionData } from "./interactions";
 import type { Member } from "../structures/Member";
 import type { User } from "../structures/User";
 import type { Guild } from "../structures/Guild";
@@ -47,7 +48,7 @@ export interface JSONMessage extends JSONBase<string> {
     /** If true, the message didn't mention anyone. */
     isSilent: boolean;
     /** object containing all mentioned users. */
-    mentions: RawMentions;
+    mentions: RawMentions | null;
     /** ID of the message author. */
     memberID: string;
     /** ID of the webhook used to send this message. (if sent by a webhook) */
@@ -58,6 +59,31 @@ export interface JSONMessage extends JSONBase<string> {
     editedTimestamp: Date | null;
     /** When the message was deleted. */
     deletedAt: Date | null;
+}
+
+export interface JSONCommandInteraction extends JSONBase<string> {
+    /** ID of the server on which the interaction was sent. */
+    guildID: string;
+    /** ID of the channel on which the interaction was sent. */
+    channelID: string;
+    /** Interaction Data */
+    data: InteractionData;
+    /** The IDs of the messages replied by the interaction. */
+    replyMessageIDs: Array<string>;
+    /** If true, the interaction appears as private. */
+    isPrivate: boolean;
+    /** If true, the interaction didn't mention anyone. */
+    isSilent: boolean;
+    /** ID of the interaction author. */
+    memberID: string;
+    /** When the interaction was created. */
+    createdAt: Date;
+    /** ID of the last message created with this interaction. */
+    _lastMessageID: string | null;
+    /** ID of the original message, responding to this interaction. */
+    originalID: string | null;
+    /** Interaction acknowledgement. */
+    acknowledged: boolean;
 }
 
 export interface JSONForumThreadComment extends JSONBase<number> {

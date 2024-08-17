@@ -23,3 +23,19 @@ export type ChannelSubcategoryReactionTypes = "CalendarEventComment" | "ForumThr
 
 /** Channel reaction types that supports bulk delete.  */
 export type ChannelReactionTypeBulkDeleteSupported = "ChannelMessage";
+
+export enum ApplicationCommandOptionType {
+    STRING,
+    INTEGER,
+    FLOAT,
+    NUMBER,
+    SIGNED_32_INTEGER,
+    USER,
+    ROLE,
+    CHANNEL,
+    EMBEDDED_ATTACHMENT
+}
+
+export enum ApplicationCommandType {
+    CHAT_INPUT = 1
+}

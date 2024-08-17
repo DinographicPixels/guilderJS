@@ -70,4 +70,5 @@ export * from "./util/Collection";
 export * from "./util/TypedCollection";
 
 export * as APITypes from "guildedapi-types.ts/v1";
+export * from "./Constants";
 export * as Constants from "./Constants";

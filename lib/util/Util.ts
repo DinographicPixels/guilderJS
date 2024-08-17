@@ -23,7 +23,8 @@ import type {
     RawSubscription,
     RawCategory,
     RawMessage,
-    RawEmbed
+    RawEmbed,
+    MessageAttachment
 } from "../types";
 import { Channel } from "../structures/Channel";
 import { ForumThread } from "../structures/ForumThread";
@@ -35,6 +36,8 @@ import { Group } from "../structures/Group";
 import { Subscription } from "../structures/Subscription";
 import { Category } from "../structures/Category";
 import { Message } from "../structures/Message";
+import type { APIURLSignature } from "guildedapi-types.ts/v1";
+import { fetch } from "undici";
 
 export class Util {
     #client: Client;
@@ -94,6 +97,57 @@ export class Util {
             thumbnail: embed.thumbnail === undefined ? undefined : { url: embed.thumbnail.url },
             url:       embed.url
         }));
+    }
+    async getAttachments(attachmentURLs: Array<string>): Promise<Array<MessageAttachment>> {
+        const imageExtensions = new Set(["jpg", "jpeg", "png", "gif", "bmp", "webp", "svg"]);
+        const MessageAttachments: Array<MessageAttachment> = [];
+
+        // Signing URLs
+        let signedURLs: Array<APIURLSignature> = [];
+        try {
+            signedURLs =
+              (await this.#client.rest.misc.signURL({
+                  urls: attachmentURLs
+              })).urlSignatures;
+        } catch {
+            this.#client.emit(
+                "error",
+                new Error("Couldn't automatically sign attachment CDN URL.")
+            );
+        }
+
+        for (const attachmentURL of attachmentURLs) {
+            const URLObject = new URL(attachmentURL);
+            const pathName = URLObject.pathname;
+            const extension = pathName.split(".").pop()?.toLowerCase() || "";
+            const isImage = imageExtensions.has(extension);
+
+            let arrayBuffer: ArrayBuffer | null = null;
+
+            try {
+                if (isImage) {
+                    const fetchData = await fetch(attachmentURL);
+                    arrayBuffer = await fetchData.arrayBuffer();
+                }
+            } catch {
+                throw new Error("Couldn't get image ArrayBuffer data.");
+            }
+
+            // Array supposed to include only one URL, the target one.
+            const signedURL = signedURLs
+                .find(urlSignatureObj =>
+                    urlSignatureObj.url === attachmentURL
+                );
+
+            MessageAttachments.push({
+                originalURL:   attachmentURL,
+                signedURL:     signedURL?.signature ?? null,
+                isImage,
+                arrayBuffer,
+                fileExtension: extension
+            });
+        }
+        return MessageAttachments;
     }
     updateChannel<T extends AnyChannel>(data: RawChannel): T {
         if (data.serverId) {
@@ -192,8 +246,6 @@ export class Util {
             ? this.#client.users.update(user)
             : this.#client.users.add(new User(user, this.#client));
     }
-
-
 }
 
 export function is<T>(input: unknown): input is T {
