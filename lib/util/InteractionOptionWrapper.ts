@@ -18,7 +18,6 @@ export class InteractionOptionWrapper {
               data.applicationCommand.options
                   .filter(opt => opt.required)
               : [];
-        console.log(this.values);
     }
 
     private extractValues(text: string): Array<string | number> {
