@@ -23,7 +23,7 @@ import { GatewayHandler } from "../gateway/GatewayHandler";
 import { RESTManager } from "../rest/RESTManager";
 import TypedCollection from "../util/TypedCollection";
 import TypedEmitter from "../util/TypedEmitter";
-import type { GATEWAY_EVENTS } from "../Constants";
+import { type GATEWAY_EVENTS, ApplicationCommandOptionType, ApplicationCommandType } from "../Constants";
 import type {
     ClientEvents,
     ClientOptions,
@@ -35,7 +35,6 @@ import type {
 } from "../types";
 import { Util } from "../util/Util";
 import { config } from "../../pkgconfig";
-import { ApplicationCommandOptionType, ApplicationCommandType } from "../Constants";
 import { fetch } from "undici";
 
 /** Represents the application client,
@@ -105,9 +104,9 @@ export class Client extends TypedEmitter<ClientEvents> {
         this.guilds = new TypedCollection(Guild, this);
         this.users = new TypedCollection(User, this);
         this.rest = (
-            !this.params.ForceDisableREST
-                ? new RESTManager(this, params.RESTOptions)
-                : null
+            this.params.ForceDisableREST
+                ? null
+                : new RESTManager(this, params.RESTOptions)
         ) as RESTManager;
         this.#gateway = new GatewayHandler(this);
         this.util = new Util(this);

@@ -695,7 +695,7 @@ export class Channels {
         channelType: ChannelReactionTypes,
         targetID: string | number,
         reaction: number,
-        targetUserID?: "@me" | string
+        targetUserID?: string
     ): Promise<void> {
         if (channelType !== "ChannelMessage"
           && channelType !== "ForumThread"

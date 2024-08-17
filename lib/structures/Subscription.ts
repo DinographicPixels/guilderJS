@@ -28,7 +28,7 @@ export class Subscription extends Base<string> {
         super(data.serverId, client);
         this.type = data.type;
         this.guildID = data.serverId;
-        this.description = (data.description !== "" ? data.description : null) ?? null;
+        this.description = (data.description === "" ? null : data.description) ?? null;
         this.roleID = data.roleId ?? null;
         this.cost = data.cost;
         this.createdAt = new Date(data.createdAt);
@@ -55,7 +55,7 @@ export class Subscription extends Base<string> {
             this.type = data.type;
         }
         if (data.description !== undefined) {
-            this.description = data.description !== "" ? data.description : null;
+            this.description = data.description === "" ? null : data.description;
         }
         if (data.roleId !== undefined) {
             this.roleID = data.roleId;

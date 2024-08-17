@@ -64,7 +64,7 @@ export class InteractionOptionWrapper {
         if (this.#data.executionType === "full")
             result.shift();
 
-        result = result.map(val => !isNaN(Number(val)) ? Number(val) : val);
+        result = result.map(val => isNaN(Number(val)) ? val : Number(val));
 
         return result;
     }

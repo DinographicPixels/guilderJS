@@ -12,7 +12,7 @@ import type { WebsocketEvents, AnyPacket, WelcomePacket, RawAppUser } from "../t
 import { config as pkgconfig } from "../../pkgconfig";
 import { is } from "../util/Util";
 import TypedEmitter from "../util/TypedEmitter";
-import WebSocket, { Data } from "ws";
+import WebSocket, { type Data } from "ws";
 import type Pako from "pako";
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
@@ -349,11 +349,11 @@ export class WSManager extends TypedEmitter<WebsocketEvents> {
             this.ws?.removeAllListeners();
             try {
                 if (reconnect) {
-                    if (this.ws?.readyState !== WebSocket.OPEN) {
-                        this.ws?.close(4999, "Reconnect");
-                    } else {
+                    if (this.ws?.readyState === WebSocket.OPEN) {
                         this.client.emit("debug", "Closing websocket.");
                         this.ws.terminate();
+                    } else {
+                        this.ws?.close(4999, "Reconnect");
                     }
                 } else {
                     this.ws?.close(1000, "Normal Close");

@@ -24,6 +24,7 @@ declare interface TypedEmitter<Events extends Record<string | symbol, any>> exte
     /* eventNames is excluded */
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
 class TypedEmitter<Events extends Record<string | symbol, any>> extends EventEmitter {
     override emit<K extends keyof Events>(eventName: K, ...args: Events[K]): boolean {
         if (this.listenerCount(eventName) === 0) {

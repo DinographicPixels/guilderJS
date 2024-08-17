@@ -5,6 +5,7 @@
 // Copyright (c) 2024 DinographicPixels. All rights reserved.
 //
 
+/* eslint-disable @typescript-eslint/no-unsafe-enum-comparison */
 import type { Client } from "./Client";
 
 import { Base } from "./Base";

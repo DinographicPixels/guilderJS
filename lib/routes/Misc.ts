@@ -29,7 +29,7 @@ export class Miscellaneous {
      * Delete a user's status, this includes the app's one.
      * @param userID User ID (@me can be used).
      */
-    async deleteUserStatus(userID: string | "@me"): Promise<void> {
+    async deleteUserStatus(userID: string): Promise<void> {
         return this.#manager.authRequest<void>({
             method: "DELETE",
             path:   endpoints.USER_STATUS(userID)

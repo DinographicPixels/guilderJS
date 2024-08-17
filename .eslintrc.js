@@ -97,7 +97,7 @@ module.exports = {
       }
     ],
     "@typescript-eslint/method-signature-style": ["error", "method"],
-    // "@typescript-eslint/no-duplicate-imports": "error",
+    "@typescript-eslint/no-duplicate-imports": "error",
     "@typescript-eslint/no-empty-function": [
       "error",
       {
@@ -184,7 +184,7 @@ module.exports = {
     "no-console": "off",
     "no-debugger": "error",
     "no-duplicate-case": "error",
-    "no-duplicate-imports": "error",
+    "no-duplicate-imports": "off",
     "no-empty": [
       "error",
       {
@@ -299,8 +299,7 @@ module.exports = {
         "SwitchCase": 1
       }
     ],
-    // "jsdoc/newline-after-description": ["error", "never"],
-    "jsdoc/newline-after-description": "off",
+    "jsdoc/newline-after-description": ["error", "never"],
     "arrow-parens": ["error", "as-needed"],
     "unicorn/no-null": "off",
     "unicorn/no-static-only-class": "off",

@@ -15,6 +15,7 @@ export default class GuildedHTTPError extends Error {
     override name = "GuildedHTTPError";
     resBody: Record<string, unknown> | null;
     response: Response;
+    // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
     constructor(res: Response, resBody: unknown | null, method: RESTMethod, stack?: string) {
         super();
         this.method = method;

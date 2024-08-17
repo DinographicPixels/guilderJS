@@ -33,9 +33,9 @@ export enum ApplicationCommandOptionType {
     USER,
     ROLE,
     CHANNEL,
-    EMBEDDED_ATTACHMENT
+    EMBEDDED_ATTACHMENT,
 }
 
 export enum ApplicationCommandType {
-    CHAT_INPUT = 1
+    CHAT_INPUT = 1,
 }

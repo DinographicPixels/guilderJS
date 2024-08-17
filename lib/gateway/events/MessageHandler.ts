@@ -18,7 +18,7 @@ import type {
     GatewayEvent_ChatMessageDeleted,
     GatewayEvent_ChatMessageUpdated
 } from "../../Constants";
-import { TextChannel } from "../../structures/TextChannel";
+import { type TextChannel } from "../../structures/TextChannel";
 import type { ChannelMessageReactionBulkRemove } from "../../types/";
 import { CommandInteraction } from "../../structures/CommandInteraction";
 /** Internal component, emitting message events. */
@@ -106,10 +106,10 @@ export class MessageHandler extends GatewayEventHandler {
                         content = `${verifyOptionsData.missing.length} required option${verifyOptionsData.missing.length > 1 ? "s are" : " is"} missing, ${verifyOptionsData.incorrect.length} ${verifyOptionsData.incorrect.length > 1 ? "are" : "is"} incorrect.`;
                     } else if (verifyOptionsData.missing.length !== 0) {
                         content = `${verifyOptionsData.missing.length} required option${verifyOptionsData.missing.length > 1 ? "s are" : " is"} missing.`;
-                    } else if (verifyOptionsData.incorrect.length !== 0) {
-                        content = `${verifyOptionsData.incorrect.length} required option${verifyOptionsData.incorrect.length > 1 ? "s are" : " is"} incorrect.`;
-                    } else {
+                    } else if (verifyOptionsData.incorrect.length === 0) {
                         content = "An error has occurred while treating your command.";
+                    } else {
+                        content = `${verifyOptionsData.incorrect.length} required option${verifyOptionsData.incorrect.length > 1 ? "s are" : " is"} incorrect.`;
                     }
 
                     const totalList = interaction.data.applicationCommand.options ?
