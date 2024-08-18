@@ -19,7 +19,7 @@ import type {
     GatewayEvent_ChatMessageUpdated
 } from "../../Constants";
 import { type TextChannel } from "../../structures/TextChannel";
-import type { ApplicationCommand, ChannelMessageReactionBulkRemove, PrivateApplicationCommand } from "../../types/";
+import type { ChannelMessageReactionBulkRemove, PrivateApplicationCommand } from "../../types/";
 import { CommandInteraction } from "../../structures/CommandInteraction";
 /** Internal component, emitting message events. */
 export class MessageHandler extends GatewayEventHandler {

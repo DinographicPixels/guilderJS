@@ -15,7 +15,7 @@ export interface ApplicationCommand {
 export interface PrivateApplicationCommand extends ApplicationCommand {
     private: true;
     guildID?: string;
-    userID?: string
+    userID?: string;
 }
 
 export interface ApplicationCommandOption {

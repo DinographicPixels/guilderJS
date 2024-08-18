@@ -327,9 +327,9 @@ export class Message<T extends AnyTextableChannel> extends Base<string> {
     async createMessage(options: CreateMessageOptions): Promise<Message<T>> {
         if (this.acknowledged)
             throw new Error(
-            "Message has already been acknowledged, " +
+                "Message has already been acknowledged, " +
           "please use the createFollowup method."
-        );
+            );
         if (!this.isOriginal && !(this.originals.triggerID)) this.originals.triggerID = this.id;
 
         const idToUse = this.originals.triggerID ?? this.id;

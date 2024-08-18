@@ -75,7 +75,7 @@ export class CommandInteraction<T extends AnyTextableChannel> extends Base<strin
 
         const appCmd =
       this.client.application.commands
-              .find(cmd => cmd.name === data.name)!;
+          .find(cmd => cmd.name === data.name)!;
 
         this.data = {
             name:               data.name,

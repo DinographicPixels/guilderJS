@@ -84,7 +84,6 @@ export interface ClientOptions {
     /**
      * Application short name,
      * enabling Commands & Interactions (uses slash commands).
-     *
      * @usage /applicationShortname command_name
      *
      * @note Please register commands using Client#registerApplicationCommand
