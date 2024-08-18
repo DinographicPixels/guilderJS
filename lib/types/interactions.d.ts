@@ -5,12 +5,12 @@
 //
 
 import type { RawMentions, RawMessage } from "./channels";
-import type { ApplicationCommand } from "./applications";
+import type { ApplicationCommand, PrivateApplicationCommand } from "./applications";
 import type { InteractionOptionWrapper } from "../util/InteractionOptionWrapper";
 
 export interface InteractionData {
     name: string;
-    applicationCommand: ApplicationCommand;
+    applicationCommand: ApplicationCommand | PrivateApplicationCommand;
     options: InteractionOptionWrapper;
     // resolved?: InteractionResolved;
 }
@@ -24,7 +24,7 @@ export interface InteractionOptionWrapperData {
     content: string;
     directReply: boolean;
     executionType: "simple" | "full";
-    applicationCommand: ApplicationCommand;
+    applicationCommand: ApplicationCommand | PrivateApplicationCommand;
     mentions: RawMentions | null;
 }
 

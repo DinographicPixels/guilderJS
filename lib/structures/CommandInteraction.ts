@@ -74,7 +74,7 @@ export class CommandInteraction<T extends AnyTextableChannel> extends Base<strin
         this.acknowledged = params?.acknowledged ?? false;
 
         const appCmd =
-          this.client.application.commands
+      this.client.application.commands
               .find(cmd => cmd.name === data.name)!;
 
         this.data = {

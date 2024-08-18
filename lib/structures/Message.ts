@@ -325,21 +325,18 @@ export class Message<T extends AnyTextableChannel> extends Base<string> {
      * @param options Message options.
      */
     async createMessage(options: CreateMessageOptions): Promise<Message<T>> {
-        if (this.acknowledged
-          && !(this.client.params.deprecations?.independentMessageBehavior)
-        ) throw new Error(
+        if (this.acknowledged)
+            throw new Error(
             "Message has already been acknowledged, " +
           "please use the createFollowup method."
         );
         if (!this.isOriginal && !(this.originals.triggerID)) this.originals.triggerID = this.id;
 
-        if (!this.client.params.deprecations?.independentMessageBehavior) {
-            const idToUse = this.originals.triggerID ?? this.id;
-            if (!options.replyMessageIDs) {
-                options.replyMessageIDs = [idToUse];
-            } else if (!options.replyMessageIDs.includes(idToUse)) {
-                options.replyMessageIDs.push(idToUse);
-            }
+        const idToUse = this.originals.triggerID ?? this.id;
+        if (!options.replyMessageIDs) {
+            options.replyMessageIDs = [idToUse];
+        } else if (!options.replyMessageIDs.includes(idToUse)) {
+            options.replyMessageIDs.push(idToUse);
         }
 
         if (!options.isPrivate && this.isPrivate) options.isPrivate = true;

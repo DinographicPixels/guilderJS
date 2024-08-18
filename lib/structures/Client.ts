@@ -31,7 +31,9 @@ import type {
     AnyTextableChannel,
     RawGuild,
     RawUser,
-    ApplicationCommand
+    ApplicationCommand,
+    ClientApplication,
+    PrivateApplicationCommand
 } from "../types";
 import { Util } from "../util/Util";
 import { config } from "../../pkgconfig";
@@ -66,12 +68,13 @@ export class Client extends TypedEmitter<ClientEvents> {
     startTime: number;
     /** Timestamp at which the last check for update happened. */
     lastCheckForUpdate: number | null;
-    /** Application */
-    application: (ClientOptions["setupApplication"] & { commands: Array<ApplicationCommand>; });
+    /** Client Application */
+    application: ClientApplication;
+
     /** @param params Client's parameters, this includes app's token & rest options. */
     constructor(params: ClientOptions) {
         if (typeof params !== "object") throw new Error("The token isn't provided in an object.");
-        if (!params?.token) throw new Error("Cannot create client without token, no token is provided.");
+        if (!params?.token) throw new Error("Cannot create client without token, no token has been provided.");
         super();
         this.params = {
             token:                     params.token,
@@ -83,22 +86,19 @@ export class Client extends TypedEmitter<ClientEvents> {
             isOfficialMarkdownEnabled: params.isOfficialMarkdownEnabled ?? true,
             wsReconnect:               params.wsReconnect,
             collectionLimits:          {
-                messages:             params.collectionLimits?.messages             ?? 100,
-                threads:              params.collectionLimits?.threads              ?? 100,
-                threadComments:       params.collectionLimits?.threadComments       ?? 100,
-                docs:                 params.collectionLimits?.docs                 ?? 100,
-                scheduledEvents:      params.collectionLimits?.scheduledEvents      ?? 100,
+                messages:             params.collectionLimits?.messages ?? 100,
+                threads:              params.collectionLimits?.threads ?? 100,
+                threadComments:       params.collectionLimits?.threadComments ?? 100,
+                docs:                 params.collectionLimits?.docs ?? 100,
+                scheduledEvents:      params.collectionLimits?.scheduledEvents ?? 100,
                 scheduledEventsRSVPS: params.collectionLimits?.scheduledEventsRSVPS ?? 100,
-                calendarComments:     params.collectionLimits?.calendarComments     ?? 100,
-                docComments:          params.collectionLimits?.docComments          ?? 100,
-                announcements:        params.collectionLimits?.announcements        ?? 100,
+                calendarComments:     params.collectionLimits?.calendarComments ?? 100,
+                docComments:          params.collectionLimits?.docComments ?? 100,
+                announcements:        params.collectionLimits?.announcements ?? 100,
                 announcementComments: params.collectionLimits?.announcementComments ?? 100
             },
-            setupApplication: params.setupApplication,
-            deprecations:     {
-                independentMessageBehavior: params.deprecations?.independentMessageBehavior
-            },
-            restMode: false
+            applicationShortname: params.applicationShortname,
+            restMode:             false
         };
         this.ws = new WSManager(this, { token: this.token, client: this, reconnect: params.wsReconnect });
         this.guilds = new TypedCollection(Guild, this);
@@ -110,22 +110,31 @@ export class Client extends TypedEmitter<ClientEvents> {
         ) as RESTManager;
         this.#gateway = new GatewayHandler(this);
         this.util = new Util(this);
-        this.application = this.params.setupApplication
-            ? Object.assign(this.params.setupApplication, { commands: [] })
+        this.application = this.params.applicationShortname
+            ? ({ enabled:      true,
+                appShortname: this.params.applicationShortname,
+                commands:     [], commands:     [] })
             : {
-                enabled:         false,
-                appShortcutName: this.user?.id.toString() ?? "none",
-                commands:        []
+                enabled:      false,
+                appShortname: this.user?.id.toString() ?? "none",
+                commands:     []
             };
         this.startTime = 0;
         this.lastCheckForUpdate = null;
+
+        if (params.applicationShortname && !(/^[\d_a-z-]{1,32}$/.test(params.applicationShortname))) throw new Error(
+            "Application shortname is invalid, " +
+                  "requirements: \"1-32 characters containing no capital letters, spaces, or symbols other than - and _\"."
+        );
     }
 
     private async checkForUpdate(): Promise<void> {
         this.lastCheckForUpdate = Date.now();
+
         interface jsonRes {
             version: string;
         }
+
         if (config.branch.toLowerCase().includes("stable")) {
             if (!this.params.updateWarning) return;
             const res = await fetch("https://registry.npmjs.org/touchguild/latest");
@@ -160,24 +169,87 @@ export class Client extends TypedEmitter<ClientEvents> {
         }
         return;
     }
+
+    private registerApplicationCommand(
+        command: ApplicationCommand | PrivateApplicationCommand
+    ): void {
+        if (!this.application.enabled)
+            throw new Error("Couldn't register application command if Client Option \"applicationShortname\" has not been set.");
+        const regExpCheck = /^[\d_a-z-]{1,32}$/;
+        if (!regExpCheck.test(command.name))
+            throw new Error(
+                "Application command name is invalid (name property), " +
+              "requirements: \"1-32 characters containing no capital letters, spaces, or symbols other than - and _\"."
+            );
+        if (!Object.values(ApplicationCommandType).includes(command.type))
+            throw new Error("Application command type is invalid (type property).");
+
+        if (command.options) {
+            const wrongOptionTypeIndex =
+              command.options.map(opt =>
+                  Object.values(ApplicationCommandOptionType).includes(opt.type)).indexOf(false);
+            if (wrongOptionTypeIndex !== -1)
+                throw new Error(`Application command option type is invalid: options[${wrongOptionTypeIndex}].`);
+
+            const wrongOptionNameIndex =
+              command.options.map(opt => regExpCheck.test(opt.name)).indexOf(false);
+            if (wrongOptionNameIndex !== -1)
+                throw new Error(`Application command option name is invalid options[${wrongOptionNameIndex}], requirements: "1-32 characters containing no capital letters, spaces, or symbols other than - and _".`);
+
+            let firstOptionalFound = false;
+            for (let i = 0; i < command.options.length; i++) {
+                if (!command.options[i].required && !firstOptionalFound) firstOptionalFound = true;
+                if (firstOptionalFound && command.options[i].required)
+                    throw new Error(`Application command option cannot be required after setting an optional one: options[${i}].`);
+            }
+        }
+
+        this.application.commands.push(command);
+    }
     private get shouldCheckForUpdate(): boolean {
         return !this.lastCheckForUpdate
           || Date.now() - this.lastCheckForUpdate > 1800 * 1000;
     }
+
     /** Get the application token you initially passed into the constructor.
      * @note If "gapi_" is not present in the token, it is automatically
      * added for you, enabling TouchGuild to connect in proper conditions.*/
     get token(): string {
         return this.params.token.includes("gapi_") ? this.params.token : "gapi_" + this.params.token;
     }
+
     /** Application Uptime */
     get uptime(): number {
         return this.startTime ? Date.now() - this.startTime : 0;
     }
 
-    bulkRegisterApplicationCommand(commands: Array<ApplicationCommand>): void {
+    bulkRegisterGlobalApplicationCommand(commands: Array<ApplicationCommand>): void {
         for (const command of commands) {
-            this.registerApplicationCommand(command);
+            this.registerGlobalApplicationCommand(command);
+        }
+    }
+
+    /**
+     * Bulk register private guild-scoped application commands.
+     * @param commands Guild application commands.
+     */
+    bulkRegisterGuildApplicationCommand(
+        commands: Array<Omit<PrivateApplicationCommand, "userID" | "private"> & Required<Pick<PrivateApplicationCommand, "guildID">>>
+    ): void {
+        for (const command of commands) {
+            this.registerGuildApplicationCommand(command.guildID, command);
+        }
+    }
+
+    /**
+     * Bulk register private user-scoped application commands.
+     * @param commands Guild application commands.
+     */
+    bulkRegisterUserApplicationCommand(
+        commands: Array<Omit<PrivateApplicationCommand, "guildID" | "private"> & Required<Pick<PrivateApplicationCommand, "userID">>>
+    ): void {
+        for (const command of commands) {
+            this.registerUserApplicationCommand(command.userID, command);
         }
     }
 
@@ -300,38 +372,36 @@ export class Client extends TypedEmitter<ClientEvents> {
         }
     }
 
+
     /**
-     * Register your application command, enabling the delivery of a Command Interaction.
-     * @param command
+     * Register your global-scoped application command, enabling the delivery of Command Interactions,
+     * through the "interactionCreate" client event.
+     * @param command Application Command.
      */
-    registerApplicationCommand(command: ApplicationCommand): void {
-        if (command.name.includes(" "))
-            throw new Error("Application command name cannot contain white spaces (name property).");
-        if (!Object.values(ApplicationCommandType).includes(command.type))
-            throw new Error("Application command type is invalid (type property).");
-
-        if (command.options) {
-            const wrongOptionTypeIndex =
-              command.options.map(opt =>
-                  Object.values(ApplicationCommandOptionType).includes(opt.type)).indexOf(false);
-            if (wrongOptionTypeIndex !== -1)
-                throw new Error(`Application command option type is invalid: options[${wrongOptionTypeIndex}].`);
-
-            const wrongOptionNameIndex =
-              command.options.map(opt => !opt.name.includes(" ")).indexOf(false);
-            if (wrongOptionNameIndex !== -1)
-                throw new Error(`Application command option name is invalid, it cannot contain white spaces: options[${wrongOptionNameIndex}].`);
-
-            let firstOptionalFound = false;
-            for (let i = 0; i < command.options.length; i++) {
-                if (!command.options[i].required && !firstOptionalFound) firstOptionalFound = true;
-                if (firstOptionalFound && command.options[i].required)
-                    throw new Error(`Application command option cannot be required after setting an optional one: options[${i}].`);
-            }
-        }
-
-        this.application.commands.push(command);
+    registerGlobalApplicationCommand(command: ApplicationCommand): void {
+        return this.registerApplicationCommand(command);
     }
+
+    /**
+     * Register your private guild-scoped application command, enabling the delivery of Command Interactions
+     * that have been sent in the specified guild, through the "interactionCreate" client event.
+     * @param guildID Guild ID.
+     * @param command Application Command.
+     */
+    registerGuildApplicationCommand(guildID: string, command: ApplicationCommand): void {
+        return this.registerApplicationCommand({ private: true, guildID, ...command });
+    }
+
+    /**
+     * Register your private user-scoped application command, enabling the delivery of Command Interactions
+     * that have been sent by a specified user, through the "interactionCreate" client event.
+     * @param userID User ID.
+     * @param command Application Command.
+     */
+    registerUserApplicationCommand(userID: string, command: ApplicationCommand): void {
+        return this.registerApplicationCommand({ private: true, userID, ...command });
+    }
+
     /**
      * Use REST methods (Client#rest) without connecting to the gateway.
      * @param fakeReady Emit a fake "ready" event (default: true).

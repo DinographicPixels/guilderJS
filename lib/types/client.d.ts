@@ -78,28 +78,19 @@ export interface ClientOptions {
      */
     wsReconnect?: boolean;
 
-    /** Revert to old behaviors, we recommend to update your codebase ASAP. */
-    deprecations?: {
-        /** Revert to the old Message#createMessage method
-         * that creates independent messages instead of replies
-         * @deprecated This option can or will be removed sooner or later,
-         * please update your project to support new features, and accommodate
-         * to an intuitive and natural behavior.
-         * @note
-         * You can still use Client#createMessage to create independent messages
-         * instead of replies.
-         */
-        independentMessageBehavior?: boolean;
-    };
-
     /** REST-Only mode, does not initialize a gateway connection. */
     restMode?: boolean;
 
-    /** Enable Command Interaction Features (uses slash commands). */
-    setupApplication?: {
-        enabled: boolean;
-        appShortcutName: string;
-    };
+    /**
+     * Application short name,
+     * enabling Commands & Interactions (uses slash commands).
+     *
+     * @usage /applicationShortname command_name
+     *
+     * @note Please register commands using Client#registerApplicationCommand
+     * or bulkRegisterApplicationCommands.
+     */
+    applicationShortname?: string;
 }
 
 export interface RESTOptions {

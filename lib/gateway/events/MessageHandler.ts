@@ -19,7 +19,7 @@ import type {
     GatewayEvent_ChatMessageUpdated
 } from "../../Constants";
 import { type TextChannel } from "../../structures/TextChannel";
-import type { ChannelMessageReactionBulkRemove } from "../../types/";
+import type { ApplicationCommand, ChannelMessageReactionBulkRemove, PrivateApplicationCommand } from "../../types/";
 import { CommandInteraction } from "../../structures/CommandInteraction";
 /** Internal component, emitting message events. */
 export class MessageHandler extends GatewayEventHandler {
@@ -61,7 +61,7 @@ export class MessageHandler extends GatewayEventHandler {
             let currentCommandName: string | null = null;
             const executionType: "full" | "simple" | false =
               commandNames?.some((name): boolean => {
-                  const usingAppCommand = data.message.content?.startsWith("/" + this.client.params.setupApplication!.appShortcutName + " " + name);
+                  const usingAppCommand = data.message.content?.startsWith("/" + this.client.application.appShortname + " " + name);
                   const usingSimpleCommand = data.message.content?.startsWith("/" + name);
 
                   if (usingAppCommand) {
@@ -75,8 +75,7 @@ export class MessageHandler extends GatewayEventHandler {
                   }
 
                   return false;
-              }) ? (data.message.content?.startsWith("/" + this.client.params.setupApplication!.appShortcutName + " ") ? "full" : "simple") : false;
-
+              }) ? (data.message.content?.startsWith("/" + this.client.application.appShortname + " ") ? "full" : "simple") : false;
 
             if (
                 isReplyingApp
@@ -94,6 +93,14 @@ export class MessageHandler extends GatewayEventHandler {
                       },
                       this.client
                   );
+
+                // manipulate private properties as they could be undefined
+                // as appCmd could be a simple ApplicationCommand.
+                const appCmd = interaction.data.applicationCommand as PrivateApplicationCommand;
+                if (appCmd?.private) {
+                    if (appCmd?.guildID && appCmd?.guildID !== interaction.guildID) return;
+                    if (appCmd?.userID && appCmd?.userID !== interaction.memberID) return;
+                }
 
                 const verifyOptionsData = interaction.data ? interaction.data.options.verifyOptions() : { missing: [], incorrect: [], total: [] };
                 if (
