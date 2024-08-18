@@ -113,7 +113,7 @@ export class Client extends TypedEmitter<ClientEvents> {
         this.application = this.params.applicationShortname
             ? ({ enabled:      true,
                 appShortname: this.params.applicationShortname,
-                commands:     [], commands:     [] })
+                commands:     [] })
             : {
                 enabled:      false,
                 appShortname: this.user?.id.toString() ?? "none",
