@@ -4,6 +4,12 @@
 // Created by Wade (@pakkographic)
 // Copyright (c) 2024 DinographicPixels. All rights reserved.
 //
+// Credits:
+// > Oceanic.js:
+// inspired by ShardManager.ts, using erlpack, pako, zlib-sync
+// provide gateway encoding alternatives & more.
+//
+//
 
 import GatewayError from "./GatewayError";
 import type { Client } from "../structures/Client";
@@ -21,6 +27,7 @@ import assert from "node:assert";
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
+// eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
 let Erlpack: typeof import("erlpack") | undefined;
 try {
     // eslint-disable-next-line @typescript-eslint/no-var-requires, @typescript-eslint/no-unsafe-assignment, unicorn/prefer-module
