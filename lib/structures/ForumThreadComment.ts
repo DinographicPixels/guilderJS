@@ -35,7 +35,6 @@ export class ForumThreadComment extends Base<number> {
     threadID: number;
     /** The ISO 8601 timestamp that the forum thread comment was updated at, if relevant */
     updatedAt: Date | null;
-
     constructor(
         data: RawForumThreadComment,
         client: Client,
@@ -81,7 +80,6 @@ export class ForumThreadComment extends Base<number> {
         this.guildID = this.toJSON().guildID;
     }
 
-
     /** Retrieve the member who sent this comment, if cached.
      * If there is no cached member, this will make a rest request which returns a Promise.
      * If the request fails, it'll return you undefined as a value.
@@ -92,7 +90,6 @@ export class ForumThreadComment extends Base<number> {
             ? this.client.rest.guilds.getMember(this.guildID as string, this.memberID)
             : undefined;
     }
-
 
     /** Add a comment to the same forum thread as this comment.
      * @param options New comment's options.

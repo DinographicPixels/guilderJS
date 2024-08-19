@@ -74,7 +74,6 @@ export class Message<T extends AnyTextableChannel> extends Base<string> {
     type: string;
     /** ID of the webhook used to send this message. (if sent by a webhook) */
     webhookID?: string | null;
-
     constructor(
         data: RawMessage,
         client: Client,
@@ -178,6 +177,7 @@ export class Message<T extends AnyTextableChannel> extends Base<string> {
         }
         return URLs;
     }
+
     /** The channel this message was created in.  */
     get channel(): T extends AnyTextableChannel ? T : undefined {
         if (!this.guildID)
@@ -190,6 +190,7 @@ export class Message<T extends AnyTextableChannel> extends Base<string> {
               this.channelID
           ) as T extends AnyTextableChannel ? T : undefined);
     }
+
     /** The guild the message is in. This will throw an error if the guild isn't cached.*/
     get guild(): T extends Guild ? Guild : Guild | null {
         if (!this.guildID)
@@ -202,6 +203,7 @@ export class Message<T extends AnyTextableChannel> extends Base<string> {
         }
         return this._cachedGuild as T extends Guild ? Guild : Guild | null;
     }
+
     /** Get to know if this Message is original.
      *
      * It is Original when:
@@ -217,6 +219,7 @@ export class Message<T extends AnyTextableChannel> extends Base<string> {
                 ? "response"
                 : false);
     }
+
     /** Retrieve message's member.
      *
      * Make sure to await this property (getter) to still
@@ -334,6 +337,7 @@ export class Message<T extends AnyTextableChannel> extends Base<string> {
         if (this.isOriginal && !(this.originals.responseID)) this.originals.responseID = response.id;
         return response;
     }
+
     /** Add a reaction to this message.
      * @param reaction ID of a reaction/emote.
      */
@@ -345,10 +349,12 @@ export class Message<T extends AnyTextableChannel> extends Base<string> {
             reaction
         );
     }
+
     /** This method is used to delete the current message. */
     async delete(): Promise<void> {
         return this.client.rest.channels.deleteMessage(this.channelID, this.id as string);
     }
+
     /**
      * Delete followup message.
      */
@@ -360,11 +366,13 @@ export class Message<T extends AnyTextableChannel> extends Base<string> {
             this._lastMessageID
         );
     }
+
     /** Delete the last message sent with the message itself. */
     async deleteLast(): Promise<void>{
         if (!this._lastMessageID) throw new TypeError("Cannot delete last message if it does not exist.");
         return this.client.rest.channels.deleteMessage(this.channelID, this._lastMessageID);
     }
+
     /** Delete the message's original response message (prioritizes parent).
      * @param target (optional) Delete specifically the trigger or the response.
      */
@@ -389,6 +397,7 @@ export class Message<T extends AnyTextableChannel> extends Base<string> {
             messageID
         );
     }
+
     /** Remove a reaction from this message.
      * @param reaction ID of a reaction/emote.
      * @param targetUserID ID of the user to remove reaction from.
@@ -403,6 +412,7 @@ export class Message<T extends AnyTextableChannel> extends Base<string> {
             targetUserID
         );
     }
+
     /** This method is used to edit the current message.
      * @param newMessage New message's options
      */
@@ -419,6 +429,7 @@ export class Message<T extends AnyTextableChannel> extends Base<string> {
             }
         );
     }
+
     /**
      * Edit followup message.
      * @param newMessage Edit options.
@@ -438,6 +449,7 @@ export class Message<T extends AnyTextableChannel> extends Base<string> {
             }
         );
     }
+
     /** Edit the last message sent with the message itself.
      * @param newMessage New message's options.
      */
@@ -449,6 +461,7 @@ export class Message<T extends AnyTextableChannel> extends Base<string> {
             newMessage
         );
     }
+
     /** Edit the message's original response message.
      * @param newMessage New message's options.
      */
@@ -476,6 +489,7 @@ export class Message<T extends AnyTextableChannel> extends Base<string> {
             }
         );
     }
+
     /**
      * Get attachments from this Message (using REST)
      * *(works for embedded content such as images).*
@@ -483,6 +497,7 @@ export class Message<T extends AnyTextableChannel> extends Base<string> {
     async getAttachments(): Promise<Array<MessageAttachment>> {
         return this.client.util.getAttachments(this.attachmentURLs);
     }
+
     /**
      * Get followup message.
      */
@@ -494,6 +509,7 @@ export class Message<T extends AnyTextableChannel> extends Base<string> {
             this._lastMessageID
         );
     }
+
     /**
      * Get the latest message sent with this Message.
      */
@@ -505,6 +521,7 @@ export class Message<T extends AnyTextableChannel> extends Base<string> {
             this._lastMessageID
         );
     }
+
     /**
      * Get original message response or trigger
      * (prioritizes parent, the original response).
@@ -536,6 +553,7 @@ export class Message<T extends AnyTextableChannel> extends Base<string> {
             }
         );
     }
+
     /**
      * Get original messages
      * (the one triggering the response, and the original response message)
@@ -572,6 +590,7 @@ export class Message<T extends AnyTextableChannel> extends Base<string> {
             originalResponse
         };
     }
+
     /** Pin this message */
     async pin(): Promise<void>{
         return this.client.rest.channels.pinMessage(this.channelID, this.id as string);

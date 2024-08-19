@@ -31,7 +31,6 @@ export class CalendarEventRSVP extends Base<number> {
     updatedAt: Date | null;
     /** ID of the member who updated the rsvp, if updated. */
     updatedBy?: string | null;
-
     /**
      * @param data raw data.
      * @param client client.

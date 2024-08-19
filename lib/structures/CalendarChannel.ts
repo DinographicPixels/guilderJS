@@ -55,6 +55,7 @@ export class CalendarChannel extends GuildChannel {
     async deleteEvent(eventID: number): Promise<void> {
         return this.client.rest.channels.deleteCalendarEvent(this.id, eventID);
     }
+
     /**
      * Delete an event series set in this channel.
      * @param eventID ID of the event.
@@ -63,6 +64,7 @@ export class CalendarChannel extends GuildChannel {
     async deleteSeries(eventID: number, seriesID: string): Promise<void> {
         return this.client.rest.channels.deleteCalendarEventSeries(this.id, eventID, seriesID);
     }
+
     /** Edit an event from this channel.
      * @param eventID ID of a calendar event.
      * @param options Edit options.

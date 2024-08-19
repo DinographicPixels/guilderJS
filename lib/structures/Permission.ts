@@ -31,7 +31,6 @@ export class Permission {
     targetID: string | number | null;
     /** Date of the last edition of the permission */
     updatedAt: Date | null;
-
     constructor(
         data: APIChannelUserPermission
         | APIChannelRolePermission

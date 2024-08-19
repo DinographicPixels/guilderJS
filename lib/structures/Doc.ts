@@ -40,7 +40,6 @@ export class Doc extends Base<number> {
     name: string;
     /** ID of the member who updated the doc. */
     updatedBy: string | null;
-
     /**
      * @param data raw data
      * @param client client

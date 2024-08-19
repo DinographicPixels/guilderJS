@@ -24,7 +24,6 @@ export class Category extends Base<number> {
     name: string;
     /** The date of the last edition of the category. */
     updatedAt: Date | null;
-
     constructor(data: RawCategory, client: Client) {
         super(data.id, client);
         this.id = data.id;

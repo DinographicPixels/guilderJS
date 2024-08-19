@@ -60,7 +60,6 @@ export class CalendarEvent extends Base<number> {
     startsAt: Date | null;
     /** Event user-specified url */
     url: string | null;
-
     /**
      * @param data raw data.
      * @param client client.

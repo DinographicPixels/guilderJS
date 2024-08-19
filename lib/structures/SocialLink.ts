@@ -25,7 +25,6 @@ export class SocialLink {
     type: SocialLinkType;
     /** ID of the user having this social linked to their profile. */
     userID: string;
-
     /**
      * @param data raw data
      * @param client client
@@ -72,5 +71,4 @@ export class SocialLink {
             createdAt: this.createdAt
         };
     }
-
 }

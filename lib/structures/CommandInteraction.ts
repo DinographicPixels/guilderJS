@@ -54,7 +54,6 @@ export class CommandInteraction<T extends AnyTextableChannel> extends Base<strin
     originalID: string | null;
     /** The IDs of the message replied by the interaction. */
     replyMessageIDs: Array<string>;
-
     constructor(
         data: CommandInteractionData,
         client: Client,
@@ -142,7 +141,6 @@ export class CommandInteraction<T extends AnyTextableChannel> extends Base<strin
             this.#data.message.updatedAt = data.message.updatedAt;
         }
     }
-
 
     /** Retrieve interaction message's member.
      *
@@ -286,6 +284,7 @@ export class CommandInteraction<T extends AnyTextableChannel> extends Base<strin
             newMessage
         );
     }
+
     /** Edit the message's original response message.
      * @param newMessage New message's options.
      */
@@ -313,6 +312,7 @@ export class CommandInteraction<T extends AnyTextableChannel> extends Base<strin
             }
         );
     }
+
     /**
      * Get followup message.
      */
@@ -337,6 +337,7 @@ export class CommandInteraction<T extends AnyTextableChannel> extends Base<strin
             this._lastMessageID
         );
     }
+
     /**
      * Get the original message response.
      */

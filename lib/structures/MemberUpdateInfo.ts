@@ -30,7 +30,6 @@ export class MemberUpdateInfo extends MemberInfo {
      * or if nickname hasn't been updated.
      */
     updatedNickname: string | null;
-
     /**
      * @param data raw data.
      * @param memberID ID of the member.

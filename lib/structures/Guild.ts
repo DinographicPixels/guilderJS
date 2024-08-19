@@ -62,7 +62,6 @@ export class Guild extends Base<string> {
     url?: string;
     /** If true, the guild is verified. */
     verified: boolean;
-
     /**
      * @param data raw data.
      * @param client client.

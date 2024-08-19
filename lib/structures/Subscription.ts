@@ -23,7 +23,6 @@ export class Subscription extends Base<string> {
     roleID: number | null;
     /** Type of the subscription */
     type: string;
-
     constructor(data: RawSubscription, client: Client) {
         super(data.serverId, client);
         this.type = data.type;

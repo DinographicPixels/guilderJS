@@ -54,7 +54,6 @@ export class ForumThread<T extends ForumChannel> extends Base<number> {
     owner: T extends Guild ? Member : Member | User | Promise<Member> | undefined;
     /** The ID of the owner of this thread. */
     ownerID: string;
-
     /**
      * @param data raw data
      * @param client client

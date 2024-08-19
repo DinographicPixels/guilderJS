@@ -70,7 +70,6 @@ export class Client extends TypedEmitter<ClientEvents> {
     util: Util;
     /** Websocket Manager. */
     ws: WSManager;
-
     /** @param params Client's parameters, this includes app's token & rest options. */
     constructor(params: ClientOptions) {
         if (typeof params !== "object") throw new Error("The token isn't provided in an object.");
@@ -206,6 +205,7 @@ export class Client extends TypedEmitter<ClientEvents> {
 
         this.application.commands.push(command);
     }
+
     private get shouldCheckForUpdate(): boolean {
         return !this.lastCheckForUpdate
           || Date.now() - this.lastCheckForUpdate > 1800 * 1000;
@@ -346,6 +346,7 @@ export class Client extends TypedEmitter<ClientEvents> {
         if (!guildID) throw new Error("guildID is a required parameter.");
         return this.getGuild(guildID)?.members.map(member => member);
     }
+
     /** Get a channel's message, if cached.
      *
      * Note: this method doesn't send a rest request, it only returns cached entities.
@@ -362,6 +363,7 @@ export class Client extends TypedEmitter<ClientEvents> {
             return channel?.messages.get(messageID);
         }
     }
+
     /** This method is used to get cached messages from a channel.
      *
      * There is a similar method that uses REST to request the data
@@ -375,7 +377,6 @@ export class Client extends TypedEmitter<ClientEvents> {
             return channel?.messages.map(msg => msg);
         }
     }
-
 
     /**
      * Register your global-scoped application command, enabling the delivery of Command Interactions,

@@ -38,7 +38,6 @@ export class DocComment extends Base<number> {
     raw: RawDocComment;
     /** The date when the comment was last updated. */
     updatedAt: Date | null;
-
     /**
      * @param data raw data.
      * @param client client.

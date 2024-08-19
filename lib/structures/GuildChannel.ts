@@ -144,7 +144,6 @@ export class GuildChannel extends Base<string> {
         return this.client.rest.channels.restore(this.id as string);
     }
 
-
     override toJSON(): JSONGuildChannel {
         return {
             ...super.toJSON(),

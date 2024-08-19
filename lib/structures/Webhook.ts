@@ -26,7 +26,6 @@ export class Webhook extends Base<string> {
     token: string | null;
     /** Username of the webhook. */
     username: string;
-
     /**
      * @param data raw data.
      * @param client client.

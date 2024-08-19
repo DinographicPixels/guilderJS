@@ -30,7 +30,6 @@ export class Announcement extends Base<string> {
     mentions: RawMentions | null;
     /** The announcement's title. */
     title: string;
-
     /**
      * @param data raw data.
      * @param client client.
@@ -86,6 +85,7 @@ export class Announcement extends Base<string> {
     async createAnnouncement(options: POSTChannelAnnouncementBody): Promise<Announcement> {
         return this.client.rest.channels.createAnnouncement(this.channelID, options);
     }
+
     /**
      * Add a reaction to this announcement.
      * @param emoteID ID of the emote to add
@@ -98,12 +98,14 @@ export class Announcement extends Base<string> {
             emoteID
         );
     }
+
     /**
      * Delete this announcement.
      */
     async delete(): Promise<void> {
         return this.client.rest.channels.deleteAnnouncement(this.channelID, this.id);
     }
+
     /**
      * Remove a reaction from this announcement.
      * @param emoteID ID of the emote to remove
@@ -116,6 +118,7 @@ export class Announcement extends Base<string> {
             emoteID
         );
     }
+
     /**
      * Edit this announcement.
      * @param options Edit options

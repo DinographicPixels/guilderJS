@@ -24,7 +24,6 @@ export class User extends Base<string> {
     type: UserTypes | null;
     /** User's username. */
     username: string;
-
     /**
      * @param data raw data.
      * @param client client.
