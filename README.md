@@ -44,9 +44,6 @@ The documentation under `dev` is always for the latest commit. If something isn'
 
 <hr>
 
-### Optional Dependencies
-- erlpack - Encoding (gateway, alternative to JSON)
-
 ## Links:
 - [Website](https://touchguild.com/)
 - [Guide](https://guide.touchguild.com/)
