@@ -21,7 +21,6 @@ export interface RequestOptions {
     query?: URLSearchParams;
     reason?: string;
     route?: string;
-    editBaseURL?: string;
 }
 
 export interface File {
@@ -50,7 +49,7 @@ export interface LatencyRef {
     lastTimeOffsetCheck: number;
     latency: number;
     raw: Array<number>;
-    timeOffsets: Array<number>;
     timeOffset: number;
+    timeOffsets: Array<number>;
 }
 

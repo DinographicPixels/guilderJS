@@ -20,23 +20,23 @@ import type {
 
 /** CalendarEventComment represents an event comment coming from a calendar channel. */
 export class CalendarComment extends Base<number> {
-    /** Raw data */
-    data: RawCalendarComment;
-    /** This property isn't always provided by the Guilded API, the value can be null,
-     * which disable the ability to get member through this class. */
-    guildID: string | null;
+    /** The ID of the channel containing this comment. */
+    channelID: string;
     /** The content of the comment. */
     content: string;
     /** The ISO 8601 timestamp that this comment was created at. */
     createdAt: Date;
-    /** The ISO 8601 timestamp that this comment was updated at. */
-    updatedAt: Date | null;
+    /** Raw data */
+    data: RawCalendarComment;
     /** The ID of the event containing this comment. (parent) */
     eventID: number;
-    /** The ID of the channel containing this comment. */
-    channelID: string;
+    /** This property isn't always provided by the Guilded API, the value can be null,
+     * which disable the ability to get member through this class. */
+    guildID: string | null;
     /** The ID of the member who sent this comment. */
     memberID: string;
+    /** The ISO 8601 timestamp that this comment was updated at. */
+    updatedAt: Date | null;
     /**
      * @param data raw data.
      * @param client client.
@@ -57,19 +57,6 @@ export class CalendarComment extends Base<number> {
         this.channelID = data.channelId;
         this.memberID = data.createdBy;
         this.update(data);
-    }
-
-    override toJSON(): JSONCalendarComment {
-        return {
-            ...super.toJSON(),
-            data:      this.data,
-            content:   this.content,
-            createdAt: this.createdAt,
-            updatedAt: this.updatedAt,
-            eventID:   this.eventID,
-            channelID: this.channelID,
-            memberID:  this.memberID
-        };
     }
 
     protected override update(data: RawCalendarComment): void {
@@ -106,6 +93,7 @@ export class CalendarComment extends Base<number> {
         ?? this.guildID
             ? this.client.rest.guilds.getMember(this.guildID as string, this.memberID) : undefined;
     }
+
     /** Create a comment in the same event as this one.
      * @param options Create options.
      */
@@ -116,6 +104,7 @@ export class CalendarComment extends Base<number> {
             options
         );
     }
+
     /** Add a reaction to this comment.
      * @param reaction ID of the reaction to add.
      */
@@ -128,6 +117,7 @@ export class CalendarComment extends Base<number> {
             reaction
         );
     }
+
     /** Delete this comment */
     async delete(): Promise<void>{
         return this.client.rest.channels.deleteCalendarComment(
@@ -136,6 +126,7 @@ export class CalendarComment extends Base<number> {
             this.id
         );
     }
+
     /** Remove a reaction from this comment.
      * @param reaction ID of the reaction to remove.
      */
@@ -148,6 +139,7 @@ export class CalendarComment extends Base<number> {
             reaction
         );
     }
+
     /** Edit this comment */
     async edit(options: EditCalendarCommentOptions): Promise<CalendarComment>{
         return this.client.rest.channels.editCalendarComment(
@@ -158,5 +150,16 @@ export class CalendarComment extends Base<number> {
         );
     }
 
-
+    override toJSON(): JSONCalendarComment {
+        return {
+            ...super.toJSON(),
+            data:      this.data,
+            content:   this.content,
+            createdAt: this.createdAt,
+            updatedAt: this.updatedAt,
+            eventID:   this.eventID,
+            channelID: this.channelID,
+            memberID:  this.memberID
+        };
+    }
 }

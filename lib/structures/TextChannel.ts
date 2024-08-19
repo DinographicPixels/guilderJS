@@ -39,12 +39,6 @@ export class TextChannel extends GuildChannel {
         this.update(data);
     }
 
-    override toJSON(): JSONTextChannel {
-        return {
-            ...super.toJSON(),
-            messages: this.messages.map(message => message.toJSON())
-        };
-    }
     /** Create a message in this channel.
      * @param options Message options.
      */
@@ -69,12 +63,14 @@ export class TextChannel extends GuildChannel {
             options
         );
     }
+
     /** Delete a message from this channel.
      * @param messageID ID of the message to delete.
      */
     async deleteMessage(messageID: string): Promise<void> {
         return this.client.rest.channels.deleteMessage(this.id, messageID);
     }
+
     /**
      * Delete an existing permission set on this channel.
      * @param targetID ID of the target object (role or user) the permission is assigned to.
@@ -88,6 +84,7 @@ export class TextChannel extends GuildChannel {
             targetID
         );
     }
+
     /** Edit a message from this channel.
      * @param messageID ID of the message to edit.
      * @param options Message options.
@@ -102,7 +99,6 @@ export class TextChannel extends GuildChannel {
             options
         );
     }
-
 
     /**
      * Edit a channel permission.
@@ -122,4 +118,13 @@ export class TextChannel extends GuildChannel {
             options
         );
     }
+
+    override toJSON(): JSONTextChannel {
+        return {
+            ...super.toJSON(),
+            messages: this.messages.map(message => message.toJSON())
+        };
+    }
+
+
 }

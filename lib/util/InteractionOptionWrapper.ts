@@ -5,10 +5,10 @@ import { fetch } from "undici";
 import type { APIURLSignature } from "guildedapi-types.ts/v1";
 
 export class InteractionOptionWrapper {
-    #data: InteractionOptionWrapperData;
     #client: Client;
-    values: Array<string | number>;
+    #data: InteractionOptionWrapperData;
     requiredOptions: Array<ApplicationCommandOption>;
+    values: Array<string | number>;
     constructor(data: InteractionOptionWrapperData, client: Client) {
         this.#data = data;
         this.#client = client;
@@ -300,7 +300,7 @@ export class InteractionOptionWrapper {
         return this.#data.mentions?.here ?? false;
     }
 
-    verifyOptions(): { missing: Array<string>; incorrect: Array<string>; total: Array<string>; } {
+    verifyOptions(): { incorrect: Array<string>; missing: Array<string>; total: Array<string>; } {
         const missing = [];
         const incorrect = [];
         const total = [];

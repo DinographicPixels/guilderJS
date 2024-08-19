@@ -11,10 +11,10 @@ import type { GatewayEvent_ServerMemberRemoved } from "../Constants";
 
 /** Information about a removed member. */
 export class MemberRemoveInfo extends MemberInfo {
-    /** If set to true, the member left because he has been kicked. */
-    isKick?: boolean;
     /** If set to true, the member left because he has been banned. */
     isBan?: boolean;
+    /** If set to true, the member left because he has been kicked. */
+    isKick?: boolean;
     /**
      * @param data raw data.
      * @param memberID ID of the member.

@@ -19,22 +19,22 @@ import type {
 
 /** Represents a comment coming from a ForumThread. */
 export class ForumThreadComment extends Base<number> {
+    /** ID of the forum channel containing this thread. */
+    channelID: string;
     /** The content of the forum thread comment */
     content: string;
     /** The ISO 8601 timestamp that the forum thread comment was created at */
     createdAt: Date;
-    /** The ISO 8601 timestamp that the forum thread comment was updated at, if relevant */
-    updatedAt: Date | null;
-    /** The ID of the forum thread */
-    threadID: number;
-    /** The ID of the user who sent this comment. */
-    memberID: string;
     /** ID of the forum thread's server, if provided. */
     guildID: string | null;
-    /** ID of the forum channel containing this thread. */
-    channelID: string;
+    /** The ID of the user who sent this comment. */
+    memberID: string;
     /** Mentions in this thread comment. */
     mentions: RawMentions | null;
+    /** The ID of the forum thread */
+    threadID: number;
+    /** The ISO 8601 timestamp that the forum thread comment was updated at, if relevant */
+    updatedAt: Date | null;
 
     constructor(
         data: RawForumThreadComment,
@@ -53,19 +53,6 @@ export class ForumThreadComment extends Base<number> {
         this.update(data);
     }
 
-    override toJSON(): JSONForumThreadComment {
-        return {
-            ...super.toJSON(),
-            content:   this.content,
-            createdAt: this.createdAt,
-            updatedAt: this.updatedAt,
-            channelID: this.channelID,
-            threadID:  this.threadID,
-            memberID:  this.memberID,
-            guildID:   this.guildID,
-            mentions:  this.mentions
-        };
-    }
     protected override update(data: RawForumThreadComment): void {
         if (data.channelId !== undefined) {
             this.channelID = data.channelId;
@@ -93,6 +80,7 @@ export class ForumThreadComment extends Base<number> {
         }
         this.guildID = this.toJSON().guildID;
     }
+
 
     /** Retrieve the member who sent this comment, if cached.
      * If there is no cached member, this will make a rest request which returns a Promise.
@@ -158,5 +146,19 @@ export class ForumThreadComment extends Base<number> {
             this.id as number,
             { content: options?.content }
         );
+    }
+
+    override toJSON(): JSONForumThreadComment {
+        return {
+            ...super.toJSON(),
+            content:   this.content,
+            createdAt: this.createdAt,
+            updatedAt: this.updatedAt,
+            channelID: this.channelID,
+            threadID:  this.threadID,
+            memberID:  this.memberID,
+            guildID:   this.guildID,
+            mentions:  this.mentions
+        };
     }
 }

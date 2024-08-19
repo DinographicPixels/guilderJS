@@ -16,21 +16,21 @@ import type {
 
 /** Class representing a Permission */
 export class Permission {
+    /** Date of the creation of the permission */
+    createdAt: Date;
     /** raw data */
     data: APIChannelUserPermission
     | APIChannelRolePermission
     | APIGuildCategoryUserPermission
     | APIGuildCategoryRolePermission;
-    /** Date of the creation of the permission */
-    createdAt: Date;
-    /** Date of the last edition of the permission */
-    updatedAt: Date | null;
+    /** Parent object, where the permission is applied. */
+    parentID: string | number | null;
     /** Permission target */
     target: string;
     /** Permission target ID */
     targetID: string | number | null;
-    /** Parent object, where the permission is applied. */
-    parentID: string | number | null;
+    /** Date of the last edition of the permission */
+    updatedAt: Date | null;
 
     constructor(
         data: APIChannelUserPermission
@@ -45,6 +45,20 @@ export class Permission {
         this.targetID = data["userId" as keyof object] ?? data["roleId" as keyof object] ?? null;
         this.parentID = data["channelId" as keyof object] ?? data["categoryId" as keyof object] ?? null;
         this.update(data);
+    }
+
+    protected update(
+        data: APIChannelUserPermission
+        | APIChannelRolePermission
+        | APIGuildCategoryUserPermission
+        | APIGuildCategoryRolePermission
+    ): void {
+        if (data.createdAt !== undefined) {
+            this.createdAt = new Date(data.createdAt);
+        }
+        if (data.updatedAt !== undefined) {
+            this.updatedAt = new Date(data.updatedAt) ?? null;
+        }
     }
 
     has(...permissions: Array<Permissions>): boolean {
@@ -64,19 +78,5 @@ export class Permission {
             result += `${permission[0]} : ${permission[1].toString()}\n`;
         }
         return result;
-    }
-
-    protected update(
-        data: APIChannelUserPermission
-        | APIChannelRolePermission
-        | APIGuildCategoryUserPermission
-        | APIGuildCategoryRolePermission
-    ): void {
-        if (data.createdAt !== undefined) {
-            this.createdAt = new Date(data.createdAt);
-        }
-        if (data.updatedAt !== undefined) {
-            this.updatedAt = new Date(data.updatedAt) ?? null;
-        }
     }
 }

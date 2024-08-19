@@ -9,8 +9,8 @@ import type { ApplicationCommand, PrivateApplicationCommand } from "./applicatio
 import type { InteractionOptionWrapper } from "../util/InteractionOptionWrapper";
 
 export interface InteractionData {
-    name: string;
     applicationCommand: ApplicationCommand | PrivateApplicationCommand;
+    name: string;
     options: InteractionOptionWrapper;
     // resolved?: InteractionResolved;
 }
@@ -20,25 +20,25 @@ export interface InteractionData {
 // }
 
 export interface InteractionOptionWrapperData {
-    guildID: string;
+    applicationCommand: ApplicationCommand | PrivateApplicationCommand;
     content: string;
     directReply: boolean;
     executionType: "simple" | "full";
-    applicationCommand: ApplicationCommand | PrivateApplicationCommand;
+    guildID: string;
     mentions: RawMentions | null;
 }
 
 export interface CommandInteractionData {
+    directReply: boolean;
+    executionType: "simple" | "full";
     guildID: string;
     /** Raw Message */
     message: RawMessage;
     /** Command name */
     name: string;
-    directReply: boolean;
-    executionType: "simple" | "full";
 }
 
 export interface CommandInteractionConstructorParams {
-    originalID?: string;
     acknowledged?: boolean;
+    originalID?: string;
 }

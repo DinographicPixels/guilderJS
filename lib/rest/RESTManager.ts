@@ -14,22 +14,22 @@ import { Miscellaneous } from "../routes/Misc";
 import { Webhooks } from "../routes/Webhooks";
 
 export class RESTManager {
-    /** Client */
-    client: Client;
-    /** Websocket Manager */
-    #ws: Client["ws"];
-    /** Client Token */
-    token: Client["ws"]["token"];
-    /** Request Handler */
-    handler: RequestHandler;
-    /** Guild routes. */
-    guilds: Guilds;
     /** Channel routes */
     channels: Channels;
-    /** Webhook routes */
-    webhooks: Webhooks;
+    /** Client */
+    client: Client;
+    /** Guild routes. */
+    guilds: Guilds;
+    /** Request Handler */
+    handler: RequestHandler;
     /** Misc routes */
     misc: Miscellaneous;
+    /** Client Token */
+    token: Client["ws"]["token"];
+    /** Webhook routes */
+    webhooks: Webhooks;
+    /** Websocket Manager */
+    #ws: Client["ws"];
     constructor(client: Client, options?: RESTOptions){
         this.#ws = client.ws;
         this.client = client;

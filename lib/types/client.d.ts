@@ -9,10 +9,6 @@ import type { Agent } from "undici";
 
 export interface ClientOptions {
     /**
-     * The app's bearer token, required to connect to the API.
-     */
-    token: string;
-    /**
      * **NOT RECOMMENDED, CAN BREAK THINGS**
      *
      * REST methods are used to communicate with the Guilded API by sending requests.
@@ -29,19 +25,49 @@ export interface ClientOptions {
      * This includes some properties like the baseURL and much more.
      */
     RESTOptions?: RESTOptions;
-
+    /**
+     * Application short name,
+     * enabling Commands & Interactions (uses slash commands).
+     * @usage /applicationShortname command_name
+     * @note Please register commands using Client#registerApplicationCommand
+     * or bulkRegisterApplicationCommands.
+     */
+    applicationShortname?: string;
+    /** Set your own limit to how much messages, threads, comments, events.. should be stored in cache before deletion. */
+    collectionLimits?: {
+        announcementComments?: number;
+        announcements?: number;
+        calendarComments?: number;
+        docComments?: number;
+        docs?: number;
+        messages?: number;
+        scheduledEvents?: number;
+        scheduledEventsRSVPS?: number;
+        threadComments?: number;
+        threads?: number;
+    };
     /**
      * This boolean is used to enable or disable the `> Connection established.` message when
      * connection is successfully established.
      */
     connectionMessage?: boolean;
-
+    /**
+     * Fixes & improves Guilded API markdown and makes it Commonmark compliant.
+     *
+     * Enabled by default, can be disabled to use old version of the Guilded markdown. (if facing issues for example)
+     */
+    isOfficialMarkdownEnabled?: boolean;
+    /** REST-Only mode, does not initialize a gateway connection. */
+    restMode?: boolean;
+    /**
+     * The app's bearer token, required to connect to the API.
+     */
+    token: string;
     /**
      * This boolean is used to enable or disable the update warning you receive when your version of TouchGuild
      * is no longer the latest anymore.
      */
     updateWarning?: boolean;
-
     /**
      * If true, will wait for caching before emitting the event.
      *
@@ -51,45 +77,10 @@ export interface ClientOptions {
      * @default true
      */
     waitForCaching?: boolean;
-
-    /**
-     * Fixes & improves Guilded API markdown and makes it Commonmark compliant.
-     *
-     * Enabled by default, can be disabled to use old version of the Guilded markdown. (if facing issues for example)
-     */
-    isOfficialMarkdownEnabled?: boolean;
-
-    /** Set your own limit to how much messages, threads, comments, events.. will be stored in cache before deletion. */
-    collectionLimits?: {
-        messages?: number;
-        threads?: number;
-        threadComments?: number;
-        docs?: number;
-        scheduledEvents?: number;
-        scheduledEventsRSVPS?: number;
-        calendarComments?: number;
-        docComments?: number;
-        announcements?: number;
-        announcementComments?: number;
-    };
-
     /** Websocket auto reconnect on connection loss.
      * @default true
      */
     wsReconnect?: boolean;
-
-    /** REST-Only mode, does not initialize a gateway connection. */
-    restMode?: boolean;
-
-    /**
-     * Application short name,
-     * enabling Commands & Interactions (uses slash commands).
-     * @usage /applicationShortname command_name
-     *
-     * @note Please register commands using Client#registerApplicationCommand
-     * or bulkRegisterApplicationCommands.
-     */
-    applicationShortname?: string;
 }
 
 export interface RESTOptions {

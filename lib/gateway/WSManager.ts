@@ -28,6 +28,7 @@ try {
 } catch {}
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
+// eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
 let ZlibSync: typeof import("pako") | typeof import("zlib-sync") | undefined, zlibConstants: typeof import("pako").constants | typeof import("zlib-sync") | undefined;
 try {
     // eslint-disable-next-line @typescript-eslint/no-var-requires, @typescript-eslint/no-unsafe-assignment, unicorn/prefer-module
@@ -45,32 +46,32 @@ try {
 
 /** Websocket manager, used to receive ws events. */
 export class WSManager extends TypedEmitter<WebsocketEvents> {
-    ws: WebSocket | null;
-    token: string;
-    client!: Client;
-    params: WSManagerParams;
+    alive?: boolean;
     apiVersion: string | number;
+    client!: Client;
+    compression: boolean;
+    #connectTimeout: NodeJS.Timeout | null;
+    connected: boolean;
+    connectionTimeout: number;
+    currReconnectAttempt: number;
+    firstWsMessage: boolean;
+    #heartbeatInterval: NodeJS.Timeout | null;
+    heartbeatRequested: boolean;
+    isOfficialMarkdownEnabled: boolean;
+    lastHeartbeatAck: boolean;
+    lastHeartbeatReceived: number;
+    lastHeartbeatSent: number;
+    lastMessageID?: string;
+    latency: number;
+    params: WSManagerParams;
     proxyURL: string;
     reconnect?: boolean;
     reconnectAttemptLimit?: number;
-    replayMissedEvents?: boolean;
-    #heartbeatInterval: NodeJS.Timeout | null;
-    lastMessageID?: string;
-    firstWsMessage: boolean;
-    currReconnectAttempt: number;
     reconnectInterval: number;
-    alive?: boolean;
-    lastHeartbeatSent: number;
-    lastHeartbeatReceived: number;
-    lastHeartbeatAck: boolean;
-    latency: number;
-    heartbeatRequested: boolean;
-    connected: boolean;
-    connectionTimeout: number;
-    #connectTimeout: NodeJS.Timeout | null;
-    compression: boolean;
+    replayMissedEvents?: boolean;
     #sharedZLib!: Pako.Inflate | Inflate;
-    isOfficialMarkdownEnabled: boolean;
+    token: string;
+    ws: WebSocket | null;
     constructor(client: Client, params: WSManagerParams) {
         super();
         Object.defineProperties(this, {
@@ -134,6 +135,7 @@ export class WSManager extends TypedEmitter<WebsocketEvents> {
             this.lastHeartbeatAck = false;
         }
     }
+
     private initialize(): void {
         if (!this.token) return this.disconnect(false, new Error("Invalid Token."));
 
@@ -184,6 +186,7 @@ export class WSManager extends TypedEmitter<WebsocketEvents> {
             }
         }, this.connectionTimeout);
     }
+
     private onPacket(packet: AnyPacket): void {
         // s: Message ID used for replaying events after a disconnect.
         if (packet.s) this.lastMessageID = packet.s;
@@ -220,6 +223,7 @@ export class WSManager extends TypedEmitter<WebsocketEvents> {
             }
         }
     }
+
     private onSocketClose(code: number, r: Buffer): void {
         const reason = r.toString();
         // reconnect: can be set within the switch depending on the code to toggle reconnection.
@@ -241,11 +245,13 @@ export class WSManager extends TypedEmitter<WebsocketEvents> {
             this.disconnect(reconnect, err);
         }
     }
+
     private onSocketError(error: Error): void {
         this.client.emit("error", error);
         this.emit("error", error); this.emit("exit", error);
         this.alive = false; return void 0;
     }
+
     private onSocketMessage(data: Data): void | undefined {
         if (typeof data === "string") {
             data = Buffer.from(data);
@@ -274,7 +280,7 @@ export class WSManager extends TypedEmitter<WebsocketEvents> {
 
                     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-argument
                     data = Buffer.from(this.#sharedZLib.result ?? "");
-                    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+                    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call,@typescript-eslint/no-base-to-string
                     return this.onPacket((Erlpack ? Erlpack.unpack(data as Buffer) : JSON.parse(data.toString())) as AnyPacket);
                 } else {
                     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
@@ -291,36 +297,35 @@ export class WSManager extends TypedEmitter<WebsocketEvents> {
             this.client.emit("error", err as Error);
         }
     }
+
     private onSocketOpen(): void {
         this.alive = true;
         this.currReconnectAttempt = 0; // reset reconnection attempts
         this.emit("debug", "Socket connection is open.");
     }
+
     private onSocketPing(): void {
         // this._debug("Heartbeat has been sent.");
         this.ws!.ping(); this.lastHeartbeatSent = Date.now();
     }
+
     private onSocketPong(): void {
         this.client.emit("debug", "Heartbeat acknowledged.");
         if (!Number.isNaN(this.lastHeartbeatSent)) this.latency = Date.now() - this.lastHeartbeatSent;
         this.lastHeartbeatAck = true;
     }
+
     get replayEventsCondition(): boolean {
         return this.replayMissedEvents === true && this.lastMessageID !== undefined;
     }
-
-
-    // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 
     get vAPI(): number {
         return this.apiVersion as number;
     }
 
-
     _debug(message: string | object): boolean {
-        return this.emit("debug", `[TouchGuild DEBUG]: ${message.toString()}`);
+        return this.emit("debug", `[TouchGuild DEBUG]: ${typeof message === "object" ? JSON.stringify(message) : message}`);
     }
-
 
     connect(): void | Error {
         if (this.ws && this.ws.readyState !== WebSocket.CLOSED) {
@@ -333,7 +338,6 @@ export class WSManager extends TypedEmitter<WebsocketEvents> {
         this.currReconnectAttempt++;
         this.initialize();
     }
-
 
     disconnect(reconnect = this.reconnect, error?: Error): void {
         this.ws?.close();
@@ -409,7 +413,6 @@ export class WSManager extends TypedEmitter<WebsocketEvents> {
         }
     }
 
-
     hardReset(): void {
         this.reset();
         this.currReconnectAttempt = 0;
@@ -438,7 +441,6 @@ export class WSManager extends TypedEmitter<WebsocketEvents> {
         this.#connectTimeout = null;
     }
 
-
     reset(): void {
         this.ws = null;
         this.firstWsMessage = true;
@@ -457,22 +459,22 @@ export class WSManager extends TypedEmitter<WebsocketEvents> {
 
 
 export interface WSManagerParams {
-    /** App token */
-    token: string;
-    /** Guilded API URL */
-    proxyURL?: string;
     /** Guilded API Version */
-    apiVersion?: number | 1;
-    /** Automatically re-establish connection on error */
-    reconnect?: boolean;
-    /** Reconnect limit (for invalidating session) */
-    reconnectAttemptLimit?: number;
-    /** Replay missed events on connection interruption */
-    replayMissedEvents?: boolean;
+    apiVersion?: number;
     /** Client. */
     client: Client;
     /** Compression */
     compression?: boolean;
     /** Enable official Guilded markdown header to opt-in. */
     isOfficialMarkdownEnabled?: boolean;
+    /** Guilded API URL */
+    proxyURL?: string;
+    /** Automatically re-establish connection on error */
+    reconnect?: boolean;
+    /** Reconnect limit (for invalidating session) */
+    reconnectAttemptLimit?: number;
+    /** Replay missed events on connection interruption */
+    replayMissedEvents?: boolean;
+    /** App token */
+    token: string;
 }

@@ -12,37 +12,35 @@ import type { PATCHGuildRolePermissionUpdateBody, Permissions } from "guildedapi
 
 /** Represents a Guild Role. */
 export class Role extends Base<number> {
-    /** ID of the guild */
-    guildID: string;
+    /** The app user ID this role has been defined for.
+     * Roles with this populated can only be deleted by kicking the app */
+    appUserID: string | null;
+    /** An array of integer values corresponding to the decimal RGB representation for a color.
+     * The first color is solid, and a second color indicates a gradient (min items 0; max items 2) */
+    colors: Array<number> | null;
     /** Date of when the role was created. */
     createdAt: Date;
     /** Date of when role was last edited. */
     editedTimestamp: Date | null;
-    /** The role's name */
-    name: string;
-    /** If set, the role will be displayed separately in the channel member */
-    isDisplayedSeparately: boolean;
-    /** If set, this roll will be self-assigned*/
-    isSelfAssignable: boolean;
-    /** If set, this role can be mentioned */
-    isMentionable: boolean;
-    /** Array of permission (Permissions enum) */
-    permissions: Array<Permissions>;
-    /** An array of integer values corresponding to the decimal RGB representation for a color.
-     * The first color is solid, and a second color indicates a gradient (min items 0; max items 2) */
-    colors: Array<number> | null;
+    /** ID of the guild */
+    guildID: string;
     /** The URL of the role icon */
     iconURL: string | null;
-    /** The position the role will be in relation to the roles in the server */
-    position: number | null;
     /** The default role users are given when joining the server.
      * Base roles are tied directly to the server and cannot be created or deleted */
     isBase: boolean;
-    /** The app user ID this role has been defined for.
-     * Roles with this populated can only be deleted by kicking the app */
-    appUserID: string | null;
-    /** @deprecated, Use Role#appUserID. */
-    botUserID: string | null;
+    /** If set, the role will be displayed separately in the channel member */
+    isDisplayedSeparately: boolean;
+    /** If set, this role can be mentioned */
+    isMentionable: boolean;
+    /** If set, this roll will be self-assigned*/
+    isSelfAssignable: boolean;
+    /** The role's name */
+    name: string;
+    /** Array of permission (Permissions enum) */
+    permissions: Array<Permissions>;
+    /** The position the role will be in relation to the roles in the server */
+    position: number | null;
     constructor(data: RawRole, client: Client) {
         super(data.id, client);
         this.guildID = data.serverId;
@@ -58,27 +56,7 @@ export class Role extends Base<number> {
         this.position = data.priority ?? null;
         this.isBase = data.isBase ?? false;
         this.appUserID = data.botUserId ?? null;
-        this.botUserID = data.botUserId ?? null;
         this.update(data);
-    }
-
-    override toJSON(): JSONRole {
-        return {
-            ...super.toJSON(),
-            guildID:               this.guildID,
-            createdAt:             this.createdAt,
-            editedTimestamp:       this.editedTimestamp,
-            name:                  this.name,
-            isDisplayedSeparately: this.isDisplayedSeparately,
-            isSelfAssignable:      this.isSelfAssignable,
-            isMentionable:         this.isMentionable,
-            permissions:           this.permissions,
-            colors:                this.colors,
-            iconURL:               this.iconURL,
-            position:              this.position,
-            isBase:                this.isBase,
-            appUserID:             this.appUserID
-        };
     }
 
     protected override update(data: RawRole): void {
@@ -127,5 +105,24 @@ export class Role extends Base<number> {
             this.id as number,
             options
         );
+    }
+
+    override toJSON(): JSONRole {
+        return {
+            ...super.toJSON(),
+            guildID:               this.guildID,
+            createdAt:             this.createdAt,
+            editedTimestamp:       this.editedTimestamp,
+            name:                  this.name,
+            isDisplayedSeparately: this.isDisplayedSeparately,
+            isSelfAssignable:      this.isSelfAssignable,
+            isMentionable:         this.isMentionable,
+            permissions:           this.permissions,
+            colors:                this.colors,
+            iconURL:               this.iconURL,
+            position:              this.position,
+            isBase:                this.isBase,
+            appUserID:             this.appUserID
+        };
     }
 }

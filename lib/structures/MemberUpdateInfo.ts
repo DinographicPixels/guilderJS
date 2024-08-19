@@ -12,24 +12,24 @@ import type { GatewayEvent_ServerMemberUpdated as GWMUpdated, GatewayEvent_Serve
 
 /** Information about an updated member. */
 export class MemberUpdateInfo extends MemberInfo {
-    /** New member's nickname, if updated.
-     * The value is null if the new nickname is the same as the username,
-     * or if nickname hasn't been updated.
-     */
-    updatedNickname: string | null;
-    /** List of member's roles.
-     * The value is null if no role has been updated.
-     */
-    roles: Array<number> | null;
     /** List of member's old roles.
      * The value is null if the old roles aren't cached
      * or if no role has been updated.
      */
     oldRoles: Array<number> | null;
+    /** List of member's roles.
+     * The value is null if no role has been updated.
+     */
+    roles: Array<number> | null;
     /**
      * Created/updated user's social link.
      */
     socialLink: SocialLink | null;
+    /** New member's nickname, if updated.
+     * The value is null if the new nickname is the same as the username,
+     * or if nickname hasn't been updated.
+     */
+    updatedNickname: string | null;
 
     /**
      * @param data raw data.
@@ -48,7 +48,7 @@ export class MemberUpdateInfo extends MemberInfo {
         this.roles = (data as GWRolesUpdated)?.memberRoleIds?.[0]?.roleIds ?? null;
         this.oldRoles = (this.client.getGuild(data.serverId)?.members.get(this.memberID))?.roles ?? null;
         this.socialLink = (data as GWSocialLink)?.socialLink
-            ? new SocialLink((data as GWSocialLink)?.socialLink, client)
+            ? new SocialLink((data as GWSocialLink).socialLink, client)
             : null;
     }
 }

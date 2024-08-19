@@ -14,22 +14,22 @@ import TypedCollection from "../util/TypedCollection";
 
 /** Represents a channel announcement. */
 export class Announcement extends Base<string> {
-    /** ID of the guild. */
-    guildID: string;
     /** ID of the channel the announcement is in */
     channelID: string;
-    /** The ISO 8601 timestamp that the announcement was created at */
-    createdAt: Date;
-    /** The ID of the member who created this announcement */
-    memberID: string;
+    /** Cached announcement's comments */
+    comments: TypedCollection<number, RawAnnouncementComment, AnnouncementComment>;
     /** The announcement's content */
     content: string;
+    /** The ISO 8601 timestamp that the announcement was created at */
+    createdAt: Date;
+    /** ID of the guild. */
+    guildID: string;
+    /** The ID of the member who created this announcement */
+    memberID: string;
     /** Mentions. */
     mentions: RawMentions | null;
     /** The announcement's title. */
     title: string;
-    /** Cached announcement's comments */
-    comments: TypedCollection<number, RawAnnouncementComment, AnnouncementComment>;
 
     /**
      * @param data raw data.
@@ -50,19 +50,6 @@ export class Announcement extends Base<string> {
             client.params.collectionLimits?.announcementComments
         );
         this.update(data);
-    }
-
-    override toJSON(): JSONAnnouncement {
-        return {
-            ...super.toJSON(),
-            guildID:   this.guildID,
-            channelID: this.channelID,
-            createdAt: this.createdAt,
-            memberID:  this.memberID,
-            content:   this.content,
-            mentions:  this.mentions,
-            title:     this.title
-        };
     }
 
     protected override update(data: RawAnnouncement): void {
@@ -139,5 +126,18 @@ export class Announcement extends Base<string> {
             this.id,
             options
         );
+    }
+
+    override toJSON(): JSONAnnouncement {
+        return {
+            ...super.toJSON(),
+            guildID:   this.guildID,
+            channelID: this.channelID,
+            createdAt: this.createdAt,
+            memberID:  this.memberID,
+            content:   this.content,
+            mentions:  this.mentions,
+            title:     this.title
+        };
     }
 }

@@ -14,18 +14,16 @@ import type { PATCHChannelCategoryUserPermissionBody, POSTChannelCategoryUserPer
 
 /** Represents a Guild Category. */
 export class Category extends Base<number> {
-    /** Type of the subscription */
-    override id: number;
-    /** The ID of the server */
-    guildID: string;
-    /** The ID of the group */
-    groupID: string;
     /** Date of the creation of the category.  */
     createdAt: Date;
-    /** The date of the last edition of the category. */
-    updatedAt: Date | null;
+    /** The ID of the group */
+    groupID: string;
+    /** The ID of the server */
+    guildID: string;
     /** Name of the category (min length 1; max length 100) */
     name: string;
+    /** The date of the last edition of the category. */
+    updatedAt: Date | null;
 
     constructor(data: RawCategory, client: Client) {
         super(data.id, client);
@@ -36,17 +34,6 @@ export class Category extends Base<number> {
         this.updatedAt = data.updatedAt ? new Date(data.updatedAt) : null;
         this.name = data.name;
         this.update(data);
-    }
-
-    override toJSON(): JSONCategory {
-        return {
-            ...super.toJSON(),
-            guildID:   this.guildID,
-            groupID:   this.groupID,
-            createdAt: this.createdAt,
-            updatedAt: this.updatedAt ?? null,
-            name:      this.name
-        };
     }
 
     protected override update(data: RawCategory): void {
@@ -88,12 +75,14 @@ export class Category extends Base<number> {
             options
         );
     }
+
     /**
      * Delete a guild category.
      */
     async deleteCategory(): Promise<Category> {
         return this.client.rest.guilds.deleteCategory(this.guildID as string, this.id as number);
     }
+
     /**
      * Delete a category permission.
      * @param targetID ID of the user or role to delete the permission from
@@ -105,6 +94,7 @@ export class Category extends Base<number> {
             targetID
         );
     }
+
     /**
      * Update a guild category.
      * @param options Edit options.
@@ -116,7 +106,6 @@ export class Category extends Base<number> {
             options
         );
     }
-
 
     /**
      * Update a category permission.
@@ -162,10 +151,22 @@ export class Category extends Base<number> {
     async getRolePermissions(): Promise<Array<Permission>> {
         return this.client.rest.guilds.getCategoryRolePermissions(this.guildID, this.id);
     }
+
     /**
      * Get user permissions from a specified category.
      */
     async getUserPermissions(): Promise<Array<Permission>> {
         return this.client.rest.guilds.getCategoryUserPermissions(this.guildID, this.id);
+    }
+
+    override toJSON(): JSONCategory {
+        return {
+            ...super.toJSON(),
+            guildID:   this.guildID,
+            groupID:   this.groupID,
+            createdAt: this.createdAt,
+            updatedAt: this.updatedAt ?? null,
+            name:      this.name
+        };
     }
 }

@@ -13,20 +13,20 @@ import type { JSONCalendarRSVP, EditCalendarRSVPOptions, RawCalendarRSVP, Calend
  * It gives information about a member's set presence to an event.
  */
 export class CalendarEventRSVP extends Base<number> {
-    /** Raw data */
-    #data: RawCalendarRSVP;
-    /** Guild/server ID. */
-    guildID: string;
     /** Calendar channel id. */
     channelID: string;
-    /** ID of the entity assigned to this Event RSVP. */
-    entityID: string;
-    /** Status of the RSVP */
-    status: CalendarRSVPStatus;
     /** When the RSVP was created. */
     createdAt: Date | null;
     /** ID of the user who created this RSVP. */
     creatorID: string;
+    /** Raw data */
+    #data: RawCalendarRSVP;
+    /** ID of the entity assigned to this Event RSVP. */
+    entityID: string;
+    /** Guild/server ID. */
+    guildID: string;
+    /** Status of the RSVP */
+    status: CalendarRSVPStatus;
     /** When the RSVP was updated. */
     updatedAt: Date | null;
     /** ID of the member who updated the rsvp, if updated. */
@@ -50,19 +50,6 @@ export class CalendarEventRSVP extends Base<number> {
         this.update(data);
     }
 
-    override toJSON(): JSONCalendarRSVP {
-        return {
-            ...super.toJSON(),
-            guildID:   this.guildID,
-            channelID: this.channelID,
-            entityID:  this.entityID,
-            status:    this.status,
-            creatorID: this.creatorID,
-            updatedBy: this.updatedBy,
-            updatedAt: this.updatedAt,
-            createdAt: this.createdAt
-        };
-    }
     protected override update(data: RawCalendarRSVP): void {
         if (data.calendarEventId !== undefined) {
             this.id = data.calendarEventId;
@@ -92,6 +79,7 @@ export class CalendarEventRSVP extends Base<number> {
             this.entityID = data.userId;
         }
     }
+
     /** Delete this RSVP. */
     async delete(): Promise<void>{
         return this.client.rest.channels.deleteCalendarRSVP(
@@ -109,5 +97,19 @@ export class CalendarEventRSVP extends Base<number> {
             this.entityID,
             options
         );
+    }
+
+    override toJSON(): JSONCalendarRSVP {
+        return {
+            ...super.toJSON(),
+            guildID:   this.guildID,
+            channelID: this.channelID,
+            entityID:  this.entityID,
+            status:    this.status,
+            creatorID: this.creatorID,
+            updatedBy: this.updatedBy,
+            updatedAt: this.updatedAt,
+            createdAt: this.createdAt
+        };
     }
 }

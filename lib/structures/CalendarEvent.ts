@@ -24,42 +24,42 @@ import TypedCollection from "../util/TypedCollection";
 
 /** CalendarEvent represents an event coming from a calendar channel. */
 export class CalendarEvent extends Base<number> {
-    /** Raw data */
-    data: RawCalendarEvent;
-    /** Guild/server ID */
-    guildID: string;
-    /** ID of the channel the event was created on. */
-    channelID: string;
-    /** Name of the event */
-    name: string;
-    /** Event's description */
-    description: string | null;
-    /** Event user-specified location */
-    location: string | null;
-    /** Event user-specified url */
-    url: string | null;
-    /** Event color in calendar. */
-    color: number | null;
-    /** Limit of event entry. */
-    rsvpLimit: number | null;
-    /** Timestamp (unix epoch time) of the event starting time.*/
-    startsAt: Date | null;
-    /** Duration in *ms* of the event. */
-    duration: number;
-    /** If true, this event is private. */
-    isPrivate: boolean;
-    /** Mentions in this calendar event. */
-    mentions: RawMentions | null;
-    /** When the event was created. */
-    createdAt: Date | null;
-    /** ID of the owner of this event. */
-    ownerID: string;
     /** Details about event cancellation (if canceled) */
     cancellation: RawCalendarEvent["cancellation"] | null;
-    /** Cached RSVPS. */
-    rsvps: TypedCollection<number, RawCalendarRSVP, CalendarEventRSVP>;
+    /** ID of the channel the event was created on. */
+    channelID: string;
+    /** Event color in calendar. */
+    color: number | null;
     /** Cached Comments */
     comments: TypedCollection<number, RawCalendarComment, CalendarComment>;
+    /** When the event was created. */
+    createdAt: Date | null;
+    /** Raw data */
+    data: RawCalendarEvent;
+    /** Event's description */
+    description: string | null;
+    /** Duration in *ms* of the event. */
+    duration: number;
+    /** Guild/server ID */
+    guildID: string;
+    /** If true, this event is private. */
+    isPrivate: boolean;
+    /** Event user-specified location */
+    location: string | null;
+    /** Mentions in this calendar event. */
+    mentions: RawMentions | null;
+    /** Name of the event */
+    name: string;
+    /** ID of the owner of this event. */
+    ownerID: string;
+    /** Limit of event entry. */
+    rsvpLimit: number | null;
+    /** Cached RSVPS. */
+    rsvps: TypedCollection<number, RawCalendarRSVP, CalendarEventRSVP>;
+    /** Timestamp (unix epoch time) of the event starting time.*/
+    startsAt: Date | null;
+    /** Event user-specified url */
+    url: string | null;
 
     /**
      * @param data raw data.
@@ -95,30 +95,6 @@ export class CalendarEvent extends Base<number> {
             client.params.collectionLimits?.calendarComments
         );
         this.update(data);
-    }
-
-    override toJSON(): JSONCalendarEvent {
-        return {
-            ...super.toJSON(),
-            data:         this.data,
-            id:           this.id,
-            guildID:      this.guildID,
-            channelID:    this.channelID,
-            name:         this.name,
-            description:  this.description,
-            location:     this.location,
-            url:          this.url,
-            color:        this.color,
-            rsvpLimit:    this.rsvpLimit,
-            startsAt:     this.startsAt,
-            duration:     this.duration,
-            isPrivate:    this.isPrivate,
-            mentions:     this.mentions,
-            createdAt:    this.createdAt,
-            ownerID:      this.ownerID,
-            cancellation: this.cancellation,
-            rsvps:        this.rsvps.map(rsvp => rsvp.toJSON())
-        };
     }
 
     protected override update(data: RawCalendarEvent): void {
@@ -186,10 +162,12 @@ export class CalendarEvent extends Base<number> {
             return this.client.rest.guilds.getMember(this.guildID, this.ownerID);
         }
     }
+
     /** Delete this event */
     async delete(): Promise<void>{
         return this.client.rest.channels.deleteCalendarEvent(this.channelID, this.id as number);
     }
+
     /** Edit this event */
     async edit(options: EditCalendarEventOptions): Promise<CalendarEvent>{
         return this.client.rest.channels.editCalendarEvent(
@@ -199,5 +177,27 @@ export class CalendarEvent extends Base<number> {
         );
     }
 
-
+    override toJSON(): JSONCalendarEvent {
+        return {
+            ...super.toJSON(),
+            data:         this.data,
+            id:           this.id,
+            guildID:      this.guildID,
+            channelID:    this.channelID,
+            name:         this.name,
+            description:  this.description,
+            location:     this.location,
+            url:          this.url,
+            color:        this.color,
+            rsvpLimit:    this.rsvpLimit,
+            startsAt:     this.startsAt,
+            duration:     this.duration,
+            isPrivate:    this.isPrivate,
+            mentions:     this.mentions,
+            createdAt:    this.createdAt,
+            ownerID:      this.ownerID,
+            cancellation: this.cancellation,
+            rsvps:        this.rsvps.map(rsvp => rsvp.toJSON())
+        };
+    }
 }

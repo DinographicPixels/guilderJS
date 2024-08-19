@@ -8,35 +8,35 @@
 import type { Embed } from "./channels";
 
 export interface WebhookEditOptions {
-    /** New name of the webhook. */
-    name: string;
     /** New webhook's parent channel. */
     channelID?: string;
+    /** New name of the webhook. */
+    name: string;
 }
 
 export interface EditWebhookOptions {
-    /** The name of the webhook (min length `1`; max length `128`) */
-    name: string;
     /** The ID of the channel */
     channelID?: string;
+    /** The name of the webhook (min length `1`; max length `128`) */
+    name: string;
 }
 
 export interface WebhookExecuteOptions {
-    content?: string;
-    username?: string;
     avatarURL?: string;
+    content?: string;
     embeds?: Array<Embed>;
+    username?: string;
 }
 
 export interface WebhookMessageDetails {
-    id: string;
     channelID: string;
+    createdAt: string;
+    createdBy: string;
+    id: string;
+    type: string;
+    webhookID: string;
     webhookProfile: {
         name: string;
         profilePicture: string;
     };
-    type: string;
-    createdBy: string;
-    createdAt: string;
-    webhookID: string;
 }

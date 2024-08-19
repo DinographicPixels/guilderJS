@@ -7,25 +7,25 @@
 import type { ApplicationCommandType, ApplicationCommandOptionType } from "../Constants";
 
 export interface ApplicationCommand {
-    type: ApplicationCommandType;
     name: string;
     options?: Array<ApplicationCommandOption>;
+    type: ApplicationCommandType;
 }
 
 export interface PrivateApplicationCommand extends ApplicationCommand {
-    private: true;
     guildID?: string;
+    private: true;
     userID?: string;
 }
 
 export interface ApplicationCommandOption {
-    type: ApplicationCommandOptionType;
     name: string;
     required: boolean;
+    type: ApplicationCommandOptionType;
 }
 
 export interface ClientApplication {
-    enabled: boolean;
     appShortname: string;
     commands: Array<ApplicationCommand | PrivateApplicationCommand>;
+    enabled: boolean;
 }

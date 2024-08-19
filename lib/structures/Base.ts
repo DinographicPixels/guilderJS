@@ -24,6 +24,10 @@ export abstract class Base<ID= string | number> {
             configurable: false
         });
     }
+
+    // eslint-disable-next-line @typescript-eslint/no-empty-function, @typescript-eslint/no-unused-vars
+    protected update(data: unknown): void {}
+
     /** @hidden */
     [inspect.custom](): this {
         // https://stackoverflow.com/questions/5905492/dynamic-function-name-in-javascript
@@ -36,13 +40,10 @@ export abstract class Base<ID= string | number> {
 
         return copy;
     }
+
     toJSON(): JSONBase<ID> {
         return {
             id: this.id
         };
     }
-    // eslint-disable-next-line @typescript-eslint/no-empty-function, @typescript-eslint/no-unused-vars
-    protected update(data: unknown): void {}
-
-
 }

@@ -14,21 +14,21 @@ import type { JSONBannedMember, RawMemberBan, RawUser } from "../types";
 
 /** BannedMember represents a banned guild member. */
 export class BannedMember extends Base<string> {
-    /** Server ID. */
-    guildID: string;
     /** Information about the banned member (object) */
     ban: {
-        /** Reason of the ban */
-        reason?: string;
-        /** When the member has been banned. */
-        createdAt: Date | null;
         /** ID of the member who banned this member. */
         bannedBy: string;
+        /** When the member has been banned. */
+        createdAt: Date | null;
+        /** Reason of the ban */
+        reason?: string;
     };
-    /** Banned user. */
-    user: User;
+    /** Server ID. */
+    guildID: string;
     /** Banned member, if cached. */
     member: Member | null;
+    /** Banned user. */
+    user: User;
     /**
      * @param guildID ID of the guild.
      * @param data raw data.
@@ -45,14 +45,6 @@ export class BannedMember extends Base<string> {
         this.user = client.users.update(data.user as Partial<RawUser>) ?? new User(data.user as RawUser, client);
         this.member = client.getGuild(guildID)?.members.get(data.user.id) ?? null;
         this.update(data);
-    }
-
-    override toJSON(): JSONBannedMember {
-        return {
-            ...super.toJSON(),
-            guildID: this.guildID,
-            ban:     this.ban
-        };
     }
 
     protected override update(data: RawMemberBan): void {
@@ -76,5 +68,13 @@ export class BannedMember extends Base<string> {
      */
     get guild(): Guild | Promise<Guild> {
         return this.client.guilds.get(this.guildID) ?? this.client.rest.guilds.get(this.guildID);
+    }
+
+    override toJSON(): JSONBannedMember {
+        return {
+            ...super.toJSON(),
+            guildID: this.guildID,
+            ban:     this.ban
+        };
     }
 }

@@ -19,10 +19,10 @@ import type { AnyChannel, EditChannelOptions, JSONChannel, RawChannel } from "..
 
 /** Represents a channel. */
 export class Channel extends Base<string> {
-    /** Channel type */
-    type: string;
     /** Channel name */
     name: string | null;
+    /** Channel type */
+    type: string;
     /**
      * @param data raw data
      * @param client client
@@ -31,14 +31,6 @@ export class Channel extends Base<string> {
         super(data.id, client);
         this.type = data.type;
         this.name = data.name;
-    }
-
-    override toJSON(): JSONChannel {
-        return {
-            ...super.toJSON(),
-            type: this.type,
-            name: this.name
-        };
     }
 
     static from<T extends AnyChannel = AnyChannel>(data: RawChannel, client: Client): T {
@@ -83,8 +75,17 @@ export class Channel extends Base<string> {
     async delete(): Promise<void> {
         return this.client.rest.channels.delete(this.id as string);
     }
+
     /** Edit the channel. */
     async edit(options: EditChannelOptions): Promise<Channel> {
         return this.client.rest.channels.edit(this.id as string, options);
+    }
+
+    override toJSON(): JSONChannel {
+        return {
+            ...super.toJSON(),
+            type: this.type,
+            name: this.name
+        };
     }
 }

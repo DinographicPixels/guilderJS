@@ -15,29 +15,29 @@ import type { PATCHListItemBody } from "../Constants";
 export class ListItem extends Base<string> {
     /** Raw data */
     _data: RawListItem;
-    /** Guild id */
-    guildID: string;
     /** ID of the 'docs' channel. */
     channelID: string;
-    /** Content of the doc */
-    content: string;
-    mentions: RawMentions | null;
-    /** When the item was created. */
-    createdAt: Date | null;
-    /** ID of the member who created the doc. */
-    memberID: string;
-    /** ID of the webhook that created the list item (if it was created by a webhook) */
-    webhookID: string | null;
-    /** Timestamp at which the item was updated. */
-    editedTimestamp: Date | null;
-    /** ID of the member who updated the doc. (if updated) */
-    updatedBy: string | null;
-    /** The ID of the parent list item if this list item is nested */
-    parentListItemID: string | null;
     /** When the list item was marked as "completed". */
     completedAt: Date | null;
     /** ID of the member that completed the item, if completed. */
     completedBy: string | null;
+    /** Content of the doc */
+    content: string;
+    /** When the item was created. */
+    createdAt: Date | null;
+    /** Timestamp at which the item was updated. */
+    editedTimestamp: Date | null;
+    /** Guild id */
+    guildID: string;
+    /** ID of the member who created the doc. */
+    memberID: string;
+    mentions: RawMentions | null;
+    /** The ID of the parent list item if this list item is nested */
+    parentListItemID: string | null;
+    /** ID of the member who updated the doc. (if updated) */
+    updatedBy: string | null;
+    /** ID of the webhook that created the list item (if it was created by a webhook) */
+    webhookID: string | null;
 
     /**
      * @param data raw data.
@@ -59,24 +59,6 @@ export class ListItem extends Base<string> {
         this.completedAt = data.completedAt ? new Date(data.completedAt) : null;
         this.completedBy = data.completedBy ?? null;
         this.update(data);
-    }
-
-    override toJSON(): JSONListItem {
-        return {
-            ...super.toJSON(),
-            guildID:          this.guildID,
-            channelID:        this.channelID,
-            content:          this.content,
-            mentions:         this.mentions,
-            createdAt:        this.createdAt,
-            memberID:         this.memberID,
-            webhookID:        this.webhookID,
-            editedTimestamp:  this.editedTimestamp,
-            updatedBy:        this.updatedBy,
-            parentListItemID: this.parentListItemID,
-            completedAt:      this.completedAt,
-            completedBy:      this.completedBy
-        };
     }
 
     protected override update(data: RawListItem): void {
@@ -163,6 +145,24 @@ export class ListItem extends Base<string> {
             this.id as string,
             options
         );
+    }
+
+    override toJSON(): JSONListItem {
+        return {
+            ...super.toJSON(),
+            guildID:          this.guildID,
+            channelID:        this.channelID,
+            content:          this.content,
+            mentions:         this.mentions,
+            createdAt:        this.createdAt,
+            memberID:         this.memberID,
+            webhookID:        this.webhookID,
+            editedTimestamp:  this.editedTimestamp,
+            updatedBy:        this.updatedBy,
+            parentListItemID: this.parentListItemID,
+            completedAt:      this.completedAt,
+            completedBy:      this.completedBy
+        };
     }
 
     /** Set this item as "incomplete". */

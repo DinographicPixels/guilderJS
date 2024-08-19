@@ -10,11 +10,10 @@ module.exports = {
     "plugin:unicorn/recommended"
   ],
   "parser": "@typescript-eslint/parser",
-  "ignorePatterns": ['.eslintrc.js'],
   "parserOptions": {
     "ecmaVersion": 2022,
     "sourceType": "module",
-    "project": [ "./tsconfig.json" ],
+    "project": "./tsconfig.json",
     "ecmaFeatures": {
       "jsx": false,
       "forOf": true,
@@ -43,15 +42,12 @@ module.exports = {
     }
   },
   "plugins": [
-    "eslint-plugin-import",
-    "eslint-plugin-jsdoc",
-    "eslint-plugin-prefer-arrow",
+    "import",
+    "prefer-arrow",
     "@typescript-eslint",
     "jsdoc",
     "import-newlines",
-    "unused-imports",
-    "sort-class-members",
-    "import"
+    "unused-imports"
   ],
   "rules": {
     "@typescript-eslint/adjacent-overload-signatures": "error",
@@ -97,14 +93,18 @@ module.exports = {
       }
     ],
     "@typescript-eslint/method-signature-style": ["error", "method"],
-    "@typescript-eslint/no-duplicate-imports": "error",
     "@typescript-eslint/no-empty-function": [
       "error",
       {
         "allow": ["arrowFunctions"]
       }
     ],
-    "@typescript-eslint/no-empty-interface": "error",
+    "@typescript-eslint/no-empty-interface": [
+      "error",
+      {
+        "allowSingleExtends": true
+      }
+    ],
     "@typescript-eslint/no-explicit-any": "error",
     "@typescript-eslint/no-inferrable-types": "error",
     "@typescript-eslint/no-misused-new": "error",
@@ -143,16 +143,22 @@ module.exports = {
     "@typescript-eslint/semi": ["error", "always"],
     "@typescript-eslint/type-annotation-spacing": "error",
     "@typescript-eslint/unified-signatures": "error",
+    "@typescript-eslint/consistent-type-imports": [
+      "error",
+      {
+        "disallowTypeAnnotations": false,
+        "fixStyle": "inline-type-imports"
+      }
+    ],
     "arrow-body-style": ["error", "as-needed"],
     "brace-style": ["error", "1tbs"],
-    "comma-dangle": "error",
+    "comma-dangle": "off",
     "complexity": "off",
     "dot-notation": "off",
     "eol-last": ["error", "always"],
     "eqeqeq": ["error", "always"],
     "guard-for-in": "error",
     "import-newlines/enforce": ["error", 4],
-    "import/no-extraneous-dependencies": "off",
     "import/order": [
       "error",
       {
@@ -170,21 +176,21 @@ module.exports = {
     "indent": "off",
     "jsdoc/check-alignment": "error",
     "jsdoc/check-indentation": "error",
-    "jsdoc/no-undefined-types": "error",
+    "jsdoc/no-undefined-types": "off",
     "key-spacing": [
       "error",
       {
         "align": "value"
       }
     ],
-    "keyword-spacing": ["error"],
+    "keyword-spacing": "error",
     "linebreak-style": ["error", "unix"],
     "new-parens": ["error", "always"],
     "no-caller": "error",
     "no-console": "off",
     "no-debugger": "error",
     "no-duplicate-case": "error",
-    "no-duplicate-imports": "off",
+    "no-duplicate-imports": "error",
     "no-empty": [
       "error",
       {
@@ -208,7 +214,6 @@ module.exports = {
     "no-new-func": "error",
     "no-new-wrappers": "error",
     "no-redeclare": "off",
-    "no-return-await": "error",
     "no-sequences": "error",
     "no-shadow": "off",
     "no-sparse-arrays": "error",
@@ -255,35 +260,38 @@ module.exports = {
     "@typescript-eslint/no-redeclare": ["error"],
     "@typescript-eslint/triple-slash-reference": "off",
     "@typescript-eslint/member-ordering": [
-      "off",
+      "error",
       {
         "default": {
           "memberTypes": [
+            "static-initialization",
             "signature",
+            "call-signature",
             "private-static-field",
             "protected-static-field",
             "static-field",
             "private-field",
             "protected-field",
             "field",
-            "abstract-field",
-            "private-abstract-method",
+            "protected-abstract-get",
+            "protected-abstract-set",
             "protected-abstract-method",
+            ["abstract-get", "abstract-set"],
             "abstract-method",
             "private-constructor",
             "protected-constructor",
             "constructor",
+            ["private-static-get", "protected-static-get"],
+            ["protected-static-get", "protected-static-get"],
+            ["static-get", "static-set"],
             "private-static-method",
             "protected-static-method",
             "static-method",
             "private-method",
             "protected-method",
-            "private-get",
-            "protected-get",
-            "get",
-            "private-set",
-            "protected-set",
-            "set",
+            ["private-get", "private-set"],
+            ["protected-get", "protected-set"],
+            ["get", "set"],
             "method"
           ],
           "order": "alphabetically"
@@ -299,7 +307,8 @@ module.exports = {
         "SwitchCase": 1
       }
     ],
-    "jsdoc/newline-after-description": ["error", "never"],
+    "jsdoc/tag-lines": "error",
+    "jsdoc/no-types": "error",
     "arrow-parens": ["error", "as-needed"],
     "unicorn/no-null": "off",
     "unicorn/no-static-only-class": "off",
@@ -321,41 +330,22 @@ module.exports = {
         "non-zero": "not-equal"
       }
     ],
-    "unicorn/prefer-event-target": "off",
     "unicorn/catch-error-name": "off",
-    "unicorn/prefer-at": "off",
     "unicorn/consistent-destructuring": "off",
     "unicorn/prefer-number-properties": "off",
     "unicorn/no-array-callback-reference": "off",
     "unicorn/no-array-method-this-argument": "off",
-    "unicorn/no-negated-condition": "off",
-    "unicorn/no-typeof-undefined": "off",
-    "import/no-cycle": ["error", { maxDepth: Infinity }],
-    "import/no-self-import": "error",
-    "sort-class-members/sort-class-members": [
+    "unicorn/custom-error-definition": "error",
+    "unicorn/switch-case-braces": "off",
+    "@typescript-eslint/comma-dangle": [
       "error",
       {
-        "order": [
-          "[properties]",
-          "constructor",
-          "[special-methods]",
-          "[methods]"
-        ],
-        "groups": {
-          "properties": [{ "type": "property" }],
-          "special-methods": [
-            { "type": "method", "override": true, "sort": "alphabetical" },
-            { "type": "method", "readonly": true, "sort": "alphabetical" },
-            { "type": "method", "abstract": true, "sort": "alphabetical" },
-            { "type": "method", "static": true, "sort": "alphabetical" },
-            { "type": "method", "accessibility": "private", "sort": "alphabetical" },
-            { "type": "method", "kind": "get", "sort": "alphabetical" },
-            { "type": "method", "kind": "set", "sort": "alphabetical" }
-          ],
-          "methods": [{ "type": "method", "sort": "alphabetical" }]
-        },
-        "accessorPairPositioning": "getThenSet"
+        "enums": "always-multiline"
       }
-    ]
+    ],
+    "unicorn/prefer-event-target": "off",
+    "@typescript-eslint/no-unsafe-declaration-merging": "off",
+    "@typescript-eslint/no-unsafe-enum-comparison": "off",
+    "unicorn/prefer-ternary": "off"
   }
 }

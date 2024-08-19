@@ -69,50 +69,50 @@ export type RawEmote = APIEmote;
 export type RawMentions = APIMentions;
 
 export interface MessageConstructorParams {
+    acknowledged?: boolean;
     originals?: {
         responseID?: string | null;
         triggerID?: string | null;
     };
-    acknowledged?: boolean;
 }
 
 export interface MessageAttachment {
+    arrayBuffer: ArrayBuffer | null;
+    fileExtension: string;
+    isImage: boolean;
     originalURL: string;
     signedURL: string | null;
-    arrayBuffer: ArrayBuffer | null;
-    isImage: boolean;
-    fileExtension: string;
 }
 
 export interface MessageOriginals {
-    triggerMessage: Message<AnyTextableChannel> | null;
     originalResponse: Message<AnyTextableChannel> | null;
+    triggerMessage: Message<AnyTextableChannel> | null;
 }
 
 export interface CreateMessageOptions {
     /** The content of the message (min length 1; max length 4000) */
     content?: string;
+    /** Embeds */
+    embeds?: Array<Embed>;
     /** Links in content to prevent unfurling as a link preview when displaying in Guilded
      * (min items 1; must have unique items true) */
     hiddenLinkPreviewURLs?: Array<string>;
-    /** Embeds */
-    embeds?: Array<Embed>;
-    /** Message IDs to reply to (min items 1; max items 5) */
-    replyMessageIDs?: Array<string>;
-    /** If set, this message will not notify any mentioned users or roles (default `false`) */
-    isSilent?: boolean;
     /** If set, this message will only be seen by those mentioned or replied to */
     isPrivate?: boolean;
+    /** If set, this message will not notify any mentioned users or roles (default `false`) */
+    isSilent?: boolean;
+    /** Message IDs to reply to (min items 1; max items 5) */
+    replyMessageIDs?: Array<string>;
 }
 
 export interface EditMessageOptions {
     /** The content of the message (min length 1; max length 4000) */
     content?: string;
+    /** Embeds */
+    embeds?: Array<Embed>;
     /** Links in content to prevent unfurling as a link preview when displaying in Guilded
      * (min items 1; must have unique items true) */
     hiddenLinkPreviewURLs?: Array<string>;
-    /** Embeds */
-    embeds?: Array<Embed>;
     // /** Message IDs to reply to (min items 1; max items 5) */
     // replyMessageIds?: Array<string>;
     // /** If set, this message will not notify any mentioned users or roles (default `false`) */
@@ -122,163 +122,163 @@ export interface EditMessageOptions {
 }
 
 export interface Embed {
-    /** Main header of the embed (max length 256) */
-    title?: string;
-    /** Subtext of the embed (max length 2048) */
-    description?: string;
-    /** URL to linkify the title field with (max length 1024; regex ^(?!attachment)) */
-    url?: string;
+    /** A small section above the title of the embed */
+    author?: {
+        /** URL of a small image to display to the left of the author's name (max length 1024) */
+        iconURL?: string;
+        /** Name of the author (max length 256) */
+        name?: string;
+        /** URL to linkify the author's name field (max length 1024; regex ^(?!attachment)) */
+        url?: string;
+    };
     /** Embed's color, decimal number (base 16),
      *
      * To convert to HEX use: `parseInt("HEX", 16)`,
      * don't forget to remove the hashtag.
      */
     color?: number ;
+    /** Subtext of the embed (max length 2048) */
+    description?: string;
     /** A small section at the bottom of the embed */
+    /** Table-like cells to add to the embed (max items 25) */
+    fields?: Array<APIEmbedField>;
     footer?: {
-    /** URL of a small image to put in the footer (max length 1024) */
+        /** URL of a small image to put in the footer (max length 1024) */
         iconURL?: string;
         /** Text of the footer (max length 2048) */
         text: string;
     };
-    /** A timestamp to put in the footer */
-    timestamp?: string;
+    image?: {
+        /** URL of the image (max length 1024) */
+        url?: string;
+    };
     /** An image to the right of the embed's content */
     thumbnail?: {
     /** URL of the image (max length 1024) */
         url?: string;
     };
+    /** A timestamp to put in the footer */
+    timestamp?: string;
+    /** Main header of the embed (max length 256) */
+    title?: string;
+    /** URL to linkify the title field with (max length 1024; regex ^(?!attachment)) */
+    url?: string;
     /** The main picture to associate with the embed */
-    image?: {
-    /** URL of the image (max length 1024) */
-        url?: string;
-    };
-    /** A small section above the title of the embed */
-    author?: {
-    /** Name of the author (max length 256) */
-        name?: string;
-        /** URL to linkify the author's name field (max length 1024; regex ^(?!attachment)) */
-        url?: string;
-        /** URL of a small image to display to the left of the author's name (max length 1024) */
-        iconURL?: string;
-    };
-    /** Table-like cells to add to the embed (max items 25) */
-    fields?: Array<APIEmbedField>;
 }
 
 export interface CreateChannelOptions {
-    /** Description of the channel. */
-    description?: string;
-    /** Set the channel as public or not. */
-    isPublic?: boolean;
     /** Place the channel in a specific category. */
     categoryID?: number;
+    /** Description of the channel. */
+    description?: string;
     /** Place the channel in a guild group. */
     groupID?: string;
+    /** Set the channel as public or not. */
+    isPublic?: boolean;
 }
 
 export interface EditChannelOptions {
-    /** The name of the channel or thread (min length 1; max length 100) */
-    name?: string;
     /** The description of the channel. Not applicable to threads (min length 1; max length 512) */
     description?: string;
     /** Whether the channel can be accessed from users who are not member of the server. Not applicable to threads */
     isPublic?: boolean;
+    /** The name of the channel or thread (min length 1; max length 100) */
+    name?: string;
 }
 
 export interface GetChannelMessagesFilter {
-    /** An ISO 8601 timestamp that will be used to filter out results for the current page */
-    before?: string;
     /** Order will be reversed when compared to before or when omitting this parameter altogether */
     after?: string;
-    /** The max size of the page (default `50`; min `1`; max `100`) */
-    limit?: number;
+    /** An ISO 8601 timestamp that will be used to filter out results for the current page */
+    before?: string;
     /** Whether to include private messages between all users in response (default `false`) */
     includePrivate?: boolean;
+    /** The max size of the page (default `50`; min `1`; max `100`) */
+    limit?: number;
 }
 
 export type PossiblyUncachedMessage = Message<AnyTextableChannel> | {
-    /** The ID of the message. */
-    id: string;
-    /** ID of the server on which the message was sent. */
-    guildID: string;
     /** ID of the channel where the message was sent. */
     channelID: string;
     /** When the message was deleted. */
     deletedAt: Date;
+    /** ID of the server on which the message was sent. */
+    guildID: string;
+    /** The ID of the message. */
+    id: string;
     /** If true, the message is private. */
     isPrivate: boolean | null;
 };
 
 export interface ChannelMessageReactionBulkRemove {
-    /** The ID of the server */
-    guildID: string;
     /** The ID of the channel */
     channelID: string;
-    /** The ID of the message */
-    messageID: string;
-    /** The ID of the user who deleted this reaction */
-    deletedBy: string;
     /** The count of reactions that were removed */
     count: number;
+    /** The ID of the user who deleted this reaction */
+    deletedBy: string;
     /** If present, only reactions of this emote were bulk removed from the message */
     emote: RawEmote | null;
+    /** The ID of the server */
+    guildID: string;
+    /** The ID of the message */
+    messageID: string;
 }
 
 export interface ChannelRolePermission {
-    permission: Array<Permissions>;
-    /** The ISO 8601 timestamp that the permission override was created at */
-    createdAt: string;
-    /** The ISO 8601 timestamp that the permission override was updated at, if relevant */
-    updatedAt?: string;
-    /** The ID of the role */
-    roleID: number;
     /** The ID of the channel */
     channelID: string;
+    /** The ISO 8601 timestamp that the permission override was created at */
+    createdAt: string;
     /** ID of the Guild **/
     guildID: string;
+    permission: Array<Permissions>;
+    /** The ID of the role */
+    roleID: number;
+    /** The ISO 8601 timestamp that the permission override was updated at, if relevant */
+    updatedAt?: string;
 }
 
 export interface ChannelUserPermission {
-    permission: Array<Permissions>;
+    /** The ID of the channel */
+    channelID: string;
     /** The ISO 8601 timestamp that the permission override was created at */
     createdAt: string;
+    /** ID of the Guild **/
+    guildID: string;
+    permission: Array<Permissions>;
     /** The ISO 8601 timestamp that the permission override was updated at, if relevant */
     updatedAt?: string;
     /** The ID of the role */
     userID: string;
-    /** The ID of the channel */
-    channelID: string;
-    /** ID of the Guild **/
-    guildID: string;
 }
 
 export interface ChannelCategoryUserPermission {
-    permission: Array<Permissions>;
+    /** The ID of the channel */
+    categoryID: number;
     /** The ISO 8601 timestamp that the permission override was created at */
     createdAt: string;
+    /** ID of the Guild **/
+    guildID: string;
+    permission: Array<Permissions>;
     /** The ISO 8601 timestamp that the permission override was updated at, if relevant */
     updatedAt?: string;
     /** The ID of the role */
     userID: string;
-    /** The ID of the channel */
-    categoryID: number;
-    /** ID of the Guild **/
-    guildID: string;
 }
 
 export interface ChannelCategoryRolePermission {
-    permission: Array<Permissions>;
-    /** The ISO 8601 timestamp that the permission override was created at */
-    createdAt: string;
-    /** The ISO 8601 timestamp that the permission override was updated at, if relevant */
-    updatedAt?: string;
-    /** The ID of the role */
-    roleID: number;
     /** The ID of the channel */
     categoryID: number;
+    /** The ISO 8601 timestamp that the permission override was created at */
+    createdAt: string;
     /** ID of the Guild **/
     guildID: string;
+    permission: Array<Permissions>;
+    /** The ID of the role */
+    roleID: number;
+    /** The ISO 8601 timestamp that the permission override was updated at, if relevant */
+    updatedAt?: string;
 }
 
 export type AnyTextableChannel = TextChannel;
@@ -287,17 +287,17 @@ export type AnyGuildChannel = Exclude<AnyChannel, GuildChannel>;
 
 // FORUM CHANNEL
 export interface CreateForumThreadOptions {
-    /** Forum thread's title. */
-    title: string;
     /** Content of the thread. */
     content: string;
+    /** Forum thread's title. */
+    title: string;
 }
 
 export interface EditForumThreadOptions {
-    /** New forum thread's title. */
-    title?: string;
     /** New content of the thread. */
     content?: string;
+    /** New forum thread's title. */
+    title?: string;
 }
 
 export interface GetForumThreadsFilter {
@@ -309,10 +309,10 @@ export interface GetForumThreadsFilter {
 
 
 export interface ConstructorForumThreadOptions {
-    /** ID of the forum channel's parent guild. */
-    guildID?: string | null;
     /** ID of the "Forums" channel containing this ForumThreadComment. */
     channelID?: string | null;
+    /** ID of the forum channel's parent guild. */
+    guildID?: string | null;
 }
 
 export interface CreateForumCommentOptions {
@@ -326,10 +326,10 @@ export interface EditForumCommentOptions {
 }
 
 export interface ConstructorForumThreadOptions {
-    /** ID of the forum channel's parent guild. */
-    guildID?: string | null;
     /** ID of the "Forums" channel containing this ForumThreadComment. */
     channelID?: string | null;
+    /** ID of the forum channel's parent guild. */
+    guildID?: string | null;
 }
 
 export interface CreateForumCommentOptions {
@@ -343,10 +343,10 @@ export interface EditForumCommentOptions {
 }
 
 export interface ConstructorForumThreadOptions {
-    /** ID of the forum channel's parent guild. */
-    guildID?: string | null;
     /** ID of the "Forums" channel containing this ForumThreadComment. */
     channelID?: string | null;
+    /** ID of the forum channel's parent guild. */
+    guildID?: string | null;
 }
 
 export interface CreateForumCommentOptions {
@@ -361,17 +361,17 @@ export interface EditForumCommentOptions {
 
 // DOC CHANNEL
 export interface CreateDocOptions {
-    /** Title of the doc. */
-    title: string;
     /** Content of the doc. */
     content: string;
+    /** Title of the doc. */
+    title: string;
 }
 
 export interface EditDocOptions {
-    /** New doc title. */
-    title?: string;
     /** New doc content. */
     content?: string;
+    /** New doc title. */
+    title?: string;
 }
 
 export interface GetDocsFilter {
@@ -397,70 +397,70 @@ export interface EditDocCommentOptions {
 
 // CALENDAR CHANNEL
 export interface CreateCalendarEventOptions {
-    /** The name of the event. */
-    name: string;
-    /** The description of the event. */
-    description?: string;
-    /** The location where the event will happen. */
-    location?: string;
-    /** The event's starting date. */
-    startsAt?: string;
-    /** Link a URL to the event. */
-    url?: string;
+    /** When `rsvpLimit` is set, users from the waitlist will be added as space becomes available in the event */
+    autofillWaitlist?: boolean;
     /** Event card's color. */
     color?: number;
+    /** The description of the event. */
+    description?: string;
+    /** Event's duration in ms. */
+    duration?: number;
     /** Does the event last all day? If passed with duration,
      * duration will only be applied if it is an interval of minutes represented in days (e.g., duration: 2880) */
     isAllDay?: boolean;
-    /** Limit of member joining this event. */
-    rsvpLimit?: number;
-    /** When `rsvpLimit` is set, users from the waitlist will be added as space becomes available in the event */
-    autofillWaitlist?: boolean;
-    /** Event's duration in ms. */
-    duration?: number;
     /** If the event is private or not. */
     isPrivate?: boolean;
-    /** The role IDs to restrict the event to (min items 1; must have unique items true) */
-    roleIDs?: Array<number>;
-}
-
-export interface EditCalendarEventOptions {
-    /** The name of the event. */
-    name?: string;
-    /** The description of the event. */
-    description?: string;
     /** The location where the event will happen. */
     location?: string;
+    /** The name of the event. */
+    name: string;
+    /** The role IDs to restrict the event to (min items 1; must have unique items true) */
+    roleIDs?: Array<number>;
+    /** Limit of member joining this event. */
+    rsvpLimit?: number;
     /** The event's starting date. */
     startsAt?: string;
     /** Link a URL to the event. */
     url?: string;
-    /** Event card's color. */
-    color?: number;
-    /** Does the event last all day? If passed with duration, duration will only be applied if it is an interval of
-     * minutes represented in days (e.g., duration: 2880) */
-    isAllDay?: boolean;
-    /** Limit of member joining this event. */
-    rsvpLimit?: number;
+}
+
+export interface EditCalendarEventOptions {
     /** When `rsvpLimit` is set, users from the waitlist will be added as space becomes available in the event */
     autofillWaitlist?: boolean;
-    /** Event's duration in ms. */
-    duration?: number;
-    /** If the event is private or not. */
-    isPrivate?: boolean;
-    /** The role IDs to restrict the event to (min items 1; must have unique items true) */
-    roleIDs?: Array<number>;
     cancellation?: {
         /** The description of event cancellation (min length 1; max length 140) */
         description?: string;
     };
+    /** Event card's color. */
+    color?: number;
+    /** The description of the event. */
+    description?: string;
+    /** Event's duration in ms. */
+    duration?: number;
+    /** Does the event last all day? If passed with duration, duration will only be applied if it is an interval of
+     * minutes represented in days (e.g., duration: 2880) */
+    isAllDay?: boolean;
+    /** If the event is private or not. */
+    isPrivate?: boolean;
+    /** The location where the event will happen. */
+    location?: string;
+    /** The name of the event. */
+    name?: string;
+    /** The role IDs to restrict the event to (min items 1; must have unique items true) */
+    roleIDs?: Array<number>;
+    /** Limit of member joining this event. */
+    rsvpLimit?: number;
+    /** The event's starting date. */
+    startsAt?: string;
+    /** Link a URL to the event. */
+    url?: string;
 }
 
 export interface GetCalendarEventsFilter {
-    /** An ISO 8601 timestamp that will be used to filter out results for the current page */
-    before?: string;
     /** Order will be reversed when compared to before or when omitting this parameter altogether */
     after?: string;
+    /** An ISO 8601 timestamp that will be used to filter out results for the current page */
+    before?: string;
     /** Limit the number of calendar event that will output. (default `50`; min `1`; max `100`) */
     limit?: number;
 }

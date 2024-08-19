@@ -11,32 +11,32 @@ import type { JSONGroup, RawGroup } from "../types";
 
 /** Represents a Guild Group. */
 export class Group extends Base<string> {
-    /** ID of the guild */
-    guildID: string;
-    /** The group's name (min length 1; max length 80)  */
-    name: string;
-    /** The group description. */
-    description: string | null;
-    /** The avatar image associated with the group */
-    avatarURL: string | null;
-    /** If true, this is the server's home group */
-    isHome: boolean;
-    /** The emote to associate with the group */
-    emoteID: number | null;
-    /** Is this group open for anyone to join? */
-    isPublic: boolean;
-    /** The ISO 8601 timestamp that the group was created at */
-    createdAt: Date;
-    /** The ID of the user who created this group */
-    createdBy: string;
-    /** The date when the group was updated, if edited. */
-    editedTimestamp: Date | null;
-    /** The ID of the user who updated this group, if edited. */
-    updatedBy: string | null;
     /** Date of when the group was archived, if archived. */
     archivedAt: Date | null;
     /** The ID of the user who archived this group, if archived. */
     archivedBy: string | null;
+    /** The avatar image associated with the group */
+    avatarURL: string | null;
+    /** The ISO 8601 timestamp that the group was created at */
+    createdAt: Date;
+    /** The ID of the user who created this group */
+    createdBy: string;
+    /** The group description. */
+    description: string | null;
+    /** The date when the group was updated, if edited. */
+    editedTimestamp: Date | null;
+    /** The emote to associate with the group */
+    emoteID: number | null;
+    /** ID of the guild */
+    guildID: string;
+    /** If true, this is the server's home group */
+    isHome: boolean;
+    /** Is this group open for anyone to join? */
+    isPublic: boolean;
+    /** The group's name (min length 1; max length 80)  */
+    name: string;
+    /** The ID of the user who updated this group, if edited. */
+    updatedBy: string | null;
     constructor(data: RawGroup, client: Client) {
         super(data.id, client);
         this.guildID = data.serverId;
@@ -53,25 +53,6 @@ export class Group extends Base<string> {
         this.archivedAt = data.archivedAt ? new Date(data.archivedAt) : null;
         this.archivedBy = data.archivedBy ?? null;
         this.update(data);
-    }
-
-    override toJSON(): JSONGroup {
-        return {
-            ...super.toJSON(),
-            guildID:         this.guildID,
-            name:            this.name,
-            description:     this.description,
-            avatarURL:       this.avatarURL,
-            isHome:          this.isHome,
-            emoteID:         this.emoteID,
-            isPublic:        this.isPublic,
-            createdAt:       this.createdAt,
-            createdBy:       this.createdBy,
-            editedTimestamp: this.editedTimestamp,
-            updatedBy:       this.updatedBy,
-            archivedAt:      this.archivedAt,
-            archivedBy:      this.archivedBy
-        };
     }
 
     protected override update(data: RawGroup): void {
@@ -114,5 +95,24 @@ export class Group extends Base<string> {
         if (data.archivedBy !== undefined) {
             this.archivedBy = data.archivedBy;
         }
+    }
+
+    override toJSON(): JSONGroup {
+        return {
+            ...super.toJSON(),
+            guildID:         this.guildID,
+            name:            this.name,
+            description:     this.description,
+            avatarURL:       this.avatarURL,
+            isHome:          this.isHome,
+            emoteID:         this.emoteID,
+            isPublic:        this.isPublic,
+            createdAt:       this.createdAt,
+            createdBy:       this.createdBy,
+            editedTimestamp: this.editedTimestamp,
+            updatedBy:       this.updatedBy,
+            archivedAt:      this.archivedAt,
+            archivedBy:      this.archivedBy
+        };
     }
 }

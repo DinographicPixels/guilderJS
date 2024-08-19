@@ -12,13 +12,13 @@ import SequentialBucket from "./SequentialBucket";
 import { type RESTMethod, RESTMethods } from "../Constants";
 import type { LatencyRef, RequestOptions, RESTOptions } from "../types";
 import { config as pkgconfig } from "../../pkgconfig";
-import { fetch, File, FormData } from "undici";
+import { type Dispatcher, fetch, File, FormData } from "undici";
 
 export class RequestHandler {
-    #manager: RESTManager;
-    options;
     globalBlock = false;
     latencyRef: LatencyRef;
+    #manager: RESTManager;
+    options;
     ratelimits: Record<string, SequentialBucket> = {};
     readyQueue: Array<() => void> = [];
     constructor(manager: RESTManager, options: RESTOptions = {}){
@@ -144,9 +144,10 @@ export class RequestHandler {
                         method:     options.method,
                         headers,
                         body:       reqBody,
-                        dispatcher: this.options.agent || undefined,
+                        dispatcher: this.options.agent || undefined as never as Dispatcher,
                         signal:     controller.signal
                     });
+
                     if (timeout) {
                         clearTimeout(timeout);
                     }

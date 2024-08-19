@@ -119,10 +119,14 @@ import type {
 
 /** Gateway handler filters every ws events. */
 export class GatewayHandler {
-    messageHandler; channelHandler;
+    announcementHandler;
+    calendarHandler;
+    channelHandler;
+    docHandler;
     forumThreadHandler;
     guildHandler;
-    webhookHandler;
+    listItemHandler;
+    messageHandler;
     readonly toHandlerMap: Record<keyof GATEWAY_EVENTS, (data: object) => void> = {
         // Messages
         ChatMessageCreated:                   data => this.messageHandler.messageCreate(data as GatewayEvent_ChatMessageCreated),
@@ -239,11 +243,8 @@ export class GatewayHandler {
         CategoryUpdated:                      data => this.guildHandler.guildCategoryUpdate(data as GatewayEvent_CategoryUpdated),
         CategoryDeleted:                      data => this.guildHandler.guildCategoryDelete(data as GatewayEvent_CategoryDeleted)
     };
-    docHandler;
-    calendarHandler;
-    listItemHandler;
-    announcementHandler;
     userHandler;
+    webhookHandler;
     constructor(readonly client: Client) {
         this.messageHandler = new MessageHandler(this.client);
         this.channelHandler = new ChannelHandler(this.client);

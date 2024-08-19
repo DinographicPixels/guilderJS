@@ -11,18 +11,18 @@ import type { JSONSubscription, RawSubscription } from "../types";
 
 /** Represents a Guild Subscription. */
 export class Subscription extends Base<string> {
-    /** Type of the subscription */
-    type: string;
-    /** ID of the guild */
-    guildID: string;
-    /** Description of the subscription (optional) */
-    description: string | null;
-    /** ID of the role associated with the subscription (optional) */
-    roleID: number | null;
     /** Cost of the subscription */
     cost: number;
     /** The ISO 8601 timestamp that the subscription was created at */
     createdAt: Date;
+    /** Description of the subscription (optional) */
+    description: string | null;
+    /** ID of the guild */
+    guildID: string;
+    /** ID of the role associated with the subscription (optional) */
+    roleID: number | null;
+    /** Type of the subscription */
+    type: string;
 
     constructor(data: RawSubscription, client: Client) {
         super(data.serverId, client);
@@ -33,18 +33,6 @@ export class Subscription extends Base<string> {
         this.cost = data.cost;
         this.createdAt = new Date(data.createdAt);
         this.update(data);
-    }
-
-    override toJSON(): JSONSubscription {
-        return {
-            ...super.toJSON(),
-            type:        this.type,
-            guildID:     this.guildID,
-            description: this.description,
-            roleID:      this.roleID,
-            cost:        this.cost,
-            createdAt:   this.createdAt
-        };
     }
 
     protected override update(data: RawSubscription): void {
@@ -66,5 +54,17 @@ export class Subscription extends Base<string> {
         if (data.createdAt !== undefined) {
             this.createdAt = new Date(data.createdAt);
         }
+    }
+
+    override toJSON(): JSONSubscription {
+        return {
+            ...super.toJSON(),
+            type:        this.type,
+            guildID:     this.guildID,
+            description: this.description,
+            roleID:      this.roleID,
+            cost:        this.cost,
+            createdAt:   this.createdAt
+        };
     }
 }

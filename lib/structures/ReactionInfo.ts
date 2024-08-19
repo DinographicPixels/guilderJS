@@ -29,7 +29,11 @@ import type { RawEmote } from "../types";
 
 /** Default information every other reaction has. */
 export class ReactionInfo {
+    /** Channel where the reaction was added/removed. */
+    channelID: string;
     client!: Client;
+    /** Emote. */
+    emoji: RawEmote;
     raw: GatewayEvent_ChannelMessageReactionCreated
     | GatewayEvent_ChannelMessageReactionDeleted
     | GatewayEvent_ForumTopicReactionCreated
@@ -46,12 +50,8 @@ export class ReactionInfo {
     | GatewayEvent_AnnouncementReactionDeleted
     | GatewayEvent_AnnouncementCommentReactionCreated
     | GatewayEvent_AnnouncementCommentReactionDeleted;
-    /** Channel where the reaction was added/removed. */
-    channelID: string;
     /** ID of the user who added the reaction. */
     reactorID: string;
-    /** Emote. */
-    emoji: RawEmote;
     /**
      * @param data raw data.
      * @param client client.

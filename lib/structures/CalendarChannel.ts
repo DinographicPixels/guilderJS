@@ -37,12 +37,6 @@ export class CalendarChannel extends GuildChannel {
         this.update(data);
     }
 
-    override toJSON(): JSONCalendarChannel {
-        return {
-            ...super.toJSON(),
-            scheduledEvents: this.scheduledEvents.map(event => event.toJSON())
-        };
-    }
     /** Create an event in this channel.
      * @param options Event options.
      * @param createSeries (optional) Create a series. (event's repetition)
@@ -94,5 +88,12 @@ export class CalendarChannel extends GuildChannel {
             seriesID,
             options
         );
+    }
+
+    override toJSON(): JSONCalendarChannel {
+        return {
+            ...super.toJSON(),
+            scheduledEvents: this.scheduledEvents.map(event => event.toJSON())
+        };
     }
 }

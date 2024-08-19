@@ -13,31 +13,32 @@ import type { EditChannelOptions, JSONGuildChannel, RawChannel } from "../types"
 
 /** Represents a guild channel. */
 export class GuildChannel extends Base<string> {
-    /** Channel type */
-    type: string;
-    /** Channel name */
-    name: string;
-    /** Channel description */
-    description: string | null;
+    /** When the channel was last archived. */
+    archivedAt: Date | null;
+    /** ID of the member that archived the channel (if archived) */
+    archivedBy: string | null;
+    /** ID of the category the channel is in. */
+    categoryID: number | null;
     /** When this channel was created. */
     createdAt: Date;
     /** ID of the member who created this channel. */
     creatorID: string;
+    /** Channel description */
+    description: string | null;
     /** Timestamp at which this channel was last edited. */
     editedTimestamp: Date | null;
-    /** Server ID */
-    guildID: string;
-    /** ID of the parent category. */
-    parentID: string | null;
-    /** ID of the category the channel is in. */
-    categoryID: number | null;
     /** ID of the group the channel is in. */
     groupID: string;
+    /** Guild ID */
+    guildID: string;
+    /** If the channel is public, this boolean is set to true. */
     isPublic: boolean;
-    /** ID of the member that archived the channel (if archived) */
-    archivedBy: string | null;
-    /** When the channel was last archived. */
-    archivedAt: Date | null;
+    /** Channel name */
+    name: string;
+    /** ID of the parent category. */
+    parentID: string | null;
+    /** Channel type */
+    type: string;
     /** Channel visibility */
     visibility: string;
     // /** Cached messages. */
@@ -79,25 +80,6 @@ export class GuildChannel extends Base<string> {
         this.update(data);
     }
 
-    override toJSON(): JSONGuildChannel {
-        return {
-            ...super.toJSON(),
-            type:            this.type,
-            name:            this.name,
-            description:     this.description,
-            createdAt:       this.createdAt,
-            creatorID:       this.creatorID,
-            editedTimestamp: this.editedTimestamp,
-            guildID:         this.guildID,
-            parentID:        this.parentID,
-            categoryID:      this.categoryID,
-            groupID:         this.groupID,
-            isPublic:        this.isPublic,
-            archivedBy:      this.archivedBy,
-            archivedAt:      this.archivedAt,
-            visibility:      this.visibility
-        };
-    }
     protected override update(data: RawChannel): void {
         if (data.archivedAt !== undefined) {
             this.archivedAt = new Date(data.archivedAt);
@@ -143,6 +125,7 @@ export class GuildChannel extends Base<string> {
             this.isPublic = data.visibility === "public";
         }
     }
+
     /** Archive the channel */
     async archive(): Promise<void>{
         return this.client.rest.channels.archive(this.id as string);
@@ -159,5 +142,26 @@ export class GuildChannel extends Base<string> {
     /** Restore the archived channel */
     async restore(): Promise<void>{
         return this.client.rest.channels.restore(this.id as string);
+    }
+
+
+    override toJSON(): JSONGuildChannel {
+        return {
+            ...super.toJSON(),
+            type:            this.type,
+            name:            this.name,
+            description:     this.description,
+            createdAt:       this.createdAt,
+            creatorID:       this.creatorID,
+            editedTimestamp: this.editedTimestamp,
+            guildID:         this.guildID,
+            parentID:        this.parentID,
+            categoryID:      this.categoryID,
+            groupID:         this.groupID,
+            isPublic:        this.isPublic,
+            archivedBy:      this.archivedBy,
+            archivedAt:      this.archivedAt,
+            visibility:      this.visibility
+        };
     }
 }

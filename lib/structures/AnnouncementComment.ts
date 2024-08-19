@@ -14,22 +14,22 @@ import type { ConstructorCalendarCommentOptions, JSONAnnouncementComment, RawAnn
 
 /** AnnouncementComment represents a comment from an Announcement channel. */
 export class AnnouncementComment extends Base<number> {
+    /** ID of the parent announcement. */
+    announcementID: string;
+    /** ID of the channel where the comment is in. */
+    channelID: string;
     /** Announcement content */
     content: string;
     /** The date when the comment was created. */
     createdAt: Date;
     /** The date when the comment was edited, if edited. */
     editedTimestamp: Date | null;
-    /** ID of the member who sent this announcement. */
-    memberID: string;
-    /** ID of the channel where the comment is in. */
-    channelID: string;
-    /** ID of the parent announcement. */
-    announcementID: string;
-    /** Mentions */
-    mentions: RawMentions | null;
     /** ID of the guild, if received. */
     guildID: string | null;
+    /** ID of the member who sent this announcement. */
+    memberID: string;
+    /** Mentions */
+    mentions: RawMentions | null;
     /**
      * @param data raw data.
      * @param client client.
@@ -50,20 +50,6 @@ export class AnnouncementComment extends Base<number> {
         this.mentions = data.mentions ?? null;
         this.guildID = options?.guildID ?? null;
         this.update(data);
-    }
-
-    override toJSON(): JSONAnnouncementComment {
-        return {
-            ...super.toJSON(),
-            content:         this.content,
-            createdAt:       this.createdAt,
-            editedTimestamp: this.editedTimestamp,
-            memberID:        this.memberID,
-            channelID:       this.channelID,
-            announcementID:  this.announcementID,
-            mentions:        this.mentions,
-            guildID:         this.guildID
-        };
     }
 
     protected override update(data: RawAnnouncementComment): void {
@@ -93,7 +79,6 @@ export class AnnouncementComment extends Base<number> {
         }
     }
 
-
     /**
      * Retrieve the member who sent this comment, if cached.
      * If there is no cached member, this will make a rest request which returns a Promise.
@@ -106,6 +91,7 @@ export class AnnouncementComment extends Base<number> {
         ?? this.guildID
             ? this.client.rest.guilds.getMember(this.guildID as string, this.memberID) : undefined;
     }
+
     /**
      * Create a comment in the same announcement as this one.
      * @param options Create options.
@@ -117,6 +103,7 @@ export class AnnouncementComment extends Base<number> {
             options
         );
     }
+
     /**
      * Add a reaction to this comment.
      * @param emoteID ID of the emote to add
@@ -130,6 +117,7 @@ export class AnnouncementComment extends Base<number> {
             emoteID
         );
     }
+
     /**
      * Delete this comment.
      */
@@ -140,6 +128,7 @@ export class AnnouncementComment extends Base<number> {
             this.id
         );
     }
+
     /**
      * Remove a reaction from this comment.
      * @param emoteID ID of the emote to remove
@@ -153,6 +142,7 @@ export class AnnouncementComment extends Base<number> {
             emoteID
         );
     }
+
     /**
      * Edit this comment.
      * @param options Edit options
@@ -166,5 +156,17 @@ export class AnnouncementComment extends Base<number> {
         );
     }
 
-
+    override toJSON(): JSONAnnouncementComment {
+        return {
+            ...super.toJSON(),
+            content:         this.content,
+            createdAt:       this.createdAt,
+            editedTimestamp: this.editedTimestamp,
+            memberID:        this.memberID,
+            channelID:       this.channelID,
+            announcementID:  this.announcementID,
+            mentions:        this.mentions,
+            guildID:         this.guildID
+        };
+    }
 }

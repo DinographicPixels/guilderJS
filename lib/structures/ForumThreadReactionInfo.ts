@@ -13,10 +13,10 @@ import type { GatewayEvent_ForumTopicCommentReactionCreated, GatewayEvent_ForumT
 
 /** Information about a ForumThread's reaction. */
 export class ForumThreadReactionInfo extends ReactionInfo {
-    /** ID of the thread where the reaction is. */
-    threadID: number;
     /** ID of the thread comment, if reaction was added/removed from a comment. */
     commentID: number | null;
+    /** ID of the thread where the reaction is. */
+    threadID: number;
     /** The type of the parent entity. */
     type: string;
     /**

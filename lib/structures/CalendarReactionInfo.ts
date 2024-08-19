@@ -13,10 +13,10 @@ import type { GatewayEvent_CalendarEventCommentReactionCreated, GatewayEvent_Cal
 
 /** Information about a CalendarEvent's reaction. */
 export class CalendarReactionInfo extends ReactionInfo {
-    /** ID of the event where the reaction is added to. */
-    eventID: number;
     /** ID of the event comment, if reaction was added/removed from a comment. */
     commentID: number | null;
+    /** ID of the event where the reaction is added to. */
+    eventID: number;
     /** The type of the parent entity. */
     type: string;
     /**

@@ -36,12 +36,6 @@ export class ForumChannel extends GuildChannel {
         this.update(data);
     }
 
-    override toJSON(): JSONForumChannel {
-        return {
-            ...super.toJSON(),
-            threads: this.threads.map(thread => thread.toJSON())
-        };
-    }
     /** Create a thread in this channel.
      * @param options Thread's options including title & content.
      */
@@ -55,6 +49,7 @@ export class ForumChannel extends GuildChannel {
     async deleteThread(threadID: number): Promise<void> {
         return this.client.rest.channels.deleteForumThread(this.id, threadID);
     }
+
     /** Edit a thread from this channel.
      * @param threadID ID of a thread.
      * @param options Edit options.
@@ -63,18 +58,25 @@ export class ForumChannel extends GuildChannel {
         return this.client.rest.channels.editForumThread(this.id, threadID, options);
     }
 
-
     /** Lock a thread.
      * @param threadID ID of a thread.
      */
     async lockThread(threadID: number): Promise<void> {
         return this.client.rest.channels.lockForumThread(this.id, threadID);
     }
+
     /** Pin a thread.
      * @param threadID ID of a thread.
      */
     async pinThread(threadID: number): Promise<void> {
         return this.client.rest.channels.pinForumThread(this.id, threadID);
+    }
+
+    override toJSON(): JSONForumChannel {
+        return {
+            ...super.toJSON(),
+            threads: this.threads.map(thread => thread.toJSON())
+        };
     }
 
     /** Unlock a thread.
@@ -83,6 +85,7 @@ export class ForumChannel extends GuildChannel {
     async unlockThread(threadID: number): Promise<void> {
         return this.client.rest.channels.unlockForumThread(this.id, threadID);
     }
+
     /** Unpin a thread.
      * @param threadID ID of a thread.
      */

@@ -30,41 +30,37 @@ import type {
 export class Message<T extends AnyTextableChannel> extends Base<string> {
     private _cachedChannel!: T extends AnyTextableChannel ? T : undefined;
     private _cachedGuild?: T extends Guild ? Guild : Guild | null;
-    /** Raw data. */
-    #data: RawMessage;
-    /** Message type. */
-    type: string;
-    /** ID of the server on which the message was sent. */
-    guildID: string | null;
+    /** ID of the last message created with the message itself. */
+    _lastMessageID: string | null;
+    /** Message acknowledgement. */
+    acknowledged: boolean;
     /** ID of the channel on which the message was sent. */
     channelID: string;
     /** Content of the message. */
     content: string | null;
+    /** When the message was created. */
+    createdAt: Date;
+    /** Raw data. */
+    #data: RawMessage;
+    /** When the message was deleted. */
+    deletedAt: Date | null;
+    /** Timestamp at which this message was last edited. */
+    editedTimestamp: Date | null;
+    /** Array of message embed. */
+    embeds?: Array<RawEmbed> | [];
+    /** ID of the server on which the message was sent. */
+    guildID: string | null;
     /** Links in content to prevent unfurling as a link preview when displaying in Guilded
      * (min items 1; must have unique items true) */
     hiddenLinkPreviewURLs?: Array<string>;
-    /** Array of message embed. */
-    embeds?: Array<RawEmbed> | [];
-    /** The IDs of the message replied by the message. */
-    replyMessageIDs: Array<string>;
     /** If true, the message appears as private. */
     isPrivate: boolean;
     /** If true, the message didn't mention anyone. */
     isSilent: boolean;
-    /** object containing all mentioned users. */
-    mentions: RawMentions;
     /** ID of the message author. */
     memberID: string;
-    /** ID of the webhook used to send this message. (if sent by a webhook) */
-    webhookID?: string | null;
-    /** When the message was created. */
-    createdAt: Date;
-    /** Timestamp at which this message was last edited. */
-    editedTimestamp: Date | null;
-    /** When the message was deleted. */
-    deletedAt: Date | null;
-    /** ID of the last message created with the message itself. */
-    _lastMessageID: string | null;
+    /** object containing all mentioned users. */
+    mentions: RawMentions;
     /** Message Originals */
     originals: {
         /** ID of the message's original message. */
@@ -72,8 +68,12 @@ export class Message<T extends AnyTextableChannel> extends Base<string> {
         /** ID of the message sent by a user, triggering the original response. */
         triggerID: string | null;
     };
-    /** Message acknowledgement. */
-    acknowledged: boolean;
+    /** The IDs of the message replied by the message. */
+    replyMessageIDs: Array<string>;
+    /** Message type. */
+    type: string;
+    /** ID of the webhook used to send this message. (if sent by a webhook) */
+    webhookID?: string | null;
 
     constructor(
         data: RawMessage,
@@ -109,25 +109,15 @@ export class Message<T extends AnyTextableChannel> extends Base<string> {
         this.update(data);
     }
 
-    override toJSON(): JSONMessage {
-        return {
-            ...super.toJSON(),
-            type:                  this.type,
-            guildID:               this.guildID,
-            channelID:             this.channelID,
-            content:               this.content,
-            hiddenLinkPreviewUrls: this.hiddenLinkPreviewURLs,
-            embeds:                this.embeds,
-            replyMessageIds:       this.replyMessageIDs,
-            isPrivate:             this.isPrivate,
-            isSilent:              this.isSilent,
-            mentions:              this.mentions,
-            createdAt:             this.createdAt,
-            editedTimestamp:       this.editedTimestamp,
-            memberID:              this.memberID,
-            webhookID:             this.webhookID,
-            deletedAt:             this.deletedAt
-        };
+    private async setCache(obj: Promise<Member> | Promise<Guild>): Promise<void> {
+        const guild = this.client.guilds.get(this.guildID as string);
+        const awaitedObj = await obj;
+        if (guild && awaitedObj instanceof Member) {
+            guild?.members?.add(awaitedObj);
+            if (awaitedObj.user) this.client.users.add(awaitedObj.user);
+        } else if (awaitedObj instanceof Guild) {
+            this.client.guilds.add(awaitedObj);
+        }
     }
 
     protected override update(data: RawMessage): void {
@@ -175,16 +165,6 @@ export class Message<T extends AnyTextableChannel> extends Base<string> {
         }
     }
 
-    private async setCache(obj: Promise<Member> | Promise<Guild>): Promise<void> {
-        const guild = this.client.guilds.get(this.guildID as string);
-        const awaitedObj = await obj;
-        if (guild && awaitedObj instanceof Member) {
-            guild?.members?.add(awaitedObj);
-            if (awaitedObj.user) this.client.users.add(awaitedObj.user);
-        } else if (awaitedObj instanceof Guild) {
-            this.client.guilds.add(awaitedObj);
-        }
-    }
     /**
      * Get attachment URLs from this Message
      * *(works for embedded content such as images).*
@@ -198,7 +178,6 @@ export class Message<T extends AnyTextableChannel> extends Base<string> {
         }
         return URLs;
     }
-
     /** The channel this message was created in.  */
     get channel(): T extends AnyTextableChannel ? T : undefined {
         if (!this.guildID)
@@ -238,8 +217,6 @@ export class Message<T extends AnyTextableChannel> extends Base<string> {
                 ? "response"
                 : false);
     }
-
-
     /** Retrieve message's member.
      *
      * Make sure to await this property (getter) to still
@@ -271,7 +248,6 @@ export class Message<T extends AnyTextableChannel> extends Base<string> {
             return undefined as T extends Guild ? Member : undefined;
         }
     }
-
 
     /** Create a follow-up message that replies to the trigger message and original response.
      * (use Message#createMessage if the message has not been acknowledged).
@@ -373,7 +349,6 @@ export class Message<T extends AnyTextableChannel> extends Base<string> {
     async delete(): Promise<void> {
         return this.client.rest.channels.deleteMessage(this.channelID, this.id as string);
     }
-
     /**
      * Delete followup message.
      */
@@ -385,7 +360,6 @@ export class Message<T extends AnyTextableChannel> extends Base<string> {
             this._lastMessageID
         );
     }
-
     /** Delete the last message sent with the message itself. */
     async deleteLast(): Promise<void>{
         if (!this._lastMessageID) throw new TypeError("Cannot delete last message if it does not exist.");
@@ -420,8 +394,7 @@ export class Message<T extends AnyTextableChannel> extends Base<string> {
      * @param targetUserID ID of the user to remove reaction from.
      * (works only on Channel Messages | default: @me)
      */
-    // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
-    async deleteReaction(reaction: number, targetUserID?: "@me" | string): Promise<void>{
+    async deleteReaction(reaction: number, targetUserID?: string): Promise<void>{
         return this.client.rest.channels.deleteReaction(
             this.channelID,
             "ChannelMessage",
@@ -446,7 +419,6 @@ export class Message<T extends AnyTextableChannel> extends Base<string> {
             }
         );
     }
-
     /**
      * Edit followup message.
      * @param newMessage Edit options.
@@ -466,7 +438,6 @@ export class Message<T extends AnyTextableChannel> extends Base<string> {
             }
         );
     }
-
     /** Edit the last message sent with the message itself.
      * @param newMessage New message's options.
      */
@@ -512,7 +483,6 @@ export class Message<T extends AnyTextableChannel> extends Base<string> {
     async getAttachments(): Promise<Array<MessageAttachment>> {
         return this.client.util.getAttachments(this.attachmentURLs);
     }
-
     /**
      * Get followup message.
      */
@@ -524,8 +494,6 @@ export class Message<T extends AnyTextableChannel> extends Base<string> {
             this._lastMessageID
         );
     }
-
-
     /**
      * Get the latest message sent with this Message.
      */
@@ -609,6 +577,26 @@ export class Message<T extends AnyTextableChannel> extends Base<string> {
         return this.client.rest.channels.pinMessage(this.channelID, this.id as string);
     }
 
+    override toJSON(): JSONMessage {
+        return {
+            ...super.toJSON(),
+            type:                  this.type,
+            guildID:               this.guildID,
+            channelID:             this.channelID,
+            content:               this.content,
+            hiddenLinkPreviewUrls: this.hiddenLinkPreviewURLs,
+            embeds:                this.embeds,
+            replyMessageIds:       this.replyMessageIDs,
+            isPrivate:             this.isPrivate,
+            isSilent:              this.isSilent,
+            mentions:              this.mentions,
+            createdAt:             this.createdAt,
+            editedTimestamp:       this.editedTimestamp,
+            memberID:              this.memberID,
+            webhookID:             this.webhookID,
+            deletedAt:             this.deletedAt
+        };
+    }
 
     /** Unpin this message */
     async unpin(): Promise<void>{

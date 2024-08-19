@@ -12,20 +12,18 @@ import type { JSONUser, RawMember, RawPartialUser, RawUser } from "../types";
 
 /** Represents a user. */
 export class User extends Base<string> {
-    /** User type */
-    type: UserTypes | null;
-    /** User's username. */
-    username: string;
+    /** If true, the user is an app (aka: bot). */
+    app: boolean;
     /** Current avatar url of the user. */
     avatarURL: string | null;
     /** Current banned url of the user. */
     bannerURL: string | null;
     /** When the user account was created. */
-    createdAt: Date; // user.
-    /** If true, the user is an app (aka: bot). */
-    app: boolean;
-    /** @deprecated Use User#app. */
-    bot: boolean;
+    createdAt: Date;
+    /** User type */
+    type: UserTypes | null;
+    /** User's username. */
+    username: string;
 
     /**
      * @param data raw data.
@@ -41,21 +39,8 @@ export class User extends Base<string> {
 
         if (!this.type) this.type = "user"; // as it is undefined when the user is an app.
         this.app = this.type === "app";
-        this.bot = this.type === "app"; // DEPRECATED (will be removed)
 
         this.update(data);
-    }
-
-    override toJSON(): JSONUser {
-        return {
-            ...super.toJSON(),
-            type:      this.type,
-            username:  this.username,
-            createdAt: this.createdAt,
-            avatarURL: this.avatarURL,
-            bannerURL: this.bannerURL,
-            app:       this.app
-        };
     }
 
     protected override update(
@@ -82,7 +67,19 @@ export class User extends Base<string> {
         if (data.type !== undefined) {
             this.type = data.type === "bot" ? "app" : (data.type === "user" ? "user" : null);
             this.app = this.type === "app";
-            this.bot = this.type === "app";
         }
     }
+
+    override toJSON(): JSONUser {
+        return {
+            ...super.toJSON(),
+            type:      this.type,
+            username:  this.username,
+            createdAt: this.createdAt,
+            avatarURL: this.avatarURL,
+            bannerURL: this.bannerURL,
+            app:       this.app
+        };
+    }
+
 }

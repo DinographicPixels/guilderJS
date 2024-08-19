@@ -12,20 +12,20 @@ import type { WebhookEditOptions, JSONWebhook, WebhookExecuteOptions, WebhookMes
 
 /** Represents a Guild or channel webhook. */
 export class Webhook extends Base<string> {
-    /** ID of the guild, where the webhook comes from. */
-    guildID: string;
     /** ID of the channel, where the webhook comes from. */
     channelID: string;
-    /** Username of the webhook. */
-    username: string;
     /** When the webhook was created. */
     createdAt: Date;
-    /** ID of the webhook's owner. */
-    ownerID: string;
     /** When the webhook was deleted. */
     deletedAt: Date | null;
+    /** ID of the guild, where the webhook comes from. */
+    guildID: string;
+    /** ID of the webhook's owner. */
+    ownerID: string;
     /** Token of the webhook. */
     token: string | null;
+    /** Username of the webhook. */
+    username: string;
 
     /**
      * @param data raw data.
@@ -41,19 +41,6 @@ export class Webhook extends Base<string> {
         this.ownerID = data.createdBy;
         this.token = data.token ?? null;
         this.update(data);
-    }
-
-    override toJSON(): JSONWebhook {
-        return {
-            ...super.toJSON(),
-            guildID:   this.guildID,
-            channelID: this.channelID,
-            username:  this.username,
-            createdAt: this.createdAt,
-            deletedAt: this.deletedAt,
-            ownerID:   this.ownerID,
-            token:     this.token
-        };
     }
 
     protected override update(data: APIWebhook): void {
@@ -90,6 +77,7 @@ export class Webhook extends Base<string> {
             this.id
         );
     }
+
     /** Update the webhook.
      * @param options Edit Options.
      */
@@ -100,6 +88,7 @@ export class Webhook extends Base<string> {
             options
         );
     }
+
     /**
      * Execute this Webhook.
      * @param options Execute Options.
@@ -118,6 +107,7 @@ export class Webhook extends Base<string> {
             options
         );
     }
+
     /** Request Webhook Token if not provided.
      * @note This method sets this Webhook's token property as well as returning its token.
      */
@@ -125,5 +115,18 @@ export class Webhook extends Base<string> {
         const webhook = await this.client.rest.webhooks.get(this.guildID, this.id);
         if (webhook.token) return this.token = webhook.token;
         throw new Error("Guilded did not provide a token for this webhook.");
+    }
+
+    override toJSON(): JSONWebhook {
+        return {
+            ...super.toJSON(),
+            guildID:   this.guildID,
+            channelID: this.channelID,
+            username:  this.username,
+            createdAt: this.createdAt,
+            deletedAt: this.deletedAt,
+            ownerID:   this.ownerID,
+            token:     this.token
+        };
     }
 }

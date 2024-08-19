@@ -48,28 +48,28 @@ import { fetch } from "undici";
  *
  * That's where everything begins.*/
 export class Client extends TypedEmitter<ClientEvents> {
-    /** Client's params, including app's token & rest options. */
-    params: ClientOptions;
-    /** Websocket Manager. */
-    ws: WSManager;
-    /** Application/Client User. */
-    user?: AppUser;
-    /** REST methods. */
-    rest: RESTManager;
+    /** Client Application */
+    application: ClientApplication;
     /** Gateway Handler. */
     #gateway: GatewayHandler;
     /** Cached guilds. */
     guilds: TypedCollection<string, RawGuild, Guild>;
+    /** Timestamp at which the last check for update happened. */
+    lastCheckForUpdate: number | null;
+    /** Client's params, including app's token & rest options. */
+    params: ClientOptions;
+    /** REST methods. */
+    rest: RESTManager;
+    /** Time at which the connection started in ms. */
+    startTime: number;
+    /** Application/Client User. */
+    user?: AppUser;
     /** Cached users. */
     users: TypedCollection<string, RawUser, User>;
     /** Utils */
     util: Util;
-    /** Time at which the connection started in ms. */
-    startTime: number;
-    /** Timestamp at which the last check for update happened. */
-    lastCheckForUpdate: number | null;
-    /** Client Application */
-    application: ClientApplication;
+    /** Websocket Manager. */
+    ws: WSManager;
 
     /** @param params Client's parameters, this includes app's token & rest options. */
     constructor(params: ClientOptions) {
@@ -223,6 +223,10 @@ export class Client extends TypedEmitter<ClientEvents> {
         return this.startTime ? Date.now() - this.startTime : 0;
     }
 
+    /**
+     * Bulk register global application commands.
+     * @param commands Application commands to register.
+     */
     bulkRegisterGlobalApplicationCommand(commands: Array<ApplicationCommand>): void {
         for (const command of commands) {
             this.registerGlobalApplicationCommand(command);
@@ -231,7 +235,7 @@ export class Client extends TypedEmitter<ClientEvents> {
 
     /**
      * Bulk register private guild-scoped application commands.
-     * @param commands Guild application commands.
+     * @param commands Guild application commands to register.
      */
     bulkRegisterGuildApplicationCommand(
         commands: Array<Omit<PrivateApplicationCommand, "userID" | "private"> & Required<Pick<PrivateApplicationCommand, "guildID">>>
@@ -243,7 +247,7 @@ export class Client extends TypedEmitter<ClientEvents> {
 
     /**
      * Bulk register private user-scoped application commands.
-     * @param commands Guild application commands.
+     * @param commands Guild application commands to register..
      */
     bulkRegisterUserApplicationCommand(
         commands: Array<Omit<PrivateApplicationCommand, "guildID" | "private"> & Required<Pick<PrivateApplicationCommand, "userID">>>

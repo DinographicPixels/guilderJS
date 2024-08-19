@@ -15,16 +15,16 @@ import type { SocialLinkType } from "../types/misc";
 export class SocialLink {
     /** Client. */
     protected client: Client;
-    /** Social media name `¯\_(ツ)_/¯`  */
-    type: SocialLinkType;
-    /** ID of the user having this social linked to their profile. */
-    userID: string;
+    /** The date the social link was created at */
+    createdAt: Date;
     /** The handle of the user within the external service */
     handle: string | null;
     /** The unique ID that represents this member's social link within the external service */
     serviceID: string | null;
-    /** The date the social link was created at */
-    createdAt: Date;
+    /** Social media name `¯\_(ツ)_/¯`  */
+    type: SocialLinkType;
+    /** ID of the user having this social linked to their profile. */
+    userID: string;
 
     /**
      * @param data raw data
@@ -38,21 +38,6 @@ export class SocialLink {
         this.serviceID = data.serviceId ?? null;
         this.createdAt = new Date(data.createdAt);
         this.update(data);
-    }
-
-    /** Retrieve cached user. */
-    get user(): User | null {
-        return this.client.users.get(this.userID) ?? null;
-    }
-
-    toJSON(): JSONSocialLink {
-        return {
-            type:      this.type,
-            userID:    this.userID,
-            handle:    this.handle,
-            serviceID: this.serviceID,
-            createdAt: this.createdAt
-        };
     }
 
     protected update(data: RawSocialLink): void {
@@ -72,4 +57,20 @@ export class SocialLink {
             this.userID = data.userId;
         }
     }
+
+    /** Retrieve cached user. */
+    get user(): User | null {
+        return this.client.users.get(this.userID) ?? null;
+    }
+
+    toJSON(): JSONSocialLink {
+        return {
+            type:      this.type,
+            userID:    this.userID,
+            handle:    this.handle,
+            serviceID: this.serviceID,
+            createdAt: this.createdAt
+        };
+    }
+
 }

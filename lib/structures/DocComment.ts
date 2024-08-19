@@ -20,24 +20,24 @@ import type {
 
 /** DocComment represents a doc comment coming from a Docs channel. */
 export class DocComment extends Base<number> {
-    /** Raw data */
-    raw: RawDocComment;
+    /** ID of the channel the comment is in. */
+    channelID: string;
     /** The content of the comment. */
     content: string;
     /** The date of the comment's creation. */
     createdAt: Date;
-    /** ID of the member who created this comment. */
-    memberID: string;
-    /** The date when the comment was last updated. */
-    updatedAt: Date | null;
-    /** ID of the channel the comment is in. */
-    channelID: string;
     /** The ID of the doc the comment is in. */
     docID: number;
-    /** Mentions. */
-    mentions: RawMentions | null;
     /** ID of the guild, if provided. */
     guildID: string | null;
+    /** ID of the member who created this comment. */
+    memberID: string;
+    /** Mentions. */
+    mentions: RawMentions | null;
+    /** Raw data */
+    raw: RawDocComment;
+    /** The date when the comment was last updated. */
+    updatedAt: Date | null;
 
     /**
      * @param data raw data.
@@ -56,21 +56,6 @@ export class DocComment extends Base<number> {
         this.mentions = data.mentions ?? null;
         this.guildID = options?.guildID ?? null;
         this.update(data);
-    }
-
-    override toJSON(): JSONDocComment {
-        return {
-            ...super.toJSON(),
-            raw:       this.raw,
-            content:   this.content,
-            createdAt: this.createdAt,
-            memberID:  this.memberID,
-            updatedAt: this.updatedAt,
-            channelID: this.channelID,
-            docID:     this.docID,
-            mentions:  this.mentions,
-            guildID:   this.guildID
-        };
     }
 
     protected override update(data: RawDocComment): void {
@@ -110,12 +95,14 @@ export class DocComment extends Base<number> {
         ?? this.guildID
             ? this.client.rest.guilds.getMember(this.guildID as string, this.memberID) : undefined;
     }
+
     /** Create a comment in the same doc as this one.
      * @param options Create options.
      */
     async createDocComment(options: CreateDocCommentOptions): Promise<DocComment> {
         return this.client.rest.channels.createDocComment(this.channelID, this.docID, options);
     }
+
     /** Add a reaction to this comment.
      * @param reaction ID of the reaction to add.
      */
@@ -128,10 +115,12 @@ export class DocComment extends Base<number> {
             reaction
         );
     }
+
     /** Delete this comment */
     async delete(): Promise<void>{
         return this.client.rest.channels.deleteDocComment(this.channelID, this.docID, this.id);
     }
+
     /** Remove a reaction from this comment.
      * @param reaction ID of the reaction to remove.
      */
@@ -144,6 +133,7 @@ export class DocComment extends Base<number> {
             reaction
         );
     }
+
     /** Edit this comment */
     async edit(options: EditDocCommentOptions): Promise<DocComment>{
         return this.client.rest.channels.editDocComment(
@@ -154,5 +144,18 @@ export class DocComment extends Base<number> {
         );
     }
 
-
+    override toJSON(): JSONDocComment {
+        return {
+            ...super.toJSON(),
+            raw:       this.raw,
+            content:   this.content,
+            createdAt: this.createdAt,
+            memberID:  this.memberID,
+            updatedAt: this.updatedAt,
+            channelID: this.channelID,
+            docID:     this.docID,
+            mentions:  this.mentions,
+            guildID:   this.guildID
+        };
+    }
 }

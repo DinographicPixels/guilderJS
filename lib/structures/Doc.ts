@@ -20,25 +20,26 @@ import TypedCollection from "../util/TypedCollection";
 
 /** Doc represents an item of a "Docs" channel. */
 export class Doc extends Base<number> {
-    /** Guild/server id */
-    guildID: string;
     /** ID of the 'docs' channel. */
     channelID: string;
-    /** Doc name */
-    name: string;
+    /** Cached comments. */
+    comments: TypedCollection<number, RawDocComment, DocComment>;
     /** Content of the doc */
     content: string;
-    /** Doc mentions  */
-    mentions: RawMentions;
     /** When the doc has been created. */
     createdAt: Date;
-    /** ID of the member who created this doc. */
-    memberID: string;
     /** When the doc has been updated. */
     editedTimestamp: Date | null;
+    /** Guild/server id */
+    guildID: string;
+    /** ID of the member who created this doc. */
+    memberID: string;
+    /** Doc mentions  */
+    mentions: RawMentions;
+    /** Doc name */
+    name: string;
     /** ID of the member who updated the doc. */
     updatedBy: string | null;
-    comments: TypedCollection<number, RawDocComment, DocComment>;
 
     /**
      * @param data raw data
@@ -61,21 +62,6 @@ export class Doc extends Base<number> {
             client.params.collectionLimits?.docComments
         );
         this.update(data);
-    }
-
-    override toJSON(): JSONDoc {
-        return {
-            ...super.toJSON(),
-            guildID:         this.guildID,
-            channelID:       this.channelID,
-            name:            this.name,
-            content:         this.content,
-            mentions:        this.mentions,
-            createdAt:       this.createdAt,
-            memberID:        this.memberID,
-            editedTimestamp: this.editedTimestamp,
-            updatedBy:       this.updatedBy
-        };
     }
 
     protected override update(data: RawDoc): void {
@@ -118,10 +104,12 @@ export class Doc extends Base<number> {
         return this.client.getGuild(this.guildID)?.members.get(this.updatedBy ?? this.memberID)
           ?? this.client.rest.guilds.getMember(this.guildID, this.updatedBy ?? this.memberID);
     }
+
     /** Delete this doc. */
     async delete(): Promise<void> {
         return this.client.rest.channels.deleteDoc(this.channelID, this.id as number);
     }
+
     /** Edit this doc.
      * @param options Edit options.
      */
@@ -129,5 +117,18 @@ export class Doc extends Base<number> {
         return this.client.rest.channels.editDoc(this.channelID, this.id as number, options);
     }
 
-
+    override toJSON(): JSONDoc {
+        return {
+            ...super.toJSON(),
+            guildID:         this.guildID,
+            channelID:       this.channelID,
+            name:            this.name,
+            content:         this.content,
+            mentions:        this.mentions,
+            createdAt:       this.createdAt,
+            memberID:        this.memberID,
+            editedTimestamp: this.editedTimestamp,
+            updatedBy:       this.updatedBy
+        };
+    }
 }

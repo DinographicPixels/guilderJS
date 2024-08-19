@@ -127,13 +127,11 @@ export class Miscellaneous {
      * @param userID User ID (@me can be used).
      * @param options Status options
      */
-    async updateUserStatus(userID: string | "@me", options: PUTUserStatusBody): Promise<void> {
+    async updateUserStatus(userID: string, options: PUTUserStatusBody): Promise<void> {
         return this.#manager.authRequest<void>({
             method: "PUT",
             path:   endpoints.USER_STATUS(userID),
             json:   options
         });
     }
-
-
 }

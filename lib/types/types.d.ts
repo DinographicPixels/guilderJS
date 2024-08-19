@@ -21,42 +21,42 @@ import type { AnnouncementReactionInfo } from "../structures/AnnouncementReactio
 import type { ForumChannel } from "../structures/ForumChannel";
 
 export interface MessageReactionTypes {
+    emoji: RawEmote;
     message: Message<AnyTextableChannel> | {
-        id: string;
+        channelID: string;
         guild: Guild | {
             id?: string;
         };
-        channelID: string;
+        id: string;
     };
-    emoji: RawEmote;
     reactor: Member | {
         id: string;
     };
 }
 
 export interface ForumThreadReactionTypes {
-    thread: ForumThread<ForumChannel> | {
-        id: number;
-        guild: Guild | {
-            id?: string;
-        };
-        channelID: string;
-    };
     emoji: RawEmote;
     reactor: Member | {
         id: string;
     };
-}
-
-export interface CalendarReactionTypes {
-    event: CalendarEvent | {
-        id: number;
+    thread: ForumThread<ForumChannel> | {
+        channelID: string;
         guild: Guild | {
             id?: string;
         };
-        channelID: string;
+        id: number;
     };
+}
+
+export interface CalendarReactionTypes {
     emoji: RawEmote;
+    event: CalendarEvent | {
+        channelID: string;
+        guild: Guild | {
+            id?: string;
+        };
+        id: number;
+    };
     reactor: Member | {
         id: string;
     };
@@ -64,11 +64,11 @@ export interface CalendarReactionTypes {
 
 export interface DocReactionTypes {
     doc: Doc | {
-        id: number;
+        channelID: string;
         guild: Guild | {
             id?: string;
         };
-        channelID: string;
+        id: number;
     };
     emoji: RawEmote;
     reactor: Member | {
@@ -78,11 +78,11 @@ export interface DocReactionTypes {
 
 export interface AnnouncementReactionTypes {
     announcement: Announcement | {
-        id: string;
+        channelID: string;
         guild: Guild | {
             id?: string;
         };
-        channelID: string;
+        id: string;
     };
     emoji: RawEmote;
     reactor: Member | {
@@ -94,32 +94,32 @@ export interface AnnouncementReactionTypes {
 export interface UserClientTypes {
     /** Client's user. */
     user: {
-        /** The ID of this user. */
-        id: string;
         /** The Bot ID of this user. */
         appID: string;
-        /** The user */
-        username: string;
         /** When the user was created. */
         createdAt: Date;
+        /** The ID of this user. */
+        id: string;
         /** The owner of this bot. */
         ownerID: string;
+        /** The user */
+        username: string;
     };
 }
 
 export interface ListItemNoteTypes {
-    /** Date of the note's creation. */
-    createdAt: Date;
-    /** ID of the member who created this note. */
-    memberID: string;
-    /** Date of the note's last edition, if edited. */
-    editedTimestamp: null | Date;
-    /** ID of the member who edited this note, if edited. */
-    editedBy: null | string;
-    /** The mentions in this note. */
-    mentions: null | RawMentions;
     /** The content of the note. */
     content: string;
+    /** Date of the note's creation. */
+    createdAt: Date;
+    /** ID of the member who edited this note, if edited. */
+    editedBy: null | string;
+    /** Date of the note's last edition, if edited. */
+    editedTimestamp: null | Date;
+    /** ID of the member who created this note. */
+    memberID: string;
+    /** The mentions in this note. */
+    mentions: null | RawMentions;
 }
 
 /** DEPRECATED, use SocialLink. */
@@ -143,12 +143,12 @@ export interface GuildDeleteInfo {
 
 /** [The CalendarEventSeries model from the Guilded API](https://www.guilded.gg/docs/api/calendarEventSeries/CalendarEventSeries) */
 export interface CalendarEventSeries {
-    /** ID of the event series. */
-    id: string;
-    /** ID of the guild. */
-    guildID: string;
     /** ID of the channel. */
     channelID: string;
+    /** ID of the guild. */
+    guildID: string;
+    /** ID of the event series. */
+    id: string;
 }
 
 export interface UserStatus {

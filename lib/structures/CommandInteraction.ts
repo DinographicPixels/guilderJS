@@ -30,30 +30,30 @@ import { InteractionOptionWrapper } from "../util/InteractionOptionWrapper";
 export class CommandInteraction<T extends AnyTextableChannel> extends Base<string> {
     private _cachedChannel!: T extends AnyTextableChannel ? T : undefined;
     private _cachedGuild?: T extends Guild ? Guild : Guild | null;
-    /** Raw data. */
-    #data: CommandInteractionData;
-    /** ID of the server on which the interaction was sent. */
-    guildID: string;
+    /** ID of the last message created with this interaction. */
+    _lastMessageID: string | null;
+    /** Interaction acknowledgement. */
+    acknowledged: boolean;
     /** ID of the channel on which the interaction was sent. */
     channelID: string;
+    /** When the interaction was created. */
+    createdAt: Date;
+    /** Raw data. */
+    #data: CommandInteractionData;
     /** Interaction Data */
     data: InteractionData;
-    /** The IDs of the message replied by the interaction. */
-    replyMessageIDs: Array<string>;
+    /** ID of the server on which the interaction was sent. */
+    guildID: string;
     /** If true, the interaction appears as private. */
     isPrivate: boolean;
     /** If true, the interaction didn't mention anyone. */
     isSilent: boolean;
     /** ID of the interaction author. */
     memberID: string;
-    /** When the interaction was created. */
-    createdAt: Date;
-    /** ID of the last message created with this interaction. */
-    _lastMessageID: string | null;
     /** ID of the original message, responding to this interaction. */
     originalID: string | null;
-    /** Interaction acknowledgement. */
-    acknowledged: boolean;
+    /** The IDs of the message replied by the interaction. */
+    replyMessageIDs: Array<string>;
 
     constructor(
         data: CommandInteractionData,
@@ -93,21 +93,15 @@ export class CommandInteraction<T extends AnyTextableChannel> extends Base<strin
         this.update(data);
     }
 
-    override toJSON(): JSONCommandInteraction {
-        return {
-            ...super.toJSON(),
-            guildID:         this.guildID,
-            channelID:       this.channelID,
-            replyMessageIDs: this.replyMessageIDs,
-            isPrivate:       this.isPrivate,
-            isSilent:        this.isSilent,
-            createdAt:       this.createdAt,
-            memberID:        this.memberID,
-            _lastMessageID:  this._lastMessageID,
-            originalID:      this.originalID,
-            acknowledged:    this.acknowledged,
-            data:            this.data
-        };
+    private async setCache(obj: Promise<Member> | Promise<Guild>): Promise<void> {
+        const guild = this.client.guilds.get(this.guildID as string);
+        const awaitedObj = await obj;
+        if (guild && awaitedObj instanceof Member) {
+            guild?.members?.add(awaitedObj);
+            if (awaitedObj.user) this.client.users.add(awaitedObj.user);
+        } else if (awaitedObj instanceof Guild) {
+            this.client.guilds.add(awaitedObj);
+        }
     }
 
     protected override update(data: CommandInteractionData): void {
@@ -149,16 +143,6 @@ export class CommandInteraction<T extends AnyTextableChannel> extends Base<strin
         }
     }
 
-    private async setCache(obj: Promise<Member> | Promise<Guild>): Promise<void> {
-        const guild = this.client.guilds.get(this.guildID as string);
-        const awaitedObj = await obj;
-        if (guild && awaitedObj instanceof Member) {
-            guild?.members?.add(awaitedObj);
-            if (awaitedObj.user) this.client.users.add(awaitedObj.user);
-        } else if (awaitedObj instanceof Guild) {
-            this.client.guilds.add(awaitedObj);
-        }
-    }
 
     /** Retrieve interaction message's member.
      *
@@ -373,5 +357,22 @@ export class CommandInteraction<T extends AnyTextableChannel> extends Base<strin
                 }
             }
         );
+    }
+
+    override toJSON(): JSONCommandInteraction {
+        return {
+            ...super.toJSON(),
+            guildID:         this.guildID,
+            channelID:       this.channelID,
+            replyMessageIDs: this.replyMessageIDs,
+            isPrivate:       this.isPrivate,
+            isSilent:        this.isSilent,
+            createdAt:       this.createdAt,
+            memberID:        this.memberID,
+            _lastMessageID:  this._lastMessageID,
+            originalID:      this.originalID,
+            acknowledged:    this.acknowledged,
+            data:            this.data
+        };
     }
 }

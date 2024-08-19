@@ -28,32 +28,32 @@ import TypedCollection from "../util/TypedCollection";
 export class ForumThread<T extends ForumChannel> extends Base<number> {
     private _cachedChannel!: T extends AnyTextableChannel ? T : undefined;
     private _cachedGuild?: T extends Guild ? Guild : Guild | null;
-    /** Guild ID */
-    guildID: string;
-    /** Forum channel id */
-    channelID: string;
-    /** Name of the thread */
-    name: string;
-    /** When this forum thread was created. */
-    createdAt: Date;
-    /** Owner of this thread, if cached. */
-    owner: T extends Guild ? Member : Member | User | Promise<Member> | undefined;
-    /** The ID of the owner of this thread. */
-    ownerID: string;
-    /** Timestamp at which this channel was last edited. */
-    editedTimestamp: Date | null;
     /** Timestamp (unix epoch time) that the forum thread was bumped at. */
     bumpedAt: Date | null;
-    /** Content of the thread */
-    content: string;
-    /** Thread mentions */
-    mentions: RawMentions | null;
+    /** Forum channel id */
+    channelID: string;
     /** Cached comments. */
     comments: TypedCollection<number, RawForumThreadComment, ForumThreadComment>;
+    /** Content of the thread */
+    content: string;
+    /** When this forum thread was created. */
+    createdAt: Date;
+    /** Timestamp at which this channel was last edited. */
+    editedTimestamp: Date | null;
+    /** Guild ID */
+    guildID: string;
     /** If true, the thread is locked. */
     isLocked: boolean;
     /** If true, the thread is pinned. */
     isPinned: boolean;
+    /** Thread mentions */
+    mentions: RawMentions | null;
+    /** Name of the thread */
+    name: string;
+    /** Owner of this thread, if cached. */
+    owner: T extends Guild ? Member : Member | User | Promise<Member> | undefined;
+    /** The ID of the owner of this thread. */
+    ownerID: string;
 
     /**
      * @param data raw data
@@ -84,25 +84,6 @@ export class ForumThread<T extends ForumChannel> extends Base<number> {
         this.isLocked = data.isLocked ?? false;
         this.isPinned = data.isPinned ?? false;
         this.update(data);
-    }
-
-    override toJSON(): JSONForumThread<T> {
-        return {
-            ...super.toJSON(),
-            guildID:         this.guildID,
-            channelID:       this.channelID,
-            name:            this.name,
-            createdAt:       this.createdAt,
-            owner:           this.owner,
-            ownerID:         this.ownerID,
-            editedTimestamp: this.editedTimestamp,
-            bumpedAt:        this.bumpedAt,
-            content:         this.content,
-            mentions:        this.mentions,
-            comments:        this.comments.map(comment => comment.toJSON()),
-            isLocked:        this.isLocked,
-            isPinned:        this.isPinned
-        };
     }
 
     protected override update(data: RawForumThread): void {
@@ -149,6 +130,7 @@ export class ForumThread<T extends ForumChannel> extends Base<number> {
               this.channelID
           ) as T extends AnyTextableChannel ? T : undefined);
     }
+
     /** The guild the thread is in. This will throw an error if the guild isn't cached.*/
     get guild(): T extends Guild ? Guild : Guild | null {
         if (!this._cachedGuild) {
@@ -159,6 +141,7 @@ export class ForumThread<T extends ForumChannel> extends Base<number> {
         }
         return this._cachedGuild as T extends Guild ? Guild : Guild | null;
     }
+
     /** Add a comment to this forum thread.
      * @param options Options of the comment.
      */
@@ -169,6 +152,7 @@ export class ForumThread<T extends ForumChannel> extends Base<number> {
             options
         );
     }
+
     /** Add a reaction to this forum thread.
      * @param emoteID ID of the emote to be added.
      */
@@ -180,6 +164,7 @@ export class ForumThread<T extends ForumChannel> extends Base<number> {
             emoteID
         );
     }
+
     /** Delete this forum thread. */
     async delete(): Promise<void> {
         return this.client.rest.channels.deleteForumThread(
@@ -187,6 +172,7 @@ export class ForumThread<T extends ForumChannel> extends Base<number> {
             this.id as number
         );
     }
+
     /** Remove a reaction from this forum thread.
      * @param emoteID ID of the emote to be added.
      */
@@ -198,6 +184,7 @@ export class ForumThread<T extends ForumChannel> extends Base<number> {
             emoteID
         );
     }
+
     /** Edit the forum thread.
      * @param options Edit options.
      */
@@ -209,20 +196,40 @@ export class ForumThread<T extends ForumChannel> extends Base<number> {
         );
     }
 
-
     /** Lock this forum thread. */
     async lock(): Promise<void> {
         return this.client.rest.channels.lockForumThread(this.channelID, this.id as number);
     }
+
     /** Pin this forum thread. */
     async pin(): Promise<void> {
         return this.client.rest.channels.pinForumThread(this.channelID, this.id as number);
+    }
+
+    override toJSON(): JSONForumThread<T> {
+        return {
+            ...super.toJSON(),
+            guildID:         this.guildID,
+            channelID:       this.channelID,
+            name:            this.name,
+            createdAt:       this.createdAt,
+            owner:           this.owner,
+            ownerID:         this.ownerID,
+            editedTimestamp: this.editedTimestamp,
+            bumpedAt:        this.bumpedAt,
+            content:         this.content,
+            mentions:        this.mentions,
+            comments:        this.comments.map(comment => comment.toJSON()),
+            isLocked:        this.isLocked,
+            isPinned:        this.isPinned
+        };
     }
 
     /** Unlock this forum thread. */
     async unlock(): Promise<void> {
         return this.client.rest.channels.unlockForumThread(this.channelID, this.id as number);
     }
+
     /** Unpin this forum thread. */
     async unpin(): Promise<void> {
         return this.client.rest.channels.unpinForumThread(this.channelID, this.id as number);

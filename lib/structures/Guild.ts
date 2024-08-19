@@ -32,36 +32,36 @@ import type {
 /** Represents a Guild, also called server. */
 export class Guild extends Base<string> {
     private _clientMember?: Member;
-    /** ID of the guild owner. */
-    ownerID: string;
-    /** Guild type. */
-    type?: string;
-    /** The name of the guild. */
-    name: string;
-    /** The URL of the guild. */
-    url?: string;
-    /** Guild description. */
-    description?: string;
-    /** Guild icon URL. */
-    iconURL?: string | null;
     /** Guild banner URL. */
     bannerURL?: string | null;
-    /** Guild's timezone. */
-    timezone?: string;
-    /** Default channel of the guild. */
-    defaultChannelID?: string;
-    /** When this guild was created. */
-    createdAt: Date;
-    /** If true, the guild is verified. */
-    verified: boolean;
-    /** Cached guild groups */
-    groups: TypedCollection<string, RawGroup, Group>;
     /** Cached guild channels. */
     channels: TypedCollection<string, RawChannel, AnyChannel>;
+    /** When this guild was created. */
+    createdAt: Date;
+    /** Default channel of the guild. */
+    defaultChannelID?: string;
+    /** Guild description. */
+    description?: string;
+    /** Cached guild groups */
+    groups: TypedCollection<string, RawGroup, Group>;
+    /** Guild icon URL. */
+    iconURL?: string | null;
     /** Cached guild members. */
     members: TypedCollection<string, RawMember, Member, [guildID: string]>;
+    /** The name of the guild. */
+    name: string;
+    /** ID of the guild owner. */
+    ownerID: string;
     /** Cached guild roles. */
     roles: TypedCollection<number, RawRole, Role>;
+    /** Guild's timezone. */
+    timezone?: string;
+    /** Guild type. */
+    type?: string;
+    /** The URL of the guild. */
+    url?: string;
+    /** If true, the guild is verified. */
+    verified: boolean;
 
     /**
      * @param data raw data.
@@ -85,25 +85,6 @@ export class Guild extends Base<string> {
         this.members = new TypedCollection(Member, client);
         this.roles = new TypedCollection(Role, client);
         this.update(data);
-    }
-
-    override toJSON(): JSONGuild {
-        return {
-            ...super.toJSON(),
-            ownerID:          this.ownerID,
-            type:             this.type,
-            name:             this.name,
-            url:              this.url,
-            description:      this.description,
-            iconURL:          this.iconURL,
-            bannerURL:        this.bannerURL,
-            timezone:         this.timezone,
-            defaultChannelID: this.defaultChannelID,
-            createdAt:        this.createdAt,
-            verified:         this.verified,
-            channels:         this.channels.map(channel => channel.toJSON()),
-            members:          this.members.map(member => member.toJSON())
-        };
     }
 
     protected override update(data: RawGuild): void {
@@ -159,6 +140,7 @@ export class Guild extends Base<string> {
     async awardMember(memberID: string, amount: number): Promise<number>{
         return this.client.rest.guilds.awardMember(this.id as string, memberID, amount);
     }
+
     /** Award every member of a guild having a role using the built-in EXP system.
      * @param roleID ID of a role.
      * @param amount Amount of experience.
@@ -166,18 +148,21 @@ export class Guild extends Base<string> {
     async awardRole(roleID: number, amount: number): Promise<void> {
         return this.client.rest.guilds.awardRole(this.id as string, roleID, amount);
     }
+
     /** Bulk Award XP Members
      * @param options Members to award XP and amount of XP to award.
      */
     async bulkAwardXPMembers(options: BulkXPOptions): Promise<POSTBulkAwardXPResponse> {
         return this.client.rest.guilds.bulkAwardXP(this.id as string, options);
     }
+
     /** Bulk set XP Members
      * @param options Members to set XP and amount of XP to set.
      */
     async bulkSetXPMembers(options: BulkXPOptions): Promise<POSTBulkAwardXPResponse> {
         return this.client.rest.guilds.bulkSetXP(this.id as string, options);
     }
+
     /** Ban a member.
      * @param memberID ID of the member to ban.
      * @param reason The reason of the ban.
@@ -185,6 +170,7 @@ export class Guild extends Base<string> {
     async createBan(memberID: string, reason?: string): Promise<BannedMember> {
         return this.client.rest.guilds.createBan(this.id as string, memberID, reason);
     }
+
     /**
      * Create a category
      * @param options Create options.
@@ -192,6 +178,7 @@ export class Guild extends Base<string> {
     async createCategory(options: POSTCreateCategoryBody): Promise<Category> {
         return this.client.rest.guilds.createCategory(this.id as string, options);
     }
+
     /**
      * Delete a category.
      * @param categoryID ID of the category you want to read.
@@ -199,6 +186,7 @@ export class Guild extends Base<string> {
     async deleteCategory(categoryID: number): Promise<Category> {
         return this.client.rest.guilds.deleteCategory(this.id as string, categoryID);
     }
+
     /**
      * Edit a category.
      * @param categoryID ID of the category you want to read.
@@ -207,6 +195,7 @@ export class Guild extends Base<string> {
     async editCategory(categoryID: number, options: PATCHUpdateCategoryBody): Promise<Category> {
         return this.client.rest.guilds.editCategory(this.id as string, categoryID, options);
     }
+
     /**
      * Read a guild category.
      * @param categoryID ID of the category you want to read.
@@ -214,6 +203,7 @@ export class Guild extends Base<string> {
     async getCategory(categoryID: number): Promise<Category> {
         return this.client.rest.guilds.getCategory(this.id as string, categoryID);
     }
+
     /** Get a channel from this guild, if cached.
      * @param channelID The ID of the channel to get from cache.
      */
@@ -221,7 +211,6 @@ export class Guild extends Base<string> {
         if (!channelID) throw new Error("channelID is a required parameter.");
         return this.channels.get(channelID);
     }
-
 
     /** Get a member from this guild, if cached.
      * @param memberID The ID of the member to get.
@@ -231,17 +220,18 @@ export class Guild extends Base<string> {
         return this.members.get(memberID);
     }
 
-
     /** Get Subscription
      * @param subscriptionID ID of the subscription to get.
      */
     async getSubscription(subscriptionID: string): Promise<Subscription> {
         return this.client.rest.guilds.getSubscription(this.id as string, subscriptionID);
     }
+
     /** Get Subscriptions */
     async getSubscriptions(): Promise<Array<Subscription>> {
         return this.client.rest.guilds.getSubscriptions(this.id as string);
     }
+
     /** Unban a member.
      * @param memberID ID of the member to unban.
      */
@@ -249,12 +239,30 @@ export class Guild extends Base<string> {
         return this.client.rest.guilds.removeBan(this.id as string, memberID);
     }
 
-
     /** Set member's experience using the built-in EXP system.
      * @param memberID ID of the member to award.
      * @param amount Amount of experience to set.
      */
     async setMemberXP(memberID: string, amount: number): Promise<number>{
         return this.client.rest.guilds.setMemberXP(this.id as string, memberID, amount);
+    }
+
+    override toJSON(): JSONGuild {
+        return {
+            ...super.toJSON(),
+            ownerID:          this.ownerID,
+            type:             this.type,
+            name:             this.name,
+            url:              this.url,
+            description:      this.description,
+            iconURL:          this.iconURL,
+            bannerURL:        this.bannerURL,
+            timezone:         this.timezone,
+            defaultChannelID: this.defaultChannelID,
+            createdAt:        this.createdAt,
+            verified:         this.verified,
+            channels:         this.channels.map(channel => channel.toJSON()),
+            members:          this.members.map(member => member.toJSON())
+        };
     }
 }
