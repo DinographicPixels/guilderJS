@@ -13,7 +13,7 @@ import type {
     UserStatusCreate,
     UserStatusDelete
 } from "./types";
-import type { AnyPacket, WelcomePacket } from "./gateway-raw";
+import type { AnyPacket, WelcomePacket } from "./gateway";
 import type {
     JSONAnnouncement,
     JSONAnnouncementComment,

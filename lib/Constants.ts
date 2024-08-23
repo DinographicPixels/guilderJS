@@ -4,6 +4,8 @@
 // Copyright (c) 2024 DinographicPixels. All rights reserved.
 //
 
+import { type PathsServersServerIdMembersUserIdSocialLinksSocialLinkTypeGetParametersPathSocialLinkType as APISocialLinkType } from "guildedapi-types.ts/typings/schemas/v1";
+
 export const RESTMethods = [
     "GET",
     "POST",
@@ -39,3 +41,4 @@ export enum ApplicationCommandOptionType {
 export enum ApplicationCommandType {
     CHAT_INPUT = 1,
 }
+export type SocialLinkType = APISocialLinkType;

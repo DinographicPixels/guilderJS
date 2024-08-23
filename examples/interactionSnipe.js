@@ -14,7 +14,7 @@ const client = new Client(
 //
 // Note: channel option is optional
 
-client.bulkRegisterGlobalApplicationCommand([
+void client.bulkRegisterGlobalApplicationCommand([
   {
     type: ApplicationCommandType.CHAT_INPUT,
     name: "snipe",

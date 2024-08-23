@@ -9,6 +9,7 @@ import type { Client } from "./Client";
 
 import type { User } from "./User";
 import type { JSONSocialLink, RawSocialLink } from "../types";
+import { type SocialLinkType } from "../Constants";
 
 /** User's social link. */
 export class SocialLink {
@@ -21,7 +22,7 @@ export class SocialLink {
     /** The unique ID that represents this member's social link within the external service */
     serviceID: string | null;
     /** Social media name `¯\_(ツ)_/¯`  */
-    type: RawSocialLink;
+    type: SocialLinkType;
     /** ID of the user having this social linked to their profile. */
     userID: string;
     /**
@@ -30,7 +31,7 @@ export class SocialLink {
      */
     constructor(data: RawSocialLink, client: Client) {
         this.client = client;
-        this.type = data.type;
+        this.type = data.type as never as SocialLinkType;
         this.userID = data.userId;
         this.handle = data.handle ?? null;
         this.serviceID = data.serviceId ?? null;
@@ -49,7 +50,7 @@ export class SocialLink {
             this.serviceID = data.serviceId;
         }
         if (data.type !== undefined) {
-            this.type = data.type;
+            this.type = data.type as never as SocialLinkType;
         }
         if (data.userId !== undefined) {
             this.userID = data.userId;

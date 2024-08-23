@@ -14,11 +14,10 @@ import type {
     CalendarRSVPStatus
 } from "./channels";
 import type { InteractionData } from "./interactions";
-import type { RawSocialLink } from "./users";
 import type { Member } from "../structures/Member";
 import type { User } from "../structures/User";
 import type { Guild } from "../structures/Guild";
-import type { UserTypes } from "../Constants";
+import type { UserTypes, SocialLinkType } from "../Constants";
 import type { ForumChannel } from "../structures/ForumChannel";
 import type { Permissions } from "guildedapi-types.ts/v1";
 
@@ -424,7 +423,7 @@ export interface JSONSocialLink {
     /** The unique ID that represents this member's social link within the external service */
     serviceID: string | null;
     /** Social media name. */
-    type: RawSocialLink;
+    type: SocialLinkType;
     /** ID of the user having this social linked to their profile. */
     userID: string;
 }
