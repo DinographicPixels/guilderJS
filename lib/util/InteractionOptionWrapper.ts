@@ -8,7 +8,7 @@ export class InteractionOptionWrapper {
     #client: Client;
     #data: InteractionOptionWrapperData;
     requiredOptions: Array<ApplicationCommandOption>;
-    values: Array<string | number>;
+    values: Array<string | number | boolean>;
     constructor(data: InteractionOptionWrapperData, client: Client) {
         this.#data = data;
         this.#client = client;
@@ -67,7 +67,7 @@ export class InteractionOptionWrapper {
 
         return result;
     }
-    private getMentionOptions<T = string | number>(name: string, type: ApplicationCommandOptionType): { name: string; value: T; } | undefined {
+    private getMentionOptions<T = string | number | boolean>(name: string, type: ApplicationCommandOptionType): { name: string; value: T; } | undefined {
         if (!this.#data.applicationCommand) return;
 
         const optionIndex =
@@ -116,6 +116,15 @@ export class InteractionOptionWrapper {
               typeof this.values[optionIndex] !== "string"
             || !this.values[optionIndex].toString().includes("![](https://cdn.gilcdn.com/")
           )
+          || type === ApplicationCommandOptionType.BOOLEAN
+          && (
+              typeof this.values[optionIndex] === "string"
+            && ((this.values[optionIndex] as string)?.toLowerCase() !== "true"
+            && (this.values[optionIndex] as string)?.toLowerCase() !== "false")
+            || typeof this.values[optionIndex] === "number"
+            && (this.values[optionIndex] !== 1
+            && this.values[optionIndex] !== 0)
+          )
         ) return;
 
         if (type === ApplicationCommandOptionType.INTEGER)
@@ -125,6 +134,8 @@ export class InteractionOptionWrapper {
             const regExpArray: Array<string> = regExp.exec(this.values[optionIndex].toString()) ?? [];
             this.values[optionIndex] = regExpArray[0];
         }
+        if (type === ApplicationCommandOptionType.BOOLEAN)
+            this.values[optionIndex] = Boolean(this.values[optionIndex]);
 
         return {
             name,
@@ -192,6 +203,17 @@ export class InteractionOptionWrapper {
             ApplicationCommandOptionType.EMBEDDED_ATTACHMENT
         );
         if (!option && required) throw new Error("Couldn't get embedded attachment option.");
+        return option;
+    }
+
+    getBooleanOption(name: string, required?: false): { name: string; value: boolean; } | undefined;
+    getBooleanOption(name: string, required: true): { name: string; value: boolean; };
+    getBooleanOption(name: string, required?: boolean): { name: string; value: boolean; } | undefined {
+        const option = this.getMentionOptions<boolean>(
+            name,
+            ApplicationCommandOptionType.BOOLEAN
+        );
+        if (!option && required) throw new Error("Couldn't get boolean option.");
         return option;
     }
 
@@ -372,6 +394,13 @@ export class InteractionOptionWrapper {
                     if (!value && !this.values[optionIndex]) missing.push(option.name);
                     if (!value && this.values[optionIndex]) incorrect.push(option.name);
                     if (!value) total.push(option.name);
+                    break;
+                }
+                case ApplicationCommandOptionType.BOOLEAN: {
+                    const value = this.getBooleanOption(option.name)?.value;
+                    if (value === undefined && !this.values[optionIndex]) missing.push(option.name);
+                    if (value === undefined && this.values[optionIndex]) incorrect.push(option.name);
+                    if (value === undefined) total.push(option.name);
                     break;
                 }
             }

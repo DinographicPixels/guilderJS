@@ -36,6 +36,7 @@ export enum ApplicationCommandOptionType {
     ROLE,
     CHANNEL,
     EMBEDDED_ATTACHMENT,
+    BOOLEAN,
 }
 
 export enum ApplicationCommandType {
