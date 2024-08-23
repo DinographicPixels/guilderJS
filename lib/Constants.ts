@@ -41,4 +41,14 @@ export enum ApplicationCommandOptionType {
 export enum ApplicationCommandType {
     CHAT_INPUT = 1,
 }
+
+export enum GatewayLayerIntent {
+    ALL,
+    GUILDS,
+    GUILD_MESSAGES ,
+    GUILD_MESSAGE_REACTIONS,
+    MESSAGE_CONTENT,
+    GUILD_WEBHOOKS,
+}
+
 export type SocialLinkType = APISocialLinkType;

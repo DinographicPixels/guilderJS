@@ -119,14 +119,14 @@ import type {
 
 /** Gateway handler filters every ws events. */
 export class GatewayHandler {
-    announcementHandler;
-    calendarHandler;
-    channelHandler;
-    docHandler;
-    forumThreadHandler;
-    guildHandler;
-    listItemHandler;
-    messageHandler;
+    announcementHandler: AnnouncementHandler;
+    calendarHandler: CalendarHandler;
+    channelHandler: ChannelHandler;
+    docHandler: DocHandler;
+    forumThreadHandler: ForumThreadHandler;
+    guildHandler: GuildHandler;
+    listItemHandler: ListItemHandler;
+    messageHandler: MessageHandler;
     readonly toHandlerMap: Record<keyof GATEWAY_EVENTS, (data: object) => void> = {
         // Messages
         ChatMessageCreated:                   data => this.messageHandler.messageCreate(data as GatewayEvent_ChatMessageCreated),
@@ -155,7 +155,7 @@ export class GatewayHandler {
         ChannelCategoryRolePermissionCreated: data => this.channelHandler.channelCategoryRolePermissionCreated(data as GatewayEvent_ChannelCategoryRolePermissionCreated),
         ChannelCategoryRolePermissionUpdated: data => this.channelHandler.channelCategoryRolePermissionUpdated(data as GatewayEvent_ChannelCategoryRolePermissionCreated),
         ChannelCategoryRolePermissionDeleted: data => this.channelHandler.channelCategoryRolePermissionDeleted(data as GatewayEvent_ChannelCategoryRolePermissionCreated),
-        // Forum Topics
+        // Forum Threads
         ForumTopicCreated:                    data => this.forumThreadHandler.forumThreadCreate(data as GatewayEvent_ForumTopicCreated),
         ForumTopicUpdated:                    data => this.forumThreadHandler.forumThreadUpdate(data as GatewayEvent_ForumTopicUpdated),
         ForumTopicDeleted:                    data => this.forumThreadHandler.forumThreadDelete(data as GatewayEvent_ForumTopicDeleted),
@@ -243,8 +243,8 @@ export class GatewayHandler {
         CategoryUpdated:                      data => this.guildHandler.guildCategoryUpdate(data as GatewayEvent_CategoryUpdated),
         CategoryDeleted:                      data => this.guildHandler.guildCategoryDelete(data as GatewayEvent_CategoryDeleted)
     };
-    userHandler;
-    webhookHandler;
+    userHandler: UserHandler;
+    webhookHandler: WebhookHandler;
     constructor(readonly client: Client) {
         this.messageHandler = new MessageHandler(this.client);
         this.channelHandler = new ChannelHandler(this.client);

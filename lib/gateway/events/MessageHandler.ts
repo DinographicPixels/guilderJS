@@ -8,19 +8,21 @@
 import { GatewayEventHandler } from "./GatewayEventHandler";
 import { Message } from "../../structures/Message";
 import { MessageReactionInfo } from "../../structures/MessageReactionInfo";
-import type {
-    GatewayEvent_ChannelMessagePinned,
-    GatewayEvent_ChannelMessageReactionCreated,
-    GatewayEvent_ChannelMessageReactionDeleted,
-    GatewayEvent_ChannelMessageReactionManyDeleted,
-    GatewayEvent_ChannelMessageUnpinned,
-    GatewayEvent_ChatMessageCreated,
-    GatewayEvent_ChatMessageDeleted,
-    GatewayEvent_ChatMessageUpdated
+import {
+    type GatewayEvent_ChannelMessagePinned,
+    type GatewayEvent_ChannelMessageReactionCreated,
+    type GatewayEvent_ChannelMessageReactionDeleted,
+    type GatewayEvent_ChannelMessageReactionManyDeleted,
+    type GatewayEvent_ChannelMessageUnpinned,
+    type GatewayEvent_ChatMessageCreated,
+    type GatewayEvent_ChatMessageDeleted,
+    type GatewayEvent_ChatMessageUpdated,
+    GatewayLayerIntent
 } from "../../Constants";
 import { type TextChannel } from "../../structures/TextChannel";
 import type { ChannelMessageReactionBulkRemove, PrivateApplicationCommand } from "../../types/";
 import { CommandInteraction } from "../../structures/CommandInteraction";
+
 /** Internal component, emitting message events. */
 export class MessageHandler extends GatewayEventHandler {
     private async addGuildChannel(guildID: string, channelID: string): Promise<void> {
@@ -35,10 +37,21 @@ export class MessageHandler extends GatewayEventHandler {
         const guild = this.client.guilds.get(guildID);
         if (typeof channel !== "boolean") guild?.channels?.add(channel);
     }
+    get isGuildIntentEnabled(): boolean {
+        return this.client.util.isIntentEnabled([GatewayLayerIntent.GUILDS]);
+    }
+    get isMessageIntentEnabled(): boolean {
+        return this.client.util.isIntentEnabled([GatewayLayerIntent.GUILD_MESSAGES]);
+    }
+    get isMessageReactionIntentEnabled(): boolean {
+        return this.client.util.isIntentEnabled([GatewayLayerIntent.GUILD_MESSAGE_REACTIONS]);
+    }
     async messageCreate(data: GatewayEvent_ChatMessageCreated): Promise<void> {
-        if (this.client.params.waitForCaching)
-            await this.addGuildChannel(data.serverId, data.message.channelId);
-        else void this.addGuildChannel(data.serverId, data.message.channelId);
+        if (this.isGuildIntentEnabled) {
+            if (this.client.params.waitForCaching)
+                await this.addGuildChannel(data.serverId, data.message.channelId);
+            else void this.addGuildChannel(data.serverId, data.message.channelId);
+        }
 
         if (
             this.client.application.enabled
@@ -139,17 +152,28 @@ export class MessageHandler extends GatewayEventHandler {
             }
         }
 
+        if (!this.isMessageIntentEnabled) return;
+
+        if (!this.client.util.isIntentEnabled([GatewayLayerIntent.MESSAGE_CONTENT]))
+            data.message.content = "";
+
         const channel =
           this.client.getChannel<TextChannel>(data.serverId, data.message.channelId);
         const MessageComponent =
           channel?.messages?.update(data.message) ?? new Message(data.message, this.client);
 
+
         this.client.emit("messageCreate", MessageComponent);
     }
     async messageDelete(data: GatewayEvent_ChatMessageDeleted): Promise<void> {
-        if (this.client.params.waitForCaching)
-            await this.addGuildChannel(data.serverId, data.message.channelId);
-        else void this.addGuildChannel(data.serverId, data.message.channelId);
+        if (this.isGuildIntentEnabled) {
+            if (this.client.params.waitForCaching)
+                await this.addGuildChannel(data.serverId, data.message.channelId);
+            else void this.addGuildChannel(data.serverId, data.message.channelId);
+        }
+
+        if (!this.isMessageIntentEnabled) return;
+
         const channel =
           this.client.getChannel<TextChannel>(data.serverId, data.message.channelId);
         const PU_Message = channel?.messages?.update(data.message) ?? {
@@ -160,12 +184,25 @@ export class MessageHandler extends GatewayEventHandler {
             isPrivate: data.message.isPrivate ?? null
         };
         channel?.messages?.delete(data.message.id);
+
+        if (!this.client.util.isIntentEnabled([GatewayLayerIntent.MESSAGE_CONTENT])
+            && PU_Message["content" as keyof object]
+        ) Object.assign(PU_Message, { content: "" });
+
         this.client.emit("messageDelete", PU_Message);
     }
     async messagePin(data: GatewayEvent_ChannelMessagePinned): Promise<void> {
-        if (this.client.params.waitForCaching)
-            await this.addGuildChannel(data.serverId, data.message.channelId);
-        else void this.addGuildChannel(data.serverId, data.message.channelId);
+        if (this.isGuildIntentEnabled) {
+            if (this.client.params.waitForCaching)
+                await this.addGuildChannel(data.serverId, data.message.channelId);
+            else void this.addGuildChannel(data.serverId, data.message.channelId);
+        }
+
+        if (!this.isMessageIntentEnabled) return;
+
+        if (!this.client.util.isIntentEnabled([GatewayLayerIntent.MESSAGE_CONTENT]))
+            data.message.content = "";
+
         const channel =
           this.client.getChannel<TextChannel>(data.serverId, data.message.channelId);
         const MessageComponent =
@@ -173,18 +210,22 @@ export class MessageHandler extends GatewayEventHandler {
         this.client.emit("messagePin", MessageComponent);
     }
     async messageReactionAdd(data: GatewayEvent_ChannelMessageReactionCreated): Promise<void> {
-        if (data.serverId)
+        if (this.isGuildIntentEnabled && data.serverId) {
             if (this.client.params.waitForCaching)
                 await this.addGuildChannel(data.serverId, data.reaction.channelId);
             else void this.addGuildChannel(data.serverId, data.reaction.channelId);
+        }
+        if (!this.isMessageReactionIntentEnabled) return;
         const ReactionInfo = new MessageReactionInfo(data, this.client);
         this.client.emit("reactionAdd", ReactionInfo);
     }
     async messageReactionBulkRemove(data: GatewayEvent_ChannelMessageReactionManyDeleted): Promise<void> {
-        if (data.serverId)
+        if (this.isGuildIntentEnabled && data.serverId) {
             if (this.client.params.waitForCaching)
                 await this.addGuildChannel(data.serverId, data.channelId);
             else void this.addGuildChannel(data.serverId, data.channelId);
+        }
+        if (!this.isMessageReactionIntentEnabled) return;
         const BulkRemoveInfo: ChannelMessageReactionBulkRemove = {
             channelID: data.channelId,
             guildID:   data.serverId,
@@ -196,17 +237,24 @@ export class MessageHandler extends GatewayEventHandler {
         this.client.emit("reactionBulkRemove", BulkRemoveInfo);
     }
     async messageReactionRemove(data: GatewayEvent_ChannelMessageReactionDeleted): Promise<void> {
-        if (data.serverId)
+        if (this.isGuildIntentEnabled && data.serverId) {
             if (this.client.params.waitForCaching)
                 await this.addGuildChannel(data.serverId, data.reaction.channelId);
             else void this.addGuildChannel(data.serverId, data.reaction.channelId);
+        }
+        if (!this.isMessageReactionIntentEnabled) return;
         const ReactionInfo = new MessageReactionInfo(data, this.client);
         this.client.emit("reactionRemove", ReactionInfo);
     }
     async messageUnpin(data: GatewayEvent_ChannelMessageUnpinned): Promise<void> {
-        if (this.client.params.waitForCaching)
-            await this.addGuildChannel(data.serverId, data.message.channelId);
-        else void this.addGuildChannel(data.serverId, data.message.channelId);
+        if (this.isGuildIntentEnabled) {
+            if (this.client.params.waitForCaching)
+                await this.addGuildChannel(data.serverId, data.message.channelId);
+            else void this.addGuildChannel(data.serverId, data.message.channelId);
+        }
+        if (!this.isMessageIntentEnabled) return;
+        if (!this.client.util.isIntentEnabled([GatewayLayerIntent.MESSAGE_CONTENT]))
+            data.message.content = "";
         const channel =
           this.client.getChannel<TextChannel>(data.serverId, data.message.channelId);
         const MessageComponent =
@@ -214,9 +262,14 @@ export class MessageHandler extends GatewayEventHandler {
         this.client.emit("messageUnpin", MessageComponent);
     }
     async messageUpdate(data: GatewayEvent_ChatMessageUpdated): Promise<void> {
-        if (this.client.params.waitForCaching)
-            await this.addGuildChannel(data.serverId, data.message.channelId);
-        else void this.addGuildChannel(data.serverId, data.message.channelId);
+        if (this.isGuildIntentEnabled) {
+            if (this.client.params.waitForCaching)
+                await this.addGuildChannel(data.serverId, data.message.channelId);
+            else void this.addGuildChannel(data.serverId, data.message.channelId);
+        }
+        if (!this.isMessageIntentEnabled) return;
+        if (!this.client.util.isIntentEnabled([GatewayLayerIntent.MESSAGE_CONTENT]))
+            data.message.content = "";
         const channel =
           this.client.getChannel<TextChannel>(data.serverId, data.message.channelId);
         const CachedMessage = channel?.messages?.get(data.message.id)?.toJSON() ?? null;

@@ -36,6 +36,7 @@ import { Group } from "../structures/Group";
 import { Subscription } from "../structures/Subscription";
 import { Category } from "../structures/Category";
 import { Message } from "../structures/Message";
+import { GatewayLayerIntent } from "../Constants";
 import type { APIURLSignature } from "guildedapi-types.ts/v1";
 import { fetch } from "undici";
 
@@ -148,6 +149,10 @@ export class Util {
             });
         }
         return MessageAttachments;
+    }
+    isIntentEnabled(intents: Array<GatewayLayerIntent>): boolean {
+        return this.#client.params.intents?.includes(GatewayLayerIntent.ALL)
+          || intents.some(intent => this.#client.params.intents?.includes(intent) ?? false);
     }
     updateChannel<T extends AnyChannel>(data: RawChannel): T {
         if (data.serverId) {

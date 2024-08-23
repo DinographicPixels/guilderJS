@@ -77,8 +77,8 @@ export class Client extends TypedEmitter<ClientEvents> {
         super();
         this.params = {
             token:                     params.token,
-            ForceDisableREST:          params.ForceDisableREST ?? false,
-            RESTOptions:               params.RESTOptions,
+            forceDisableREST:          params.forceDisableREST ?? false,
+            rest:                      params.rest,
             connectionMessage:         params.connectionMessage ?? true,
             updateWarning:             params.updateWarning ?? true,
             waitForCaching:            params.waitForCaching ?? true,
@@ -97,15 +97,16 @@ export class Client extends TypedEmitter<ClientEvents> {
                 announcementComments: params.collectionLimits?.announcementComments ?? 100
             },
             applicationShortname: params.applicationShortname,
-            restMode:             false
+            restMode:             false,
+            intents:              params.intents ?? []
         };
         this.ws = new WSManager(this, { token: this.token, client: this, reconnect: params.wsReconnect });
         this.guilds = new TypedCollection(Guild, this);
         this.users = new TypedCollection(User, this);
         this.rest = (
-            this.params.ForceDisableREST
+            this.params.forceDisableREST
                 ? null
-                : new RESTManager(this, params.RESTOptions)
+                : new RESTManager(this, params.rest)
         ) as RESTManager;
         this.#gateway = new GatewayHandler(this);
         this.util = new Util(this);

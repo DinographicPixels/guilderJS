@@ -5,26 +5,10 @@
 // Copyright (c) 2024 DinographicPixels. All rights reserved.
 //
 
+import type { GatewayLayerIntent } from "../Constants";
 import type { Agent } from "undici";
 
 export interface ClientOptions {
-    /**
-     * **NOT RECOMMENDED, CAN BREAK THINGS**
-     *
-     * REST methods are used to communicate with the Guilded API by sending requests.
-     * This feature was included in previous TouchGuild versions but we've changed how we manage REST requests.
-     *
-     * Forcing disabling REST methods may crash the library when receiving events, reorganizing cache hierarchy,
-     * and more, they are used internally.
-     * Though you can still force disable those methods by setting this boolean to `true`, be aware that **it isn't recommended** at all.
-     * @defaultValue false
-     */
-    ForceDisableREST?: boolean;
-    /**
-     * REST Options are used for REST requests. You can change some properties there.
-     * This includes some properties like the baseURL and much more.
-     */
-    RESTOptions?: RESTOptions;
     /**
      * Application short name,
      * enabling Commands & Interactions (uses slash commands).
@@ -52,11 +36,33 @@ export interface ClientOptions {
      */
     connectionMessage?: boolean;
     /**
+     * **NOT RECOMMENDED, CAN BREAK THINGS**
+     *
+     * REST methods are used to communicate with the Guilded API by sending requests.
+     * This feature was included in previous TouchGuild versions but we've changed how we manage REST requests.
+     *
+     * Forcing disabling REST methods may crash the library when receiving events, reorganizing cache hierarchy,
+     * and more, they are used internally.
+     * Though you can still force disable those methods by setting this boolean to `true`, be aware that **it isn't recommended** at all.
+     * @defaultValue false
+     */
+    forceDisableREST?: boolean;
+    /**
+     * Intents, they have to be added into this array to enable them,
+     * and access to a variety of events and gateway information.
+     */
+    intents?: Array<GatewayLayerIntent>;
+    /**
      * Fixes & improves Guilded API markdown and makes it Commonmark compliant.
      *
      * Enabled by default, can be disabled to use old version of the Guilded markdown. (if facing issues for example)
      */
     isOfficialMarkdownEnabled?: boolean;
+    /**
+     * REST Options are used for REST requests. You can change some properties there.
+     * This includes some properties like the baseURL and much more.
+     */
+    rest?: RESTOptions;
     /** REST-Only mode, does not initialize a gateway connection. */
     restMode?: boolean;
     /**
