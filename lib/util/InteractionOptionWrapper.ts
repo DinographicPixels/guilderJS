@@ -76,7 +76,7 @@ export class InteractionOptionWrapper {
             && opt.type === type
           );
 
-        if (!optionIndex && optionIndex !== 0 || !this.values?.[optionIndex]) return;
+        if (!optionIndex && optionIndex !== 0 || this.values?.[optionIndex] === undefined) return;
 
         if (type === ApplicationCommandOptionType.CHANNEL
           && !this.#data.mentions?.channels?.map(channel => channel.id).includes(this.values[optionIndex].toString())
@@ -342,30 +342,30 @@ export class InteractionOptionWrapper {
                 }
                 case ApplicationCommandOptionType.INTEGER: {
                     const value = this.getIntegerOption(option.name)?.value;
-                    if (!value && !this.values[optionIndex]) missing.push(option.name);
-                    if (!value && this.values[optionIndex]) incorrect.push(option.name);
-                    if (!value) total.push(option.name);
+                    if (value === undefined && !this.values[optionIndex]) missing.push(option.name);
+                    if (value === undefined && this.values[optionIndex]) incorrect.push(option.name);
+                    if (value === undefined) total.push(option.name);
                     break;
                 }
                 case ApplicationCommandOptionType.FLOAT: {
                     const value = this.getFloatOption(option.name)?.value;
-                    if (!value && !this.values[optionIndex]) missing.push(option.name);
-                    if (!value && this.values[optionIndex]) incorrect.push(option.name);
-                    if (!value) total.push(option.name);
+                    if (value === undefined && !this.values[optionIndex]) missing.push(option.name);
+                    if (value === undefined && this.values[optionIndex]) incorrect.push(option.name);
+                    if (value === undefined) total.push(option.name);
                     break;
                 }
                 case ApplicationCommandOptionType.SIGNED_32_INTEGER: {
                     const value = this.getSigned32IntOption(option.name)?.value;
-                    if (!value && !this.values[optionIndex]) missing.push(option.name);
-                    if (!value && this.values[optionIndex]) incorrect.push(option.name);
-                    if (!value) total.push(option.name);
+                    if (value === undefined && !this.values[optionIndex]) missing.push(option.name);
+                    if (value === undefined && this.values[optionIndex]) incorrect.push(option.name);
+                    if (value === undefined) total.push(option.name);
                     break;
                 }
                 case ApplicationCommandOptionType.NUMBER: {
                     const value = this.getNumberOption(option.name)?.value;
-                    if (!value && !this.values[optionIndex]) missing.push(option.name);
-                    if (!value && this.values[optionIndex]) incorrect.push(option.name);
-                    if (!value) total.push(option.name);
+                    if (value === undefined && !this.values[optionIndex]) missing.push(option.name);
+                    if (value === undefined && this.values[optionIndex]) incorrect.push(option.name);
+                    if (value === undefined) total.push(option.name);
                     break;
                 }
                 case ApplicationCommandOptionType.ROLE: {
