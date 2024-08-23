@@ -9,7 +9,6 @@ import type { Client } from "./Client";
 
 import type { User } from "./User";
 import type { JSONSocialLink, RawSocialLink } from "../types";
-import type { SocialLinkType } from "../types/misc";
 
 /** User's social link. */
 export class SocialLink {
@@ -22,7 +21,7 @@ export class SocialLink {
     /** The unique ID that represents this member's social link within the external service */
     serviceID: string | null;
     /** Social media name `¯\_(ツ)_/¯`  */
-    type: SocialLinkType;
+    type: RawSocialLink;
     /** ID of the user having this social linked to their profile. */
     userID: string;
     /**

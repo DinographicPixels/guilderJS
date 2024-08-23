@@ -453,7 +453,7 @@ export class Message<T extends AnyTextableChannel> extends Base<string> {
     /** Edit the last message sent with the message itself.
      * @param newMessage New message's options.
      */
-    async editLast(newMessage: {content?: string; embeds?: Array<Embed>;}): Promise<Message<T>>{
+    async editLast(newMessage: EditMessageOptions): Promise<Message<T>>{
         if (!this._lastMessageID) throw new TypeError("Cannot edit last message if it does not exist.");
         return this.client.rest.channels.editMessage<T>(
             this.channelID,
