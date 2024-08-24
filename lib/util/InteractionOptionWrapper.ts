@@ -125,6 +125,8 @@ export class InteractionOptionWrapper {
             && (this.values[optionIndex] !== 1
             && this.values[optionIndex] !== 0)
           )
+          || type === ApplicationCommandOptionType.EMOTE
+          && typeof this.values[optionIndex] !== "string"
         ) return;
 
         if (type === ApplicationCommandOptionType.INTEGER)
@@ -136,6 +138,11 @@ export class InteractionOptionWrapper {
         }
         if (type === ApplicationCommandOptionType.BOOLEAN)
             this.values[optionIndex] = Boolean(this.values[optionIndex]);
+        if (type === ApplicationCommandOptionType.EMOTE) {
+            const emoteID = Number((this.values[optionIndex] as string)?.match(/<:\w+:(\d+)>/)?.[1]);
+            if (isNaN(emoteID)) return;
+            this.values[optionIndex] = Number(emoteID);
+        }
 
         return {
             name,
@@ -202,7 +209,7 @@ export class InteractionOptionWrapper {
             name,
             ApplicationCommandOptionType.EMBEDDED_ATTACHMENT
         );
-        if (!option && required) throw new Error("Couldn't get embedded attachment option.");
+        if (option === undefined && required) throw new Error("Couldn't get embedded attachment option.");
         return option;
     }
 
@@ -213,7 +220,7 @@ export class InteractionOptionWrapper {
             name,
             ApplicationCommandOptionType.BOOLEAN
         );
-        if (!option && required) throw new Error("Couldn't get boolean option.");
+        if (option === undefined && required) throw new Error("Couldn't get boolean option.");
         return option;
     }
 
@@ -222,7 +229,7 @@ export class InteractionOptionWrapper {
     getChannel<T extends AnyChannel = AnyChannel>(name: string, required?: boolean): T | undefined {
         const option = this.getChannelOption(name, false);
         const channel = this.#client.getChannel<T>(this.#data.guildID, option?.value ?? "none");
-        if (!channel || !option && required) throw new Error("Couldn't get channel from cache.");
+        if (!channel || option === undefined && required) throw new Error("Couldn't get channel from cache.");
         return channel;
     }
     getChannelOption(name: string, required?: false): { name: string; value: string; } | undefined;
@@ -232,7 +239,18 @@ export class InteractionOptionWrapper {
             name,
             ApplicationCommandOptionType.CHANNEL
         );
-        if (!option && required) throw new Error("Couldn't get channel option.");
+        if (option === undefined && required) throw new Error("Couldn't get channel option.");
+        return option;
+    }
+
+    getEmoteOption(name: string, required?: false): { name: string; value: number; } | undefined;
+    getEmoteOption(name: string, required: true): { name: string; value: number; };
+    getEmoteOption(name: string, required?: boolean): { name: string; value: number; } | undefined {
+        const option = this.getMentionOptions<number>(
+            name,
+            ApplicationCommandOptionType.EMOTE
+        );
+        if (option === undefined && required) throw new Error("Couldn't get emote option.");
         return option;
     }
 
@@ -243,7 +261,7 @@ export class InteractionOptionWrapper {
             name,
             ApplicationCommandOptionType.FLOAT
         );
-        if (!option && required) throw new Error("Couldn't get float option.");
+        if (option === undefined && required) throw new Error("Couldn't get float option.");
         return option;
     }
 
@@ -254,7 +272,7 @@ export class InteractionOptionWrapper {
             name,
             ApplicationCommandOptionType.INTEGER
         );
-        if (!option && required) throw new Error("Couldn't get integer option.");
+        if (option === undefined && required) throw new Error("Couldn't get integer option.");
         return option;
     }
 
@@ -265,7 +283,7 @@ export class InteractionOptionWrapper {
             name,
             ApplicationCommandOptionType.NUMBER
         );
-        if (!option && required) throw new Error("Couldn't get number option.");
+        if (option === undefined && required) throw new Error("Couldn't get number option.");
         return option;
     }
 
@@ -276,7 +294,7 @@ export class InteractionOptionWrapper {
             name,
             ApplicationCommandOptionType.ROLE
         );
-        if (!option && required) throw new Error("Couldn't get role option.");
+        if (option === undefined && required) throw new Error("Couldn't get role option.");
         return option;
     }
 
@@ -287,7 +305,7 @@ export class InteractionOptionWrapper {
             name,
             ApplicationCommandOptionType.SIGNED_32_INTEGER
         );
-        if (!option && required) throw new Error("Couldn't get signed 32-bit integer option.");
+        if (option === undefined && required) throw new Error("Couldn't get signed 32-bit integer option.");
         return option;
     }
 
@@ -298,7 +316,7 @@ export class InteractionOptionWrapper {
             name,
             ApplicationCommandOptionType.STRING
         );
-        if (!option && required) throw new Error("Couldn't get string option.");
+        if (option === undefined && required) throw new Error("Couldn't get string option.");
         return option;
     }
 
@@ -310,7 +328,7 @@ export class InteractionOptionWrapper {
             name,
             ApplicationCommandOptionType.USER
         );
-        if (!option && required) throw new Error("Couldn't get user option.");
+        if (option === undefined && required) throw new Error("Couldn't get user option.");
         return option;
     }
 
@@ -403,6 +421,13 @@ export class InteractionOptionWrapper {
                     if (value === undefined) total.push(option.name);
                     break;
                 }
+                case ApplicationCommandOptionType.EMOTE: {
+                    const value = this.getEmoteOption(option.name)?.value;
+                    if (value === undefined && !this.values[optionIndex]) missing.push(option.name);
+                    if (value === undefined && this.values[optionIndex]) incorrect.push(option.name);
+                    if (value === undefined) total.push(option.name);
+                    break;
+                }
             }
         }
         return {
@@ -411,6 +436,4 @@ export class InteractionOptionWrapper {
             total
         };
     }
-
-
 }

@@ -37,6 +37,7 @@ export enum ApplicationCommandOptionType {
     CHANNEL,
     EMBEDDED_ATTACHMENT,
     BOOLEAN,
+    EMOTE,
 }
 
 export enum ApplicationCommandType {
