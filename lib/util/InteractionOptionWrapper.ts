@@ -69,7 +69,6 @@ export class InteractionOptionWrapper {
     }
     private getMentionOptions<T = string | number | boolean>(name: string, type: ApplicationCommandOptionType): { name: string; value: T; } | undefined {
         if (!this.#data.applicationCommand) return;
-
         const optionIndex =
           this.#data.applicationCommand.options?.findIndex(opt =>
               opt.name === name
@@ -127,8 +126,12 @@ export class InteractionOptionWrapper {
           )
           || type === ApplicationCommandOptionType.EMOTE
           && typeof this.values[optionIndex] !== "string"
+          && (
+              typeof this.values[optionIndex] !== "number"
+            || this.values[optionIndex] > 9999999
+            || this.values[optionIndex] < 1000000
+          )
         ) return;
-
         if (type === ApplicationCommandOptionType.INTEGER)
             this.values[optionIndex] = Math.trunc(Number(this.values[optionIndex]));
         if (type === ApplicationCommandOptionType.EMBEDDED_ATTACHMENT) {
@@ -138,7 +141,7 @@ export class InteractionOptionWrapper {
         }
         if (type === ApplicationCommandOptionType.BOOLEAN)
             this.values[optionIndex] = Boolean(this.values[optionIndex]);
-        if (type === ApplicationCommandOptionType.EMOTE) {
+        if (type === ApplicationCommandOptionType.EMOTE && typeof this.values[optionIndex] !== "number") {
             const emoteID = Number((this.values[optionIndex] as string)?.match(/<:\w+:(\d+)>/)?.[1]);
             if (isNaN(emoteID)) return;
             this.values[optionIndex] = Number(emoteID);
