@@ -142,9 +142,7 @@ export class InteractionOptionWrapper {
         if (type === ApplicationCommandOptionType.BOOLEAN)
             this.values[optionIndex] = Boolean(this.values[optionIndex]);
         if (type === ApplicationCommandOptionType.EMOTE) {
-            if (typeof this.values[optionIndex] === "number") {
-                this.values[optionIndex] = Number(this.values[optionIndex]);
-            } else {
+            if (typeof this.values[optionIndex] !== "number") {
                 const emoteID = Number((this.values[optionIndex] as string)?.match(/<:\w+:(\d+)>/)?.[1]);
                 if (isNaN(emoteID)) return;
                 this.values[optionIndex] = Number(emoteID);
