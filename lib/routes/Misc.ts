@@ -96,7 +96,9 @@ export class Miscellaneous {
             path:   endpoints.USER_SERVERS(userID)
         }).then(data =>
             data.servers.map(d =>
-                new Guild(d, this.#manager.client)
+                this.#manager.client.guilds.has(d.id)
+                    ? this.#manager.client.guilds.update(new Guild(d, this.#manager.client))
+                    : this.#manager.client.guilds.add(new Guild(d, this.#manager.client))
             )
         );
     }
