@@ -24,6 +24,7 @@ import type {
 } from "../types";
 
 /** Represents a Component Interaction. */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export class ComponentInteraction<V extends AnyInteractionComponent = AnyInteractionComponent, T extends AnyTextableChannel = AnyTextableChannel> extends Base<string> {
     private _cachedChannel!: T extends AnyTextableChannel ? T : undefined;
     private _cachedGuild?: T extends AnyTextableChannel ? Guild : Guild | null;
