@@ -23,7 +23,8 @@ import type {
     Embed,
     RawMessage,
     RawEmbed,
-    RawMentions
+    RawMentions,
+    AnyInteractionComponent
 } from "../types";
 
 /** Represents a guild message. */
@@ -36,6 +37,8 @@ export class Message<T extends AnyTextableChannel> extends Base<string> {
     acknowledged: boolean;
     /** ID of the channel on which the message was sent. */
     channelID: string;
+    /** Message components  */
+    components: Array<AnyInteractionComponent>;
     /** Content of the message. */
     content: string | null;
     /** When the message was created. */
@@ -85,6 +88,7 @@ export class Message<T extends AnyTextableChannel> extends Base<string> {
         this.guildID = data.serverId ?? null;
         this.channelID = data.channelId;
         this.content = data.content ?? "";
+        this.components = [];
         this.hiddenLinkPreviewURLs = data.hiddenLinkPreviewUrls ?? [];
         this.embeds = data.embeds ?? [];
         this.replyMessageIDs = data.replyMessageIds ?? [];
@@ -416,7 +420,12 @@ export class Message<T extends AnyTextableChannel> extends Base<string> {
     /** This method is used to edit the current message.
      * @param newMessage New message's options
      */
-    async edit(newMessage: EditMessageOptions): Promise<Message<T>>{
+    async edit(newMessage: EditMessageOptions): Promise<Message<T>> {
+        if (newMessage["components" as keyof object]) this.components = newMessage["components" as keyof object];
+        if (this.components) {
+            await this.client.rest.channels.bulkDeleteReactions(this.channelID, "ChannelMessage", this.id);
+            await this.client.util.bulkAddComponents(this.channelID, this.components, this, false);
+        }
         return this.client.rest.channels.editMessage<T>(
             this.channelID,
             this.id as string,

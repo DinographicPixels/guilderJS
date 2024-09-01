@@ -24,7 +24,8 @@ import type {
     RawCategory,
     RawMessage,
     RawEmbed,
-    MessageAttachment
+    MessageAttachment,
+    AnyInteractionComponent
 } from "../types";
 import { Channel } from "../structures/Channel";
 import { ForumThread } from "../structures/ForumThread";
@@ -36,7 +37,7 @@ import { Group } from "../structures/Group";
 import { Subscription } from "../structures/Subscription";
 import { Category } from "../structures/Category";
 import { Message } from "../structures/Message";
-import { GatewayLayerIntent } from "../Constants";
+import { GatewayLayerIntent, InteractionComponentType } from "../Constants";
 import type { APIURLSignature } from "guildedapi-types.ts/v1";
 import { fetch } from "undici";
 
@@ -44,6 +45,40 @@ export class Util {
     #client: Client;
     constructor(client: Client) {
         this.#client = client;
+    }
+
+    async bulkAddComponents<T extends AnyTextableChannel = AnyTextableChannel>(
+        channelID: string,
+        components: Array<AnyInteractionComponent>,
+        message: Message<T>,
+        pushComponents = true
+    ): Promise<Message<T>> {
+        // TODO: Enhance errors/ add more of them making them easier to understand.
+        for (const component of components) {
+            if (component.type === InteractionComponentType.BUTTON) {
+                const regExpCheck = /^[\d_a-z-]{1,32}$/;
+                if (!regExpCheck.test(component.customID))
+                    throw new Error(
+                        "Invalid component, customID property is considered invalid, " +
+                      "requirements: \"1-32 characters containing no capital letters, spaces, or symbols other than - and _\"."
+                    );
+                await this.#client.rest.channels
+                    .createReaction(
+                        channelID,
+                        "ChannelMessage",
+                        message.id,
+                        component.emoteID)
+                    .catch((err: Error): void => {
+                        this.#client.emit("error", err);
+                        throw new Error(
+                            "Invalid component error, please check formatting, " +
+                        "emote availability or any other issue that could cause this error."
+                        );
+                    });
+                if (pushComponents) message.components.push(component);
+            }
+        }
+        return message;
     }
 
     embedsToParsed(embeds: Array<RawEmbed>): Array<Embed> {
@@ -98,6 +133,13 @@ export class Util {
             thumbnail: embed.thumbnail === undefined ? undefined : { url: embed.thumbnail.url },
             url:       embed.url
         }));
+    }
+    generateNumericID(length = 18): string {
+        let id = "";
+        for (let i = 0; i < length; i++) {
+            id += Math.floor(Math.random() * 10).toString();
+        }
+        return id;
     }
     async getAttachments(attachmentURLs: Array<string>): Promise<Array<MessageAttachment>> {
         const imageExtensions = new Set(["jpg", "jpeg", "png", "gif", "bmp", "webp", "svg"]);

@@ -7,7 +7,13 @@
 
 import { GatewayEventHandler } from "./GatewayEventHandler";
 
-import { BannedMember, Guild, Role, Member } from "../../index";
+import {
+    BannedMember,
+    Guild,
+    Role,
+    Member,
+    GatewayLayerIntent
+} from "../../index";
 
 import type { GuildCreateInfo, GuildDeleteInfo } from "../../types";
 import type {
@@ -37,35 +43,44 @@ import { Category } from "../../structures/Category";
 
 /** Internal component, emitting guild events. */
 export class GuildHandler extends GatewayEventHandler {
-    guildBanAdd(data: GatewayEvent_ServerMemberBanned): void{
+    get isGuildIntentEnabled(): boolean {
+        return this.client.util.isIntentEnabled([GatewayLayerIntent.GUILDS]);
+    }
+    guildBanAdd(data: GatewayEvent_ServerMemberBanned): void {
+        if (!this.isGuildIntentEnabled) return;
         const GuildMemberBanComponent =
           new BannedMember(data.serverId, data.serverMemberBan, this.client);
         this.client.emit("guildBanAdd", GuildMemberBanComponent);
     }
-    guildBanRemove(data: GatewayEvent_ServerMemberUnbanned): void{
+    guildBanRemove(data: GatewayEvent_ServerMemberUnbanned): void {
+        if (!this.isGuildIntentEnabled) return;
         const GuildMemberBanComponent =
           new BannedMember(data.serverId, data.serverMemberBan, this.client);
         this.client.emit("guildBanRemove", GuildMemberBanComponent);
     }
     guildCategoryCreate(data: GatewayEvent_CategoryCreated): void {
+        if (!this.isGuildIntentEnabled) return;
         const category = new Category(data.category, this.client);
         this.client.emit("guildCategoryCreate", category);
     }
     guildCategoryDelete(data: GatewayEvent_CategoryCreated): void {
+        if (!this.isGuildIntentEnabled) return;
         const category = new Category(data.category, this.client);
         this.client.emit("guildCategoryDelete", category);
     }
     guildCategoryUpdate(data: GatewayEvent_CategoryCreated): void {
+        if (!this.isGuildIntentEnabled) return;
         const category = new Category(data.category, this.client);
         this.client.emit("guildCategoryUpdate", category);
     }
-    guildCreate(data: GatewayEvent_BotServerMembershipCreated): void{
+    guildCreate(data: GatewayEvent_BotServerMembershipCreated): void {
         const GuildComponent = new Guild(data.server, this.client);
         this.client.guilds.add(GuildComponent);
         const output = {
             guild:     GuildComponent,
             inviterID: data.createdBy
         };
+        if (!this.isGuildIntentEnabled) return;
         this.client.emit("guildCreate", output as GuildCreateInfo);
     }
     guildDelete(data: GatewayEvent_BotServerMembershipDeleted): void {
@@ -75,11 +90,13 @@ export class GuildHandler extends GatewayEventHandler {
             guild:     GuildComponent,
             removerID: data.createdBy
         };
+        if (!this.isGuildIntentEnabled) return;
         this.client.emit("guildDelete", output as GuildDeleteInfo);
     }
     guildGroupCreate(data: GatewayEvent_GroupCreated): void {
         const GuildGroupComponent = new Group(data.group, this.client);
         this.client.guilds.get(data.serverId)?.groups.add(GuildGroupComponent);
+        if (!this.isGuildIntentEnabled) return;
         this.client.emit("guildGroupCreate", GuildGroupComponent);
     }
     guildGroupDelete(data: GatewayEvent_GroupDeleted): void {
@@ -87,6 +104,7 @@ export class GuildHandler extends GatewayEventHandler {
         const GuildGroupComponent =
           guild?.groups.update(new Group(data.group, this.client))
           ?? new Group(data.group, this.client);
+        if (!this.isGuildIntentEnabled) return;
         this.client.emit("guildGroupDelete", GuildGroupComponent);
     }
     guildGroupUpdate(data: GatewayEvent_GroupUpdated): void {
@@ -95,44 +113,52 @@ export class GuildHandler extends GatewayEventHandler {
         const GuildGroupComponent =
           guild?.groups.update(new Group(data.group, this.client))
           ?? new Group(data.group, this.client);
+        if (!this.isGuildIntentEnabled) return;
         this.client.emit("guildGroupUpdate", GuildGroupComponent, CachedGroup);
     }
-    guildMemberAdd(data: GatewayEvent_ServerMemberJoined): void{
+    guildMemberAdd(data: GatewayEvent_ServerMemberJoined): void {
+        if (!this.isGuildIntentEnabled) return;
         const MemberComponent = new Member(data.member, this.client, data.serverId);
         this.client.emit("guildMemberAdd", MemberComponent, data.serverMemberCount);
     }
 
 
-    guildMemberRemove(data: GatewayEvent_ServerMemberRemoved): void{
+    guildMemberRemove(data: GatewayEvent_ServerMemberRemoved): void {
+        if (!this.isGuildIntentEnabled) return;
         const output = new MemberRemoveInfo(data, data.userId, this.client);
         this.client.emit("guildMemberRemove", output);
     }
 
 
-    guildMemberRoleUpdate(data: GatewayEvent_ServerRolesUpdated): void{
+    guildMemberRoleUpdate(data: GatewayEvent_ServerRolesUpdated): void {
+        if (!this.isGuildIntentEnabled) return;
         const output =
           new MemberUpdateInfo(data, data.memberRoleIds[0].userId, this.client);
         this.client.emit("guildMemberUpdate", output);
     }
     guildMemberSocialLinkCreate(data: GatewayEvent_ServerMemberSocialLinkCreated): void {
+        if (!this.isGuildIntentEnabled) return;
         this.client.emit(
             "guildMemberUpdate",
             new MemberUpdateInfo(data, data.socialLink.userId, this.client)
         );
     }
     guildMemberSocialLinkDelete(data: GatewayEvent_ServerMemberSocialLinkDeleted): void {
+        if (!this.isGuildIntentEnabled) return;
         this.client.emit(
             "guildMemberUpdate",
             new MemberUpdateInfo(data, data.socialLink.userId, this.client)
         );
     }
     guildMemberSocialLinkUpdate(data: GatewayEvent_ServerMemberSocialLinkUpdated): void {
+        if (!this.isGuildIntentEnabled) return;
         this.client.emit(
             "guildMemberUpdate",
             new MemberUpdateInfo(data, data.socialLink.userId, this.client)
         );
     }
-    guildMemberUpdate(data: GatewayEvent_ServerMemberUpdated): void{
+    guildMemberUpdate(data: GatewayEvent_ServerMemberUpdated): void {
+        if (!this.isGuildIntentEnabled) return;
         const output = new MemberUpdateInfo(data, data.userInfo.id, this.client);
         this.client.emit("guildMemberUpdate", output);
     }
@@ -141,6 +167,7 @@ export class GuildHandler extends GatewayEventHandler {
         const role =
           guild?.roles.add(new Role(data.role, this.client))
           ?? new Role(data.role, this.client);
+        if (!this.isGuildIntentEnabled) return;
         this.client.emit("guildRoleCreate", role);
     }
 
@@ -150,6 +177,7 @@ export class GuildHandler extends GatewayEventHandler {
           guild?.roles.update(new Role(data.role, this.client))
           ?? new Role(data.role, this.client);
         guild?.roles.delete(data.role.id);
+        if (!this.isGuildIntentEnabled) return;
         this.client.emit("guildRoleDelete", role);
     }
     guildRoleUpdate(data: GatewayEvent_RoleUpdated): void {
@@ -158,6 +186,7 @@ export class GuildHandler extends GatewayEventHandler {
         const role =
           guild?.roles.update(new Role(data.role, this.client))
           ?? new Role(data.role, this.client);
+        if (!this.isGuildIntentEnabled) return;
         this.client.emit("guildRoleUpdate", role, cachedRole);
     }
 }

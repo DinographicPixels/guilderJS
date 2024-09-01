@@ -34,6 +34,8 @@ export class ReactionInfo {
     client!: Client;
     /** Emote. */
     emoji: RawEmote;
+    /** Guild ID */
+    guildID: string | null;
     raw: GatewayEvent_ChannelMessageReactionCreated
     | GatewayEvent_ChannelMessageReactionDeleted
     | GatewayEvent_ForumTopicReactionCreated
@@ -77,6 +79,7 @@ export class ReactionInfo {
     ) {
         this.raw = data;
         this.channelID = data.reaction.channelId;
+        this.guildID = data.serverId ?? null;
         this.reactorID = data.reaction.createdBy;
         this.emoji = {
             id:   data.reaction.emote.id,

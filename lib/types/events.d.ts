@@ -45,6 +45,7 @@ import type {
     PossiblyUncachedMessage
 } from "./channels";
 import type { RawAppUser } from "./users";
+import type { AnyInteraction } from "./interactions";
 import type { BannedMember } from "../structures/BannedMember";
 import type { ForumThread } from "../structures/ForumThread";
 import type { ForumThreadComment } from "../structures/ForumThreadComment";
@@ -70,7 +71,6 @@ import type { AnnouncementComment } from "../structures/AnnouncementComment";
 import type { Group } from "../structures/Group";
 import type { Role } from "../structures/Role";
 import type { Category } from "../structures/Category";
-import type { CommandInteraction } from "../structures/CommandInteraction";
 
 /** Every client events. */
 export interface ClientEvents {
@@ -217,7 +217,7 @@ export interface ClientEvents {
     /** @event Emitted when a guild role is updated. */
     guildRoleUpdate: [role: Role, oldRole: JSONRole | null];
     /** @event Emitted when an interaction is created. */
-    interactionCreate: [interaction: CommandInteraction<AnyTextableChannel>];
+    interactionCreate: [interaction: AnyInteraction];
     /** @event Emitted when a list item is completed. */
     listItemComplete: [item: ListItem];
     /** @event Emitted when a list item is created. */

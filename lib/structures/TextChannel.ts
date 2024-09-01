@@ -10,11 +10,15 @@ import type { Client } from "./Client";
 import { Message } from "./Message";
 import { GuildChannel } from "./GuildChannel";
 import type { Permission } from "./Permission";
+import { CommandInteraction } from "./CommandInteraction";
 import type {
     AnyTextableChannel,
+    InteractionConstructorParams,
+    CommandInteractionData,
     CreateMessageOptions,
     EditMessageOptions,
     JSONTextChannel,
+    MessageConstructorParams,
     RawChannel,
     RawMessage
 } from "../types";
@@ -23,14 +27,26 @@ import TypedCollection from "../util/TypedCollection";
 
 /** Represents a guild channel where you can chat with others. */
 export class TextChannel extends GuildChannel {
+    /** Cached interactions. */
+    interactions: TypedCollection<
+    string,
+    CommandInteractionData,
+    CommandInteraction<AnyTextableChannel>,
+    [params?: InteractionConstructorParams]
+    >;
     /** Cached messages. */
-    messages: TypedCollection<string, RawMessage, Message<AnyTextableChannel>>;
+    messages: TypedCollection<string, RawMessage, Message<AnyTextableChannel>, [params?: MessageConstructorParams]>;
     /**
      * @param data raw data
      * @param client client
      */
     constructor(data: RawChannel, client: Client){
         super(data, client);
+        this.interactions = new TypedCollection(
+            CommandInteraction,
+            client,
+            client.params.collectionLimits?.messages
+        );
         this.messages = new TypedCollection(
             Message,
             client,
@@ -122,9 +138,8 @@ export class TextChannel extends GuildChannel {
     override toJSON(): JSONTextChannel {
         return {
             ...super.toJSON(),
-            messages: this.messages.map(message => message.toJSON())
+            interactions: this.interactions.map(interaction => interaction.toJSON()),
+            messages:     this.messages.map(message => message.toJSON())
         };
     }
-
-
 }

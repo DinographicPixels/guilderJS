@@ -375,6 +375,7 @@ export class Channels {
             json:   { message: content, note }
         }).then(data => new ListItem(data.listItem, this.#manager.client));
     }
+
     /** Send a message in a specified channel.
      * @param channelID ID of the channel.
      * @param options Message options

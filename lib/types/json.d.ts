@@ -13,7 +13,7 @@ import type {
     RawMentions,
     CalendarRSVPStatus
 } from "./channels";
-import type { InteractionData } from "./interactions";
+import type { ComponentInteractionData, InteractionData } from "./interactions";
 import type { Member } from "../structures/Member";
 import type { User } from "../structures/User";
 import type { Guild } from "../structures/Guild";
@@ -83,6 +83,25 @@ export interface JSONCommandInteraction extends JSONBase<string> {
     originalID: string | null;
     /** The IDs of the messages replied by the interaction. */
     replyMessageIDs: Array<string>;
+}
+
+export interface JSONComponentInteraction extends JSONBase<string> {
+    /** ID of the last message created with this interaction. */
+    _lastMessageID: string | null;
+    /** Interaction acknowledgement. */
+    acknowledged: boolean;
+    /** ID of the channel on which the interaction was sent. */
+    channelID: string;
+    /** Component Interaction Data */
+    data: ComponentInteractionData;
+    /** ID of the server on which the interaction was sent. */
+    guildID: string | null;
+    /** ID of the interaction author. */
+    memberID: string;
+    /** ID of the Interaction Message, triggering this interaction. */
+    messageID: string;
+    /** ID of the original response of this interaction, if existant. */
+    originalID: string | null;
 }
 
 export interface JSONForumThreadComment extends JSONBase<number> {
@@ -164,6 +183,8 @@ export interface JSONGuildChannel extends JSONBase<string> {
 }
 
 export interface JSONTextChannel extends JSONGuildChannel {
+    /** Cached interactions. */
+    interactions: Array<AnyJSONInteraction>;
     /** Cached messages. */
     messages: Array<JSONMessage>;
 }
@@ -189,6 +210,7 @@ export interface JSONAnnouncementChannel extends JSONGuildChannel {
 }
 
 export type AnyJSONChannel = JSONTextChannel | JSONDocChannel | JSONForumChannel | JSONGuildChannel | JSONCalendarChannel;
+export type AnyJSONInteraction = JSONCommandInteraction | JSONComponentInteraction;
 
 export interface JSONCalendarEvent extends JSONBase<number> {
     /** Details about event cancellation (if canceled) */

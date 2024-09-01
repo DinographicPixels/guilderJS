@@ -358,10 +358,10 @@ export class Client extends TypedEmitter<ClientEvents> {
      * @param channelID ID of the channel containing the message.
      * @param messageID ID of the message you'd like to get.
      */
-    getMessage(guildID: string, channelID: string, messageID: string): Message<AnyTextableChannel> | undefined {
+    getMessage<T extends AnyTextableChannel = AnyTextableChannel>(guildID: string, channelID: string, messageID: string): Message<T> | undefined {
         const channel = this.getChannel(guildID, channelID);
         if (channel instanceof TextChannel) {
-            return channel?.messages.get(messageID);
+            return channel?.messages.get(messageID) as Message<T>;
         }
     }
 

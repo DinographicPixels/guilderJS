@@ -15,19 +15,19 @@ import { Member } from "./Member";
 import type { TextChannel } from "./TextChannel";
 import type {
     AnyTextableChannel,
-    InteractionData,
+    InteractionConstructorParams,
     CommandInteractionData,
-    CreateMessageOptions,
-    RawMentions,
+    CreateInteractionMessageOptions,
     EditMessageOptions,
     Embed,
-    CommandInteractionConstructorParams,
-    JSONCommandInteraction
+    InteractionData,
+    JSONCommandInteraction,
+    RawMentions
 } from "../types";
 import { InteractionOptionWrapper } from "../util/InteractionOptionWrapper";
 
 /** Represents a Command Interaction. */
-export class CommandInteraction<T extends AnyTextableChannel> extends Base<string> {
+export class CommandInteraction<T extends AnyTextableChannel = AnyTextableChannel> extends Base<string> {
     private _cachedChannel!: T extends AnyTextableChannel ? T : undefined;
     private _cachedGuild?: T extends Guild ? Guild : Guild | null;
     /** ID of the last message created with this interaction. */
@@ -57,7 +57,7 @@ export class CommandInteraction<T extends AnyTextableChannel> extends Base<strin
     constructor(
         data: CommandInteractionData,
         client: Client,
-        params?: CommandInteractionConstructorParams
+        params?: InteractionConstructorParams
     ) {
         super(data.message.id, client);
         this.#data = data;
@@ -178,7 +178,7 @@ export class CommandInteraction<T extends AnyTextableChannel> extends Base<strin
      * (use CommandInteraction#createMessage if the interaction has not been acknowledged).
      * @param options Message options.
      */
-    async createFollowup(options: CreateMessageOptions): Promise<Message<T>> {
+    async createFollowup(options: CreateInteractionMessageOptions): Promise<Message<T>> {
         if (!this.acknowledged || !this.originalID)
             throw new Error(
                 "Interaction has not been acknowledged, " +
@@ -211,6 +211,7 @@ export class CommandInteraction<T extends AnyTextableChannel> extends Base<strin
           );
 
         this._lastMessageID = response.id as string;
+        await this.client.util.bulkAddComponents<T>(this.channelID, options.components ?? [], response);
         if (!(this.originalID)) this.originalID = response.id;
         return response;
     }
@@ -219,7 +220,7 @@ export class CommandInteraction<T extends AnyTextableChannel> extends Base<strin
      * (use CommandInteraction#createFollowup on already acknowledged interactions).
      * @param options Message options.
      */
-    async createMessage(options: CreateMessageOptions): Promise<Message<T>> {
+    async createMessage(options: CreateInteractionMessageOptions): Promise<Message<T>> {
         if (this.acknowledged)
             throw new Error(
                 "Interaction has already been acknowledged, " +
@@ -249,6 +250,7 @@ export class CommandInteraction<T extends AnyTextableChannel> extends Base<strin
           );
         this._lastMessageID = response.id as string;
         this.acknowledged = true;
+        await this.client.util.bulkAddComponents<T>(this.channelID, options.components ?? [], response);
         if (!(this.originalID)) this.originalID = response.id;
         return response;
     }
@@ -273,7 +275,7 @@ export class CommandInteraction<T extends AnyTextableChannel> extends Base<strin
         );
     }
 
-    /** Edit the last message sent with the message itself.
+    /** Edit the last message sent with the interaction.
      * @param newMessage New message's options.
      */
     async editLast(newMessage: EditMessageOptions): Promise<Message<T>>{
@@ -285,7 +287,7 @@ export class CommandInteraction<T extends AnyTextableChannel> extends Base<strin
         );
     }
 
-    /** Edit the message's original response message.
+    /** Edit the interaction's original response message.
      * @param newMessage New message's options.
      */
     async editOriginal(

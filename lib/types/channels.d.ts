@@ -5,6 +5,7 @@
 // Copyright (c) 2024 DinographicPixels. All rights reserved.
 //
 
+import type { AnyInteractionComponent } from "./interactions";
 import type { Message } from "../structures/Message";
 import type { GuildChannel } from "../structures/GuildChannel";
 import type { TextChannel } from "../structures/TextChannel";
@@ -88,6 +89,9 @@ export interface MessageOriginals {
     originalResponse: Message<AnyTextableChannel> | null;
     triggerMessage: Message<AnyTextableChannel> | null;
 }
+
+export type CreateInteractionMessageOptions = CreateMessageOptions & { components?: Array<AnyInteractionComponent>; };
+export type EditInteractionMessageOptions = EditMessageOptions & { components?: Array<AnyInteractionComponent>; };
 
 export interface CreateMessageOptions {
     /** The content of the message (min length 1; max length 4000) */

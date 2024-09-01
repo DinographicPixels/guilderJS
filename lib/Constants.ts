@@ -53,4 +53,8 @@ export enum GatewayLayerIntent {
     GUILD_WEBHOOKS,
 }
 
+export enum InteractionComponentType {
+    BUTTON,
+}
+
 export type SocialLinkType = APISocialLinkType;
