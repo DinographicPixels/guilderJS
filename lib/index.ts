@@ -23,6 +23,7 @@
 export type * from "./types/index";
 export * from "./structures/Message";
 export * from "./structures/CommandInteraction";
+export * from "./structures/ComponentInteraction";
 export * from "./util/InteractionOptionWrapper";
 
 export * from "./structures/Client";
