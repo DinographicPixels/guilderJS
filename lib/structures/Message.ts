@@ -421,12 +421,7 @@ export class Message<T extends AnyTextableChannel> extends Base<string> {
      * @param newMessage New message's options
      */
     async edit(newMessage: EditMessageOptions): Promise<Message<T>> {
-        if (newMessage["components" as keyof object]) this.components = newMessage["components" as keyof object];
-        if (this.components) {
-            await this.client.rest.channels.bulkDeleteReactions(this.channelID, "ChannelMessage", this.id);
-            await this.client.util.bulkAddComponents(this.channelID, this.components, this, false);
-        }
-        return this.client.rest.channels.editMessage<T>(
+        const editedMessage = this.client.rest.channels.editMessage<T>(
             this.channelID,
             this.id as string,
             newMessage,
@@ -437,6 +432,12 @@ export class Message<T extends AnyTextableChannel> extends Base<string> {
                 }
             }
         );
+        if (newMessage["components" as keyof object]) this.components = newMessage["components" as keyof object];
+        if (this.components) {
+            await this.client.rest.channels.bulkDeleteReactions(this.channelID, "ChannelMessage", this.id);
+            await this.client.util.bulkAddComponents(this.channelID, this.components, this, false);
+        }
+        return editedMessage;
     }
 
     /**
