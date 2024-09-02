@@ -45,7 +45,7 @@ export class TextChannel extends GuildChannel {
         this.interactions = new TypedCollection(
             CommandInteraction,
             client,
-            client.params.collectionLimits?.messages
+            client.params.collectionLimits?.interactions
         );
         this.messages = new TypedCollection(
             Message,

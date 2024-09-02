@@ -42,6 +42,15 @@ npm install touchguild@dev
 
 The documentation under `dev` is always for the latest commit. If something isn't working that's in the documentation, you're likely looking at the wrong documentation.
 
+## 🔬 Data & Analytics
+Data collection is enabled by default on development builds for improving and making stats.
+
+This includes collecting application IDs, build info, method execution counts, and application command usage. 
+
+For transparency, you can review the source code.
+
+If this is a concern, consider disabling the `dataCollecting` client option.
+
 <hr>
 
 ## Links:

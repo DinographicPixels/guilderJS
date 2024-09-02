@@ -97,6 +97,11 @@ export class RequestHandler {
 
                     options.method = options.method.toUpperCase() as RESTMethod;
 
+                    // Data collection if enabled, counting the amount of request (all, authenticated, unauthenticated).
+                    if (options.auth) void this.#manager.client.util.requestDataCollection({ event: "auth_request" });
+                    if (!options.auth && options.path !== "/api/science")
+                        void this.#manager.client.util.requestDataCollection({ event: "unauth_request" });
+
                     let reqBody: string | FormData | undefined;
                     if (options.method !== "GET") {
                         let stringBody: string | undefined;

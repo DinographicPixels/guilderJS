@@ -85,6 +85,7 @@ export class Client extends TypedEmitter<ClientEvents> {
             isOfficialMarkdownEnabled: params.isOfficialMarkdownEnabled ?? true,
             wsReconnect:               params.wsReconnect,
             collectionLimits:          {
+                interactions:         params.collectionLimits?.interactions ?? 100,
                 messages:             params.collectionLimits?.messages ?? 100,
                 threads:              params.collectionLimits?.threads ?? 100,
                 threadComments:       params.collectionLimits?.threadComments ?? 100,
@@ -98,7 +99,8 @@ export class Client extends TypedEmitter<ClientEvents> {
             },
             applicationShortname: params.applicationShortname,
             restMode:             false,
-            intents:              params.intents ?? []
+            intents:              params.intents ?? [],
+            dataCollection:       params.dataCollection
         };
         this.ws = new WSManager(this, { token: this.token, client: this, reconnect: params.wsReconnect });
         this.guilds = new TypedCollection(Guild, this);
@@ -126,10 +128,14 @@ export class Client extends TypedEmitter<ClientEvents> {
             "Application shortname is invalid, " +
                   "requirements: \"1-32 characters containing no capital letters, spaces, or symbols other than - and _\"."
         );
+
+        if (this.application.enabled)
+            void this.util.requestDataCollection({ event: "application_command_enabled" });
     }
 
     private async checkForUpdate(): Promise<void> {
         this.lastCheckForUpdate = Date.now();
+        void this.util.requestDataCollection({ event: "check_for_update" });
 
         interface jsonRes {
             version: string;
@@ -204,6 +210,7 @@ export class Client extends TypedEmitter<ClientEvents> {
             }
         }
 
+        void this.util.requestDataCollection({ event: "register_application_command" });
         this.application.commands.push(command);
     }
 
@@ -274,6 +281,7 @@ export class Client extends TypedEmitter<ClientEvents> {
                 });
             this.startTime = Date.now();
             this.emit("ready");
+            void this.util.requestDataCollection({ event: "gateway_connection" });
         });
 
         this.ws.on("disconnect", err => {
@@ -288,9 +296,13 @@ export class Client extends TypedEmitter<ClientEvents> {
 
     disconnect(crashOnDisconnect?: boolean): void {
         if (this.ws.alive === false) return console.warn("There is no open connection.");
+        void this.util.requestDataCollection({ event: "request_disconnect" });
         this.ws.disconnect(false); // closing all connections.
         console.log("The connection has been terminated.");
-        if (crashOnDisconnect) throw new Error("Connection closed.");
+        if (crashOnDisconnect) {
+            void this.util.requestDataCollection({ event: "crash_disconnect" });
+            throw new Error("Connection closed.");
+        }
     }
 
     /** This method is used to get a specific guild channel, if cached.
@@ -305,6 +317,7 @@ export class Client extends TypedEmitter<ClientEvents> {
     getChannel<T extends AnyChannel = AnyChannel>(guildID: string, channelID: string): T | undefined {
         if (!guildID) throw new Error("guildID is a required parameter.");
         if (!channelID) throw new Error("channelID is a required parameter.");
+        void this.util.requestDataCollection({ event: "cache_get_channel" });
         return this.guilds.get(guildID)?.channels.get(channelID) as T;
     }
 
@@ -317,6 +330,7 @@ export class Client extends TypedEmitter<ClientEvents> {
      */
     getGuild(guildID: string): Guild | undefined {
         if (!guildID) throw new Error("guildID is a required parameter.");
+        void this.util.requestDataCollection({ event: "cache_get_guild" });
         return this.guilds.get(guildID);
     }
 
@@ -332,6 +346,7 @@ export class Client extends TypedEmitter<ClientEvents> {
     getMember(guildID: string, memberID: string): Member | undefined {
         if (!guildID) throw new Error("guildID is a required parameter.");
         if (!memberID) throw new Error("memberID is a required parameter.");
+        void this.util.requestDataCollection({ event: "cache_get_member" });
         return this.getGuild(guildID)?.members.get(memberID);
     }
 
@@ -345,6 +360,7 @@ export class Client extends TypedEmitter<ClientEvents> {
      */
     getMembers(guildID: string): Array<Member> | undefined {
         if (!guildID) throw new Error("guildID is a required parameter.");
+        void this.util.requestDataCollection({ event: "cache_get_members" });
         return this.getGuild(guildID)?.members.map(member => member);
     }
 
@@ -360,7 +376,9 @@ export class Client extends TypedEmitter<ClientEvents> {
      */
     getMessage<T extends AnyTextableChannel = AnyTextableChannel>(guildID: string, channelID: string, messageID: string): Message<T> | undefined {
         const channel = this.getChannel(guildID, channelID);
+        void this.util.requestDataCollection({ event: "request_cache_get_message" });
         if (channel instanceof TextChannel) {
+            void this.util.requestDataCollection({ event: "cache_get_message" });
             return channel?.messages.get(messageID) as Message<T>;
         }
     }
@@ -374,7 +392,9 @@ export class Client extends TypedEmitter<ClientEvents> {
      */
     getMessages(guildID: string, channelID: string): Array<Message<AnyTextableChannel>> | undefined {
         const channel = this.getChannel(guildID, channelID);
+        void this.util.requestDataCollection({ event: "request_cache_get_messages" });
         if (channel instanceof TextChannel) {
+            void this.util.requestDataCollection({ event: "cache_get_messages" });
             return channel?.messages.map(msg => msg);
         }
     }
@@ -385,6 +405,7 @@ export class Client extends TypedEmitter<ClientEvents> {
      * @param command Application Command.
      */
     registerGlobalApplicationCommand(command: ApplicationCommand): void {
+        void this.util.requestDataCollection({ event: "register_global_application_command" });
         return this.registerApplicationCommand(command);
     }
 
@@ -395,6 +416,7 @@ export class Client extends TypedEmitter<ClientEvents> {
      * @param command Application Command.
      */
     registerGuildApplicationCommand(guildID: string, command: ApplicationCommand): void {
+        void this.util.requestDataCollection({ event: "register_guild_application_command" });
         return this.registerApplicationCommand({ private: true, guildID, ...command });
     }
 
@@ -405,6 +427,7 @@ export class Client extends TypedEmitter<ClientEvents> {
      * @param command Application Command.
      */
     registerUserApplicationCommand(userID: string, command: ApplicationCommand): void {
+        void this.util.requestDataCollection({ event: "register_user_application_command" });
         return this.registerApplicationCommand({ private: true, userID, ...command });
     }
 
@@ -416,6 +439,7 @@ export class Client extends TypedEmitter<ClientEvents> {
         if (this.shouldCheckForUpdate) void this.checkForUpdate();
         this.params.restMode = true;
         if (this.params.connectionMessage) console.log("> REST Mode has been enabled.");
+        void this.util.requestDataCollection({ event: "enable_rest_mode" });
         void this.rest.misc.getAppUser().then(async () => {
             await this.rest.misc.getUserGuilds("@me").catch(() => [])
                 .then(guilds => {

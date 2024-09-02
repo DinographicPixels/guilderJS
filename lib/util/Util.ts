@@ -38,6 +38,8 @@ import { Subscription } from "../structures/Subscription";
 import { Category } from "../structures/Category";
 import { Message } from "../structures/Message";
 import { GatewayLayerIntent, InteractionComponentType } from "../Constants";
+import type { DataCollectionProfile } from "../types/misc";
+import { config } from "../../pkgconfig";
 import type { APIURLSignature } from "guildedapi-types.ts/v1";
 import { fetch } from "undici";
 
@@ -47,13 +49,39 @@ export class Util {
         this.#client = client;
     }
 
+    /** This is the Data Collection Profile, sent if dataCollection is enabled. */
+    private async getDataCollectionProfile(): Promise<Partial<DataCollectionProfile>> {
+        await this.waitForObject(this.#client.user);
+        return {
+            appID:        this.#client.user?.appID,
+            appName:      this.#client.user?.username,
+            appShortname: this.#client.application.appShortname,
+            appUserID:    this.#client.user?.id,
+            build:        config.branch.toLowerCase().includes("development") ? "dev" : "stable",
+            buildVersion: config.version,
+            ownerID:      this.#client.user?.ownerID
+        };
+    }
+
+    private waitForObject(object?: object, ms = 5000): Promise<void> {
+        return new Promise(resolve => {
+            const checkUser = (): void => {
+                if (object) {
+                    resolve();
+                } else {
+                    setTimeout(checkUser, ms);
+                }
+            };
+            checkUser();
+        });
+    }
+
     async bulkAddComponents<T extends AnyTextableChannel = AnyTextableChannel>(
         channelID: string,
         components: Array<AnyInteractionComponent>,
         message: Message<T>,
         pushComponents = true
     ): Promise<Message<T>> {
-        // TODO: Enhance errors/ add more of them making them easier to understand.
         for (const component of components) {
             if (component.type === InteractionComponentType.BUTTON) {
                 const regExpCheck = /^[\w-]{1,32}$/;
@@ -75,7 +103,12 @@ export class Util {
                         "emote availability or any other issue that could cause this error."
                         );
                     });
-                if (pushComponents) message.components.push(component);
+                if (pushComponents) {
+                    message.components.push(component);
+                    void this.#client.util.requestDataCollection({ event: "button_component_add" });
+                } else {
+                    void this.#client.util.requestDataCollection({ event: "button_component_update" });
+                }
             }
         }
         return message;
@@ -195,6 +228,28 @@ export class Util {
     isIntentEnabled(intents: Array<GatewayLayerIntent>): boolean {
         return this.#client.params.intents?.includes(GatewayLayerIntent.ALL)
           || intents.some(intent => this.#client.params.intents?.includes(intent) ?? false);
+    }
+    async requestDataCollection(
+        collect: {
+            data?: {
+                message: string;
+            };
+            event: string;
+        }
+    ): Promise<void> {
+        if (this.#client.params.dataCollection === false) return;
+        if (this.#client.params.dataCollection === undefined && (await this.getDataCollectionProfile()).build !== "dev") return;
+
+        return void this.#client.rest.request<Buffer>({
+            auth:   false,
+            method: "POST",
+            route:  "https://dinographicpixels.com/",
+            path:   "api/science",
+            json:   {
+                profile: await this.getDataCollectionProfile(),
+                collect
+            }
+        }).catch(err => this.#client.emit("error", err as Error));
     }
     updateChannel<T extends AnyChannel>(data: RawChannel): T {
         if (data.serverId) {

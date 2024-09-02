@@ -24,6 +24,7 @@ export interface ClientOptions {
         calendarComments?: number;
         docComments?: number;
         docs?: number;
+        interactions?: number;
         messages?: number;
         scheduledEvents?: number;
         scheduledEventsRSVPS?: number;
@@ -35,6 +36,26 @@ export interface ClientOptions {
      * connection is successfully established.
      */
     connectionMessage?: boolean;
+    /**
+     * Consent to data collection, enabling us to improve the library,
+     * make statistics out of the data we collect, potentially leading us to make decisions based on them.
+     *
+     * It can also be used to promote the TouchGuild library and deliver specific information like the
+     * average time in ms the gateway takes, leading us to optimize latency, and deliver a better & faster library.
+     *
+     * We're using an API to forward collected data.
+     *
+     * **What is collected?**
+     * - IDs of the application, including the owner of it, app shortname.
+     * - The build you're using, stable or dev.
+     * - Amount of execution per method.
+     * - Usage of Application Commands (boolean)
+     *
+     * Data collecting is enabled by default if you use the development build.
+     *
+     * Transparency is key, open-source is transparent, feel free to check the source-code.
+     */
+    dataCollection?: boolean;
     /**
      * **NOT RECOMMENDED, CAN BREAK THINGS**
      *
@@ -87,6 +108,7 @@ export interface ClientOptions {
      * @default true
      */
     wsReconnect?: boolean;
+
 }
 
 export interface RESTOptions {
