@@ -56,7 +56,7 @@ export class Util {
         // TODO: Enhance errors/ add more of them making them easier to understand.
         for (const component of components) {
             if (component.type === InteractionComponentType.BUTTON) {
-                const regExpCheck = /^[\d_a-z-]{1,32}$/;
+                const regExpCheck = /^[\w-]{1,32}$/;
                 if (!regExpCheck.test(component.customID))
                     throw new Error(
                         "Invalid component, customID property is considered invalid, " +
