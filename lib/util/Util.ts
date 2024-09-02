@@ -60,7 +60,7 @@ export class Util {
                 if (!regExpCheck.test(component.customID))
                     throw new Error(
                         "Invalid component, customID property is considered invalid, " +
-                      "requirements: \"1-32 characters containing no capital letters, spaces, or symbols other than - and _\"."
+                      "requirements: \"1-32 characters containing no spaces, or symbols other than - and _\"."
                     );
                 await this.#client.rest.channels
                     .createReaction(
