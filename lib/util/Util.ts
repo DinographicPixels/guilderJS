@@ -51,7 +51,7 @@ export class Util {
 
     /** This is the Data Collection Profile, sent if dataCollection is enabled. */
     private async getDataCollectionProfile(): Promise<Partial<DataCollectionProfile>> {
-        await this.waitForObject(this.#client.user);
+        await this.waitForAppUser();
         return {
             appID:        this.#client.user?.appID,
             appName:      this.#client.user?.username,
@@ -63,10 +63,10 @@ export class Util {
         };
     }
 
-    private waitForObject(object?: object, ms = 5000): Promise<void> {
+    private waitForAppUser(ms = 5000): Promise<void> {
         return new Promise(resolve => {
             const checkUser = (): void => {
-                if (object) {
+                if (this.#client.user) {
                     resolve();
                 } else {
                     setTimeout(checkUser, ms);
