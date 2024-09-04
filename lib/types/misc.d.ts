@@ -12,5 +12,6 @@ export interface DataCollectionProfile {
     appUserID: string;
     build: "stable" | "dev";
     buildVersion: string;
+    guildCount: number;
     ownerID: string;
 }

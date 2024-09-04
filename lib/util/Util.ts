@@ -59,6 +59,7 @@ export class Util {
             appUserID:    this.#client.user?.id,
             build:        config.branch.toLowerCase().includes("development") ? "dev" : "stable",
             buildVersion: config.version,
+            guildCount:   this.#client.guilds.size,
             ownerID:      this.#client.user?.ownerID
         };
     }

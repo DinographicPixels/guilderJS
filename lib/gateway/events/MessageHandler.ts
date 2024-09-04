@@ -156,7 +156,6 @@ export class MessageHandler extends GatewayEventHandler {
                     return void interaction.createMessage({ content, isPrivate: true });
                 }
 
-
                 const treatmentEndTimestamp = performance.now();
                 const treatmentDuration = treatmentEndTimestamp - treatmentStartTimestamp;
                 void this.client.util.requestDataCollection({
