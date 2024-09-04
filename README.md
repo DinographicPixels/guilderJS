@@ -21,7 +21,6 @@ client.on('error', (err) => {
 });
 
 client.connect();
-
 ```
 
 For more examples, check out the [examples](https://github.com/DinographicPixels/TouchGuild/tree/dev/examples) folder on GitHub.
@@ -43,13 +42,16 @@ npm install touchguild@dev
 The documentation under `dev` is always for the latest commit. If something isn't working that's in the documentation, you're likely looking at the wrong documentation.
 
 ## 🔬 Data & Analytics
-Data collection is enabled by default on development builds for improving and making stats.
+Data collection is enabled by default for improving and making statistics.
+This includes collecting application IDs, guild count, build info, method execution counts, latency data, and application command usage.
 
-This includes collecting application IDs, build info, method execution counts, and application command usage. 
+[Learn more.](https://guide.touchguild.com/data-and-analytics)
 
 For transparency, you can review the source code.
 
-If this is a concern, consider disabling the `dataCollecting` client option.
+If this is a concern and you rather opt out, consider disabling the `dataCollection` client option.
+
+If some of your data has already been collected and want to the removal of it, consider contacting us: support@dinographicpixels.com
 
 <hr>
 

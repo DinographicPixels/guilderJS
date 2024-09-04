@@ -237,8 +237,6 @@ export class Util {
         }
     ): Promise<void> {
         if (this.#client.params.dataCollection === false) return;
-        if (this.#client.params.dataCollection === undefined && (await this.getDataCollectionProfile()).build !== "dev") return;
-
         return void this.#client.rest.request<Buffer>({
             auth:   false,
             method: "POST",
