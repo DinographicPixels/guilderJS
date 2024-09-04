@@ -51,7 +51,7 @@ For transparency, you can review the source code.
 
 If this is a concern and you rather opt out, consider disabling the `dataCollection` client option.
 
-If some of your data has already been collected and want to the removal of it, consider contacting us: support@dinographicpixels.com
+If some of your data have already been collected and want to the removal of them, consider contacting us: support@dinographicpixels.com
 
 <hr>
 
