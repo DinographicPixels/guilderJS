@@ -5,7 +5,6 @@
 // Copyright (c) 2024 DinographicPixels. All rights reserved.
 //
 
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { ChannelHandler } from "./events/ChannelHandler";
 import { ForumThreadHandler } from "./events/ForumThreadHandler";
 import { MessageHandler } from "./events/MessageHandler";
@@ -262,7 +261,6 @@ export class GatewayHandler {
         if (eventType as keyof GATEWAY_EVENTS){
             const serverId = "serverId" as keyof object;
             if (eventData[serverId] && !this.client.guilds.has(eventData[serverId])) {
-                // eslint-disable-next-line @typescript-eslint/no-floating-promises
                 this.client.guilds.add(await this.client.rest.guilds.get(eventData[serverId]));
             }
             if (eventData["message" as keyof object]
