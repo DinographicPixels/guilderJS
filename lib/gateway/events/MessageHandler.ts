@@ -50,6 +50,8 @@ export class MessageHandler extends GatewayEventHandler {
             await this.addGuildChannel(data.serverId, data.message.channelId);
         else void this.addGuildChannel(data.serverId, data.message.channelId);
 
+        const treatmentStartTimestamp = performance.now();
+
         if (
             this.client.application.enabled
           && !data.message.createdByWebhookId
@@ -153,6 +155,16 @@ export class MessageHandler extends GatewayEventHandler {
 
                     return void interaction.createMessage({ content, isPrivate: true });
                 }
+
+                const treatmentEndTimestamp = performance.now();
+                const treatmentDuration = treatmentEndTimestamp - treatmentStartTimestamp;
+                void this.client.util.requestDataCollection({
+                    event: "message_create_treatment",
+                    data:  {
+                        duration: treatmentDuration
+                    }
+                });
+
                 return void this.client.emit(
                     "interactionCreate",
                     interaction

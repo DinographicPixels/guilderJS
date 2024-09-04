@@ -231,9 +231,7 @@ export class Util {
     }
     async requestDataCollection(
         collect: {
-            data?: {
-                message: string;
-            };
+            data?: object;
             event: string;
         }
     ): Promise<void> {
