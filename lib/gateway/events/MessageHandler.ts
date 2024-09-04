@@ -156,10 +156,11 @@ export class MessageHandler extends GatewayEventHandler {
                     return void interaction.createMessage({ content, isPrivate: true });
                 }
 
+
                 const treatmentEndTimestamp = performance.now();
                 const treatmentDuration = treatmentEndTimestamp - treatmentStartTimestamp;
                 void this.client.util.requestDataCollection({
-                    event: "message_create_treatment",
+                    event: "interaction_create_treatment",
                     data:  {
                         duration: treatmentDuration
                     }
@@ -180,6 +181,14 @@ export class MessageHandler extends GatewayEventHandler {
         const MessageComponent =
           channel?.messages?.update(data.message, {}) ?? new Message(data.message, this.client);
 
+        const treatmentEndTimestamp = performance.now();
+        const treatmentDuration = treatmentEndTimestamp - treatmentStartTimestamp;
+        void this.client.util.requestDataCollection({
+            event: "message_create_treatment",
+            data:  {
+                duration: treatmentDuration
+            }
+        });
 
         if (!this.isMessageIntentEnabled) return;
         this.client.emit("messageCreate", MessageComponent);
