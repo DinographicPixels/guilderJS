@@ -73,8 +73,10 @@ export class MessageHandler extends GatewayEventHandler {
             let currentCommandName: string | null = null;
             const executionType: "full" | "simple" | false =
               commandNames?.some((name): boolean => {
-                  const usingAppCommand = data.message.content?.startsWith("/" + this.client.application.appShortname + " " + name);
-                  const usingSimpleCommand = data.message.content?.startsWith("/" + name);
+                  const usingAppCommandRegExp = new RegExp(`^/${this.client.application.appShortname} ${name}(\\s|$)`);
+                  const usingSimpleCommandRegExp = new RegExp(`^/${name}(\\s|$)`);
+                  const usingAppCommand = usingAppCommandRegExp.test(data.message.content ?? "");
+                  const usingSimpleCommand = usingSimpleCommandRegExp.test(data.message.content ?? "");
 
                   if (usingAppCommand) {
                       currentCommandName = name;
