@@ -1,6 +1,6 @@
 {
   "name": "touchguild",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "description": "TouchGuild, a NodeJS library for interfacing with Guilded.",
   "main": "./dist/lib/index.js",
   "types": "./dist/lib/index.d.ts",
@@ -31,7 +31,13 @@
     "guilded",
     "library",
     "guilded-api",
-    "api"
+    "api",
+    "product",
+    "apps",
+    "app",
+    "application",
+    "build",
+    "create"
   ],
   "author": "DinographicPixels",
   "contributors": [
