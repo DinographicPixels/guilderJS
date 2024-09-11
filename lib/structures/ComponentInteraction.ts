@@ -203,8 +203,11 @@ export class ComponentInteraction<V extends AnyInteractionComponent = AnyInterac
     async editParent(newMessage: EditInteractionMessageOptions): Promise<Message<T>> {
         if (this.acknowledged) throw new Error("Cannot edit parent interaction that has already been acknowledged.");
         this.acknowledged = true;
-        // TODO: Add alternative REST execution if not cached.
-        return this.message!.edit(newMessage);
+        return (
+            this.message
+          ?? await this.client.rest.channels.
+              getMessage(this.channelID, this.id)
+        ).edit(newMessage);
     }
 
     /**
