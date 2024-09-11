@@ -15,12 +15,11 @@ import type {
     AnyInteractionComponent,
     AnyTextableChannel,
     InteractionConstructorParams,
-    EditInteractionMessageOptions,
     EditMessageOptions,
     Embed,
-    CreateInteractionMessageOptions,
     ComponentInteractionData,
-    JSONComponentInteraction
+    JSONComponentInteraction,
+    CreateMessageOptions
 } from "../types";
 
 /** Represents a Component Interaction. */
@@ -77,7 +76,7 @@ export class ComponentInteraction<V extends AnyInteractionComponent = AnyInterac
      * (use ComponentInteraction#createMessage if the interaction has not been acknowledged).
      * @param options Message options.
      */
-    async createFollowup(options: CreateInteractionMessageOptions): Promise<Message<T>> {
+    async createFollowup(options: CreateMessageOptions): Promise<Message<T>> {
         if (!this.acknowledged || !this.originalID)
             throw new Error(
                 "Interaction has not been acknowledged, " +
@@ -110,9 +109,7 @@ export class ComponentInteraction<V extends AnyInteractionComponent = AnyInterac
                   acknowledged: true
               }
           );
-
         this._lastMessageID = response.id as string;
-        await this.client.util.bulkAddComponents<T>(this.channelID, options.components ?? [], response);
         if (!(this.originalID)) this.originalID = response.id;
         return response;
     }
@@ -121,7 +118,7 @@ export class ComponentInteraction<V extends AnyInteractionComponent = AnyInterac
      * (use ComponentInteraction#createFollowup on already acknowledged interactions).
      * @param options Message options.
      */
-    async createMessage(options: CreateInteractionMessageOptions): Promise<Message<T>> {
+    async createMessage(options: CreateMessageOptions): Promise<Message<T>> {
         if (this.acknowledged)
             throw new Error(
                 "Interaction has already been acknowledged, " +
@@ -200,7 +197,7 @@ export class ComponentInteraction<V extends AnyInteractionComponent = AnyInterac
      * Edit Parent Interaction.
      * @param newMessage New message content.
      */
-    async editParent(newMessage: EditInteractionMessageOptions): Promise<Message<T>> {
+    async editParent(newMessage: EditMessageOptions): Promise<Message<T>> {
         if (this.acknowledged) throw new Error("Cannot edit parent interaction that has already been acknowledged.");
         this.acknowledged = true;
         return (

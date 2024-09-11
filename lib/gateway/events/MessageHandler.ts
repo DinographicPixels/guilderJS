@@ -249,15 +249,13 @@ export class MessageHandler extends GatewayEventHandler {
             if (channel && channel.messages.has(data.reaction.messageId)) {
                 const interactionMessage =
                   channel.messages.get(data.reaction.messageId)!;
-                const originalInteraction =
-                  channel.interactions.get(interactionMessage.originals.triggerID ?? "none");
                 const hasComponents = interactionMessage.components.length !== 0;
                 const emoteComponent =
                   interactionMessage.components
                       .find(component =>
                           component.type === InteractionComponentType.BUTTON && component.emoteID === data.reaction.emote.id
                       );
-                if (originalInteraction
+                if (interactionMessage.originals.triggerID
                   && hasComponents
                   && emoteComponent
                   && data.reaction.createdBy !== this.client.user?.id
@@ -268,7 +266,7 @@ export class MessageHandler extends GatewayEventHandler {
                             {
                                 customID:             emoteComponent.customID,
                                 emoteID:              emoteComponent.emoteID,
-                                userTriggerMessageID: originalInteraction.id,
+                                userTriggerMessageID: interactionMessage.originals.triggerID,
                                 reactionInfo:         ReactionInfo
                             },
                             this.client

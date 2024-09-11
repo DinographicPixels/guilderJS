@@ -90,10 +90,9 @@ export interface MessageOriginals {
     triggerMessage: Message<AnyTextableChannel> | null;
 }
 
-export type CreateInteractionMessageOptions = CreateMessageOptions & { components?: Array<AnyInteractionComponent>; };
-export type EditInteractionMessageOptions = EditMessageOptions & { components?: Array<AnyInteractionComponent>; };
-
 export interface CreateMessageOptions {
+    /** Message components  */
+    components?: Array<AnyInteractionComponent>;
     /** The content of the message (min length 1; max length 4000) */
     content?: string;
     /** Embeds */
@@ -110,6 +109,8 @@ export interface CreateMessageOptions {
 }
 
 export interface EditMessageOptions {
+    /** Message components  */
+    components?: Array<AnyInteractionComponent>;
     /** The content of the message (min length 1; max length 4000) */
     content?: string;
     /** Embeds */
@@ -117,12 +118,6 @@ export interface EditMessageOptions {
     /** Links in content to prevent unfurling as a link preview when displaying in Guilded
      * (min items 1; must have unique items true) */
     hiddenLinkPreviewURLs?: Array<string>;
-    // /** Message IDs to reply to (min items 1; max items 5) */
-    // replyMessageIds?: Array<string>;
-    // /** If set, this message will not notify any mentioned users or roles (default `false`) */
-    // isSilent?: boolean;
-    // /** If set, this message will only be seen by those mentioned or replied to */
-    // isPrivate?: boolean;
 }
 
 export interface Embed {

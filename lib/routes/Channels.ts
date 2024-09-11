@@ -400,9 +400,11 @@ export class Channels {
                 replyMessageIds:       options.replyMessageIDs,
                 hiddenLinkPreviewUrls: options.hiddenLinkPreviewURLs
             }
-        }).then(data =>
-            this.#manager.client.util.updateMessage(data.message, params)
-        );
+        }).then(async data => {
+            const message: Message<T> = this.#manager.client.util.updateMessage(data.message, params);
+            await this.#manager.client.util.bulkAddComponents(message.channelID, options.components ?? [], message);
+            return message;
+        });
     }
 
 
@@ -1036,12 +1038,18 @@ export class Channels {
                 embeds:                newMessage.embeds ? this.#manager.client.util.embedsToRaw(newMessage.embeds) : undefined,
                 hiddenLinkPreviewUrls: newMessage.hiddenLinkPreviewURLs
             }
-        }).then(data =>
-            this.#manager.client.util.updateMessage(
+        }).then(async data => {
+            const message: Message<T> = this.#manager.client.util.updateMessage(
                 data.message as RawMessage,
                 params
-            )
-        );
+            );
+            if (newMessage.components) message.components = newMessage["components" as keyof object];
+            if (message.components) {
+                await this.#manager.channels.bulkDeleteReactions(message.channelID, "ChannelMessage", message.id);
+                await this.#manager.client.util.bulkAddComponents(message.channelID, message.components, message, false);
+            }
+            return message;
+        });
     }
 
 

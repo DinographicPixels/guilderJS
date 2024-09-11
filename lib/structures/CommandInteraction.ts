@@ -17,12 +17,12 @@ import type {
     AnyTextableChannel,
     InteractionConstructorParams,
     CommandInteractionData,
-    CreateInteractionMessageOptions,
-    EditMessageOptions,
     Embed,
     InteractionData,
     JSONCommandInteraction,
-    RawMentions
+    RawMentions,
+    CreateMessageOptions,
+    EditMessageOptions
 } from "../types";
 import { InteractionOptionWrapper } from "../util/InteractionOptionWrapper";
 
@@ -178,7 +178,7 @@ export class CommandInteraction<T extends AnyTextableChannel = AnyTextableChanne
      * (use CommandInteraction#createMessage if the interaction has not been acknowledged).
      * @param options Message options.
      */
-    async createFollowup(options: CreateInteractionMessageOptions): Promise<Message<T>> {
+    async createFollowup(options: CreateMessageOptions): Promise<Message<T>> {
         if (!this.acknowledged || !this.originalID)
             throw new Error(
                 "Interaction has not been acknowledged, " +
@@ -220,7 +220,7 @@ export class CommandInteraction<T extends AnyTextableChannel = AnyTextableChanne
      * (use CommandInteraction#createFollowup on already acknowledged interactions).
      * @param options Message options.
      */
-    async createMessage(options: CreateInteractionMessageOptions): Promise<Message<T>> {
+    async createMessage(options: CreateMessageOptions): Promise<Message<T>> {
         if (this.acknowledged)
             throw new Error(
                 "Interaction has already been acknowledged, " +
