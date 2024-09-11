@@ -77,7 +77,7 @@ export class CalendarEvent extends Base<number> {
         this.color = data.color ?? null;
         this.rsvpLimit = data.rsvpLimit ?? null;
         this.startsAt = data.startsAt ? new Date(data.startsAt) : null;
-        this.duration = (data.duration as number) * 60000 ?? null; // in ms.
+        this.duration = data.duration ? data.duration * 60000 : null; // in ms.
         this.isPrivate = data.isPrivate ?? false;
         this.mentions = data.mentions ?? null;
         this.createdAt = data.createdAt ? new Date(data.createdAt) : null;

@@ -24,7 +24,7 @@
       "moduleResolution": "node",
       "allowUnusedLabels": false,
       "allowUnreachableCode": false,
-      "importsNotUsedAsValues": "error",
+      "verbatimModuleSyntax": true,
       "ignoreDeprecations": "5.0",
       "checkJs": true,
       "strictPropertyInitialization": true,
