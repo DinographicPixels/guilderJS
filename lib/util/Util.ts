@@ -246,10 +246,7 @@ export class Util {
                 profile: await this.getDataCollectionProfile(),
                 collect
             }
-        }).catch(err => {
-            console.log("error linked to data:", collect);
-            this.#client.emit("error", err as Error);
-        });
+        }).catch(err => this.#client.emit("error", err as Error));
     }
     updateChannel<T extends AnyChannel>(data: RawChannel): T {
         if (data.serverId) {
