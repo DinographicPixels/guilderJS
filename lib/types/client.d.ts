@@ -54,6 +54,8 @@ export interface ClientOptions {
      * Data collecting is enabled by default if you use the development build.
      *
      * Transparency is key, open-source is transparent, feel free to check the source-code.
+     *
+     * [Learn more about what we collect.](https://guide.touchguild.com/data-and-analytics)
      */
     dataCollection?: boolean;
     /**

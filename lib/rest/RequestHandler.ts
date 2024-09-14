@@ -66,9 +66,11 @@ export class RequestHandler {
         if (!options.path.startsWith("/")) {
             options.path = `/${options.path}`;
         }
+
+        if (!options.path.startsWith("/")) options.path = "/" + options.path;
         const route = options.route
             ? options.route + "/" + options.path
-            : `${pkgconfig.GuildedAPI.API_URL}/${options.path}`;
+            : `${pkgconfig.GuildedAPI.API_URL}${options.path}`;
         if (!this.ratelimits[route]) {
             this.ratelimits[route] = new SequentialBucket(1, this.latencyRef);
         }
