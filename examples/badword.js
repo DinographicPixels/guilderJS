@@ -1,9 +1,10 @@
 // Importing TouchGuild.Client
-const { Client, Member } = require("touchguild");
+const { Client, Member, GatewayLayerIntent } = require("touchguild");
 
 // Creating client & connecting.
 const client = new Client({
-    token: "INSERT TOKEN"
+    token: "INSERT TOKEN",
+    intents: [GatewayLayerIntent.GUILD_MESSAGES, GatewayLayerIntent.MESSAGE_CONTENT]
 });
 
 client.on("ready", () => {
