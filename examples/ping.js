@@ -1,5 +1,8 @@
-const { Client } = require("touchguild");
-const client = new Client({ token: "INSERT TOKEN" });
+const { Client, GatewayLayerIntent } = require("touchguild");
+const client = new Client({
+    token: "INSERT TOKEN",
+    intents: [GatewayLayerIntent.GUILD_MESSAGES, GatewayLayerIntent.MESSAGE_CONTENT]
+});
 
 client.on("ready", () => {
     console.log("Ready as", client.user.username);
