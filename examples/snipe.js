@@ -1,11 +1,12 @@
 // Importing Client,
 // Message is also imported as we'll be using it later on.
-const { Client, Message } = require("touchguild"); // JavaScript/TS (CommonJS)
+const { Client, Message, GatewayLayerIntent } = require("touchguild"); // JavaScript/TS (CommonJS)
 // TypeScript/JavaScript (ES): import { Client, Message } from "touchguild";
 
 // Constructing Application Client (required)
 const client = new Client({
-    token: "INSERT TOKEN"
+    token: "INSERT TOKEN",
+    intents: [GatewayLayerIntent.GUILD_MESSAGES, GatewayLayerIntent.MESSAGE_CONTENT]
 });
 
 // Listen for the Client 'ready' state to be emitted.
