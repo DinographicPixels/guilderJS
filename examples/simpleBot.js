@@ -1,5 +1,5 @@
 // Imports
-const { Client } = require("touchguild"); // JavaScript/TS (CommonJS)
+const { Client, GatewayLayerIntent } = require("touchguild"); // JavaScript/TS (CommonJS)
 // TypeScript/JavaScript (ES): import { Client } from "touchguild";
 
 // Configuration
@@ -9,7 +9,10 @@ const config = {
 }
 
 // Constructing the Client, passing the token into it.
-const client = new Client({ token: config.token });
+const client = new Client({
+    token: config.token,
+    intents: [GatewayLayerIntent.GUILD_MESSAGES, GatewayLayerIntent.MESSAGE_CONTENT]
+});
 
 // Map that will contain settings for each registered guild.
 const guildSettingsMap = new Map();
