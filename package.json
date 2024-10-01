@@ -60,7 +60,7 @@
     "@types/pako": "^2.0.3",
     "@types/sync-fetch": "^0.4.0",
     "@types/ws": "^8.5.12",
-    "@typescript-eslint/eslint-plugin": "^7.18.0",
+    "@typescript-eslint/eslint-plugin": "^8.8.0",
     "@typescript-eslint/parser": "^7.18.0",
     "eslint": "^8.57.0",
     "eslint-plugin-import": "^2.29.1",
