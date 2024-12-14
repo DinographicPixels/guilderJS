@@ -134,6 +134,8 @@ export class GuildHandler extends GatewayEventHandler {
         if (!this.isGuildIntentEnabled) return;
         const output =
           new MemberUpdateInfo(data, data.memberRoleIds[0].userId, this.client);
+        const cacheMember = this.client.getMember(data.serverId, data.memberRoleIds[0].userId);
+        if (cacheMember) cacheMember.roles = data?.memberRoleIds?.[0]?.roleIds ?? [];
         this.client.emit("guildMemberUpdate", output);
     }
     guildMemberSocialLinkCreate(data: GatewayEvent_ServerMemberSocialLinkCreated): void {
